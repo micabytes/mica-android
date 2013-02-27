@@ -1,0 +1,58 @@
+The MicaByte Game Engine (micabyte/android_game) is an Android library that
+encapsulates some of the logic required for creating a simple 2D game using
+the native Android graphics library.
+
+This might be useful to you if:
+
+* You want a simple 2D graphics library for Android, and you don't need any
+flashy effects. It doesn't get much simpler than Canvas.drawBitmap(...) and
+the Canvas is plenty fast enough for graphics that are not heavy on animation.
+
+* You want to combine 2D graphics with native Android UI elements. For
+whatever reason, almost all game frameworks refuse to use the native Android
+UI, which makes building complex UIs a chore.
+
+* You want to do 2D graphics using SurfaceView in Android, but haven't found
+any good examples to work with.
+
+You won't find this useful if you are looking to build 3D graphics or need
+lots of animation. For those kind of demands, I recommend taking a look at
+an OpenGL framework; e.g., libGDX.
+
+It is released under the Apache 2.0 license. 
+
+If you do bug fixes, improvements or extensions, please consider contributing
+them back to the library to be incorporated in future iterations.
+
+
+Main Components:
+
+* GameImage: This is a standard singleton class image cache using 
+SoftReferences. Useful to manage bitmaps.  
+
+* GameMusic: A very simple static class to manage playback of music. Needs
+more work.
+
+* GameString: A simple class that allows for some string manipulation.
+
+* GameSurfaceView: A SurfaceView implementation based on the "standard"
+render thread format, with pan, fling, and pinch-zoom support implemented.
+
+* GameSurfaceRendererBitmap: Rendering implementation for GameSurfaceView.
+Allows for the handling of very large bitmaps (larger than available
+memory) as backgrounds. 
+
+* GameSurfaceTileBitmap: Rendering implementation for GameSurfaceView that
+handles a simple TileMap of squares.
+
+
+Limitations:
+
+The library requires Android 2.3.3 or better. The reason for this is entirely
+due to the use of BitmapRegionDecoder. Remove that, and the library should be
+compatible down to Android 1.6.
+
+Also, note that while the library builds upon code from my previous projects
+and I use it in my current development, this particular version of the library
+has not yet stood the "test of fire" from tens of thousands of devices. There
+may still be many subtle (and not so subtle) bugs in the code.
