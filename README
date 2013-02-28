@@ -27,22 +27,22 @@ them back to the library to be incorporated in future iterations.
 
 Main Components:
 
-* GameImage: This is a standard singleton class image cache using 
+* ImageHandler: This is a standard singleton class image cache using 
 SoftReferences. Useful to manage bitmaps.  
 
-* GameMusic: A very simple static class to manage playback of music. Needs
+* MusicHandler: A very simple static class to manage playback of music. Needs
 more work.
 
-* GameString: A simple class that allows for some string manipulation.
+* StringHandler: A simple class that allows for some string manipulation.
 
-* GameSurfaceView: A SurfaceView implementation based on the "standard"
+* MicaSurfaceView: A SurfaceView implementation based on the "standard"
 render thread format, with pan, fling, and pinch-zoom support implemented.
 
-* GameSurfaceRendererBitmap: Rendering implementation for GameSurfaceView.
+* BitmapSurfaceRenderer: Rendering implementation for GameSurfaceView.
 Allows for the handling of very large bitmaps (larger than available
 memory) as backgrounds. 
 
-* GameSurfaceTileBitmap: Rendering implementation for GameSurfaceView that
+* TileMapSurfaceRenderer: Rendering implementation for GameSurfaceView that
 handles a simple TileMap of squares.
 
 
