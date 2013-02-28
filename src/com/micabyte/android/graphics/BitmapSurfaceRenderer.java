@@ -40,7 +40,8 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     // Default Settings
     private static final Config DEFAULT_CONFIG = Config.RGB_565;
     private static final int DEFAULT_SAMPLESIZE = 2;
-    private static final int DEFAULT_MEMUSAGE = 5;
+    private static final int DEFAULT_MEMUSAGE = 20;
+    private static final float DEFAULT_THRESHOLD = 0.75f;
     // BitmapRegionDecoder - this is the class that does the magic
     private BitmapRegionDecoder decoder_;
     // The cached portion of the background image
@@ -67,7 +68,15 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
         this.options_.inPreferredConfig = DEFAULT_CONFIG;
         this.sampleSize_ = DEFAULT_SAMPLESIZE;
         this.memUsage_ = DEFAULT_MEMUSAGE;
-        this.lowResThreshold_ = 0.95f;
+        this.lowResThreshold_ = DEFAULT_THRESHOLD;
+    }
+
+    public BitmapSurfaceRenderer(Context c, Bitmap.Config config, int sampleSize, int memUsage, float threshold) {
+        super(c);
+        this.options_.inPreferredConfig = config;
+        this.sampleSize_ = sampleSize;
+        this.memUsage_ = memUsage;
+        this.lowResThreshold_ = threshold;
     }
 
     /**
@@ -146,7 +155,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     private class CacheBitmap {
         /** The current state of the cache */
         private CacheState state_ = CacheState.NOT_INITIALIZED;
-        /** The current position of the cache within the background image */
+        /** The current position and dimensions of the cache within the background image */
         final Rect cacheWindow_ = new Rect();
         /** The currently cached bitmap */
         Bitmap bitmap_ = null;
@@ -327,7 +336,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                 if (continueLoading) {
                     synchronized (BitmapSurfaceRenderer.this.viewPort_) {
                         viewportRect.set(BitmapSurfaceRenderer.this.viewPort_
-                                .getScaledViewPort());
+                                .getUnScaledViewPort());
                     }
                     synchronized (this.cache_) {
                         if (this.cache_.getState() == CacheState.IS_UPDATING)

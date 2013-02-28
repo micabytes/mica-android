@@ -224,6 +224,20 @@ public abstract class SurfaceRenderer {
             return ret;
         }
 
+        public Rect getUnScaledViewPort() {
+            Rect ret;
+            synchronized (this) {
+                int w2 =
+                        this.bitmapSize_.width() / 2;
+                int h2 =
+                        this.bitmapSize_.height() / 2;
+                ret =
+                        new Rect(this.viewPortCenter_.x - w2, this.viewPortCenter_.y - h2,
+                                this.viewPortCenter_.x + w2, this.viewPortCenter_.y + h2);
+            }
+            return ret;
+        }
+        
         void draw(Canvas c) {
             drawBase(this);
             drawLayer(this);
