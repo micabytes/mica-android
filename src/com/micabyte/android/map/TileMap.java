@@ -43,6 +43,14 @@ public abstract class TileMap extends BaseObject {
         this.tileRect_ = new Rect(0, 0, map[0][0].getTileSize(c), map[0][0].getTileSize(c));
     }
 
+    public int getHeight() {
+    	return this.mapHeight_;
+    }
+    
+    public int getWidth() {
+    	return this.mapWidth_;
+    }
+    
     public int getRenderHeight() {
         return (this.mapHeight_ * this.tileRect_.height());
     }
@@ -50,7 +58,15 @@ public abstract class TileMap extends BaseObject {
     public int getRenderWidth() {
         return (this.mapWidth_ * this.tileRect_.width());
     }
+    
+    public int getTileHeight() {
+    	return this.tileRect_.width();
+    }
 
+    public int getTileWidth() {
+    	return this.tileRect_.height();
+    }
+    
     public void drawBase(Context c, ViewPort p, float scaleFactor) {
         Canvas canvas = new Canvas(p.bitmap_);
         Paint paint = new Paint();
