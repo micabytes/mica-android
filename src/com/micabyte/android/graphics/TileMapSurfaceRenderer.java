@@ -30,6 +30,10 @@ public class TileMapSurfaceRenderer extends SurfaceRenderer {
         super(c);
     }
 
+    public TileMapSurfaceRenderer(Context c, float mscale) {
+        super(c, mscale);
+    }
+
     /** Set the TileMap */
     public void setTileMap(TileMap map)  {
         this.GameSurfaceTileMap_ = map;

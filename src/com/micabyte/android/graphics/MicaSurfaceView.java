@@ -379,9 +379,6 @@ public class MicaSurfaceView extends android.view.SurfaceView
                 MicaSurfaceView.this.renderer_.moveViewPosition(this.viewCenterAtDown_.x,
                         this.viewCenterAtDown_.y, deltaX, deltaY);
                 MicaSurfaceView.this.invalidate();
-                // if (BuildConfig.DEBUG) Log.d(TAG, "TouchHandler.move to " +
-                // (this.viewOriginAtDown_.x - deltaX) + ", " + (this.viewOriginAtDown_.y -
-                // deltaY));
                 return true;
             }
             return false;

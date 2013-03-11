@@ -25,10 +25,13 @@ import android.graphics.Rect;
  * 
  * BitmapSurfaceRenderer can be extended for apps that require background images.
  * TileMapSurfaceRenderer can be extended for apps that need to display TileMaps.
- * 
+ *
  * @author micabyte
  */
 public abstract class SurfaceRenderer {
+	// Max Scale Factor
+	private static final float DEFAULT_MAXSCALEFACTOR = 1.0f;
+	private final float maxScaleFactor_;
     // Context
     protected Context context_;
     // The ViewPort
@@ -36,10 +39,16 @@ public abstract class SurfaceRenderer {
     // The Dimensions of the Game Area
     protected Point backgroundSize_ = new Point();
     // The Current Scale Factor
-    protected float scaleFactor_ = 1;
+    protected float scaleFactor_ = 1.0f;
 
     protected SurfaceRenderer(Context c) {
         this.context_ = c;
+        this.maxScaleFactor_ = DEFAULT_MAXSCALEFACTOR;
+    }
+
+    protected SurfaceRenderer(Context c, float mscale) {
+        this.context_ = c;
+        this.maxScaleFactor_ = mscale;
     }
 
     /** Rendering thread started */
@@ -105,7 +114,7 @@ public abstract class SurfaceRenderer {
         float min =
                 Math.max((float) viewSize.x / (float) backgroundSize.x, (float) viewSize.y
                         / (float) backgroundSize.y);
-        tempScaleFactor = Math.max(min, Math.min(tempScaleFactor, 1.0f));
+        tempScaleFactor = Math.max(min, Math.min(tempScaleFactor, this.maxScaleFactor_));
         this.scaleFactor_ = tempScaleFactor;
     }
 
@@ -118,7 +127,7 @@ public abstract class SurfaceRenderer {
         float min =
                 Math.max((float) viewSize.x / (float) backgroundSize.x, (float) viewSize.y
                         / (float) backgroundSize.y);
-        tempScaleFactor = Math.max(min, Math.min(tempScaleFactor, 1.0f));
+        tempScaleFactor = Math.max(min, Math.min(tempScaleFactor, this.maxScaleFactor_));
         // Calculate new origin
         Point tempP = new Point();
         this.getViewPosition(tempP);
@@ -162,18 +171,14 @@ public abstract class SurfaceRenderer {
                 int windowBottom =
                         (int) (ny + (this.bitmapSize_.bottom / (SurfaceRenderer.this.scaleFactor_ * 2)));
                 if (windowLeft < 0)
-                    x =
-                            (int) (this.bitmapSize_.right / (SurfaceRenderer.this.scaleFactor_ * 2));
+                    x = (int) (this.bitmapSize_.right / (SurfaceRenderer.this.scaleFactor_ * 2));
                 if (windowTop < 0)
-                    y =
-                            (int) (this.bitmapSize_.bottom / (SurfaceRenderer.this.scaleFactor_ * 2));
+                    y = (int) (this.bitmapSize_.bottom / (SurfaceRenderer.this.scaleFactor_ * 2));
                 if (windowRight > SurfaceRenderer.this.backgroundSize_.x)
-                    x =
-                            SurfaceRenderer.this.backgroundSize_.x
+                    x = SurfaceRenderer.this.backgroundSize_.x
                                     - (int) (this.bitmapSize_.right / (SurfaceRenderer.this.scaleFactor_ * 2));
                 if (windowBottom > SurfaceRenderer.this.backgroundSize_.y)
-                    y =
-                            SurfaceRenderer.this.backgroundSize_.y
+                    y = SurfaceRenderer.this.backgroundSize_.y
                                     - (int) (this.bitmapSize_.bottom / (SurfaceRenderer.this.scaleFactor_ * 2));
                 // set windows
                 this.viewPortCenter_.set(x, y);
@@ -231,9 +236,8 @@ public abstract class SurfaceRenderer {
                         this.bitmapSize_.width() / 2;
                 int h2 =
                         this.bitmapSize_.height() / 2;
-                ret =
-                        new Rect(this.viewPortCenter_.x - w2, this.viewPortCenter_.y - h2,
-                                this.viewPortCenter_.x + w2, this.viewPortCenter_.y + h2);
+                ret =   new Rect(this.viewPortCenter_.x - w2, this.viewPortCenter_.y - h2,
+                                 this.viewPortCenter_.x + w2, this.viewPortCenter_.y + h2);
             }
             return ret;
         }
@@ -243,17 +247,7 @@ public abstract class SurfaceRenderer {
             drawLayer(this);
             synchronized (this) {
                 if (c != null && this.bitmap_ != null) {
-                    Rect srcRect = null;
-                    if (SurfaceRenderer.this.scaleFactor_ > 1f) {
-                        int w2 =
-                                (int) ((this.bitmapSize_.width() - (this.bitmapSize_.width() / SurfaceRenderer.this.scaleFactor_)) / 2);
-                        int h2 =
-                                (int) ((this.bitmapSize_.height() - (this.bitmapSize_.height() / SurfaceRenderer.this.scaleFactor_)) / 2);
-                        srcRect =
-                                new Rect(w2, h2, this.bitmapSize_.left - w2,
-                                        this.bitmapSize_.bottom - h2);
-                    }
-                    c.drawBitmap(this.bitmap_, srcRect, this.bitmapSize_, null);
+                    c.drawBitmap(this.bitmap_, null, this.bitmapSize_, null);
                 }
             }
         }

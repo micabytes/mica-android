@@ -1,4 +1,4 @@
-The MicaByte Game Engine (micabyte/android_game) is an Android library that
+The MicaByte Game Library (micabyte/android_game) is an Android library that
 encapsulates some of the logic required for creating a simple 2D game using
 the native Android graphics library.
 
@@ -27,22 +27,22 @@ them back to the library to be incorporated in future iterations.
 
 Main Components:
 
-* GameImage: This is a standard singleton class image cache using 
+* ImageHandler: This is a standard singleton class image cache using 
 SoftReferences. Useful to manage bitmaps.  
 
-* GameMusic: A very simple static class to manage playback of music. Needs
+* MusicHandler: A very simple static class to manage playback of music. Needs
 more work.
 
-* GameString: A simple class that allows for some string manipulation.
+* StringHandler: A simple class that allows for some string manipulation.
 
-* GameSurfaceView: A SurfaceView implementation based on the "standard"
+* MicaSurfaceView: A SurfaceView implementation based on the "standard"
 render thread format, with pan, fling, and pinch-zoom support implemented.
 
-* GameSurfaceRendererBitmap: Rendering implementation for GameSurfaceView.
+* BitmapSurfaceRenderer: Rendering implementation for GameSurfaceView.
 Allows for the handling of very large bitmaps (larger than available
 memory) as backgrounds. 
 
-* GameSurfaceTileBitmap: Rendering implementation for GameSurfaceView that
+* TileMapSurfaceRenderer: Rendering implementation for GameSurfaceView that
 handles a simple TileMap of squares.
 
 
@@ -56,7 +56,6 @@ Also, note that while the library builds upon code from my previous projects
 and I use it in my current development, this particular version of the library
 has not yet stood the "test of fire" from tens of thousands of devices. There
 may still be many subtle (and not so subtle) bugs in the code.
-
 
 TODO:
 
