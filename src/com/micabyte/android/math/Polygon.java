@@ -18,13 +18,13 @@ package com.micabyte.android.math;
  * 
  * Basic polygon wrapper to handle simple point in polygon problems.
  */
-public class GamePolygon {
+public class Polygon {
     // Polygon coodinates.
     private int[] polyX_, polyY_;
     // Number of sides in the polygon.
     private int polyN_;
 
-    public GamePolygon(int[] px, int[] py, int ps) {
+    public Polygon(int[] px, int[] py, int ps) {
         this.polyX_ = px;
         this.polyY_ = py;
         this.polyN_ = ps;
