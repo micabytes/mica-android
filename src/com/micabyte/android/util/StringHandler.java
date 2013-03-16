@@ -165,6 +165,17 @@ public class StringHandler {
         return ret;
     }
 
+    public static String randomSplit(String str, String divisor) {
+    	if (str.contains(divisor)) {
+			String tokens[];
+			tokens = str.split("[/]");
+			if (tokens.length > 0) {
+				return tokens[DiceHandler.random(tokens.length)];
+			}
+		}
+		return str;    	
+    }
+    
     public static String get(Context c, int id) {
         return format(c, c.getString(id), null);
     }
