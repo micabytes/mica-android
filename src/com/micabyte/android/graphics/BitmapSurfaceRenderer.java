@@ -38,7 +38,7 @@ import com.micabyte.android.game.BuildConfig;
 public class BitmapSurfaceRenderer extends SurfaceRenderer {
     public static final String TAG = BitmapSurfaceRenderer.class.getName();
     // Default Settings
-    private static final Config DEFAULT_CONFIG = Config.RGB_565;
+    public static final Config DEFAULT_CONFIG = Config.RGB_565;
     private static final int DEFAULT_SAMPLESIZE = 2;
     private static final int DEFAULT_MEMUSAGE = 20;
     private static final float DEFAULT_THRESHOLD = 0.75f;

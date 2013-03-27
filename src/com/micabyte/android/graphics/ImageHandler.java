@@ -44,7 +44,7 @@ public class ImageHandler {
     // Application context
     private Resources resources_;
     // Shortcut to the Display Density
-    public float density;
+    public static float density;
     // Bitmap cache
     private SparseArray<SoftReference<Bitmap>> cachedBitmaps_ =
             new SparseArray<SoftReference<Bitmap>>();
@@ -52,7 +52,7 @@ public class ImageHandler {
     public ImageHandler(Context c) {
         this.resources_ = c.getResources();
         DisplayMetrics metrics = this.resources_.getDisplayMetrics();
-        this.density = metrics.density;
+        ImageHandler.density = metrics.density;
     }
 
     public void release() {
@@ -88,7 +88,7 @@ public class ImageHandler {
     }
 
     // TODO: These two functions still need to be generalized
-    public Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
+    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
         Bitmap output =
                 Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
