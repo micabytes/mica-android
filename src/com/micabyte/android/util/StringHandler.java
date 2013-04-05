@@ -14,10 +14,12 @@ package com.micabyte.android.util;
 
 import java.util.HashMap;
 import java.util.Locale;
-
-import com.micabyte.android.BaseObject;
+import java.util.Vector;
 
 import android.content.Context;
+
+import com.micabyte.android.BaseObject;
+import com.micabyte.android.game.R;
 
 /**
  * StringHandler is a wrapper around the standard Android getString functionality. It is primarily
@@ -185,6 +187,28 @@ public class StringHandler {
 		return str;
 	}
 
+	public static String list(Context c, Vector<BaseObject> objs) {
+		String ret = new String();
+		if (objs.size() == 0) return ret;
+		if (objs.size() == 1) {
+			ret = objs.firstElement().getName();
+			return ret;
+		}
+		if (objs.size() == 2) {
+			ret = objs.get(0).getName() + c.getString(R.string.stringhandler_and1) + objs.get(1).getName();
+			return ret;
+		}
+		for (int i = 0; i<objs.size() - 1; i++) {
+			ret += objs.get(i).getName();
+			if (i < objs.size() - 2)
+				ret +=  c.getString(R.string.stringhandler_comma);
+			else
+				ret +=  c.getString(R.string.stringhandler_and2);
+		}
+		ret += objs.lastElement().getName();
+		return ret;
+	}
+	
 	public static String get(Context c, int id) {
 		return format(c, c.getString(id), null);
 	}
