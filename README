@@ -60,6 +60,3 @@ may still be many subtle (and not so subtle) bugs in the code.
 TODO:
 
 * HexMap class.
-* The library pretty much assumes that the background size is greater than the
-screen dimensions and misbehaves when that isn't the case. This needs to be
-fixed.
