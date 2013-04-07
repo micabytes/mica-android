@@ -12,8 +12,6 @@
  */
 package com.micabyte.android.util;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -30,8 +28,6 @@ public class DiceHandler {
     // Dice Rolling
     public static final int WDICE_DEFAULT_HIT = 4;
     public static final int BASE_DICE_THRESHOLD = 4;
-    // Date Formater
-    private static SimpleDateFormat dateParser = null;
 
     /** Returns a random double */
     public static double random() {
