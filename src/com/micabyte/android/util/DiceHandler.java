@@ -90,11 +90,5 @@ public class DiceHandler {
         }
         return ret;
     }
-    
-    /** Returns a default simple date parser */
-    public static SimpleDateFormat dateParser() {
-        if (dateParser == null) dateParser = new SimpleDateFormat("MMMM d, yyyy", Locale.US);
-        return dateParser;
-    }
 
 }
