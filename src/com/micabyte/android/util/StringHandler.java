@@ -120,7 +120,7 @@ public class StringHandler {
 			else {
 				ret = ret.replace(replace, "VariablePluralError:" + sub);
 			}
-			start = ret.indexOf("[/");
+			start = ret.indexOf("[#");
 		}
 		// Game variable substitution
 		if (variables != null) {
