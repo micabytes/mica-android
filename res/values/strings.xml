@@ -10,6 +10,7 @@
     <string name="default_longtext">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ipsum nisi, ultricies eget condimentum id, cursus at tortor. Nulla in nunc eget leo vestibulum volutpat. Integer a adipiscing odio. Curabitur volutpat tristique leo, ut sagittis augue iaculis sit amet. Etiam blandit sollicitudin scelerisque. Quisque a sapien ut felis eleifend scelerisque at a risus. Integer sit amet odio dolor.</string>
     <string name="default_shorttext">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
     <string name="default_placeholder">Placeholder</string>
+    <string name="default_gui">UI element</string>
     <string name="stringhandler_comma">, </string>
     <string name="stringhandler_and1"> and </string>
     <string name="stringhandler_and2">, and </string>
