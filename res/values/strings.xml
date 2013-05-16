@@ -11,6 +11,7 @@
     <string name="default_shorttext">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
     <string name="default_placeholder">Placeholder</string>
     <string name="default_gui">UI element</string>
+    <string name="default_plural">s</string>
     <string name="stringhandler_comma">, </string>
     <string name="stringhandler_and1"> and </string>
     <string name="stringhandler_and2">, and </string>

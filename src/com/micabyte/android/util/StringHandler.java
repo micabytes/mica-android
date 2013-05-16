@@ -208,6 +208,33 @@ public class StringHandler {
 		ret += objs.lastElement().getName();
 		return ret;
 	}
+
+	public static String listString(Context c, Vector<String> objs) {
+		String ret = new String();
+		if (objs.size() == 0) return ret;
+		if (objs.size() == 1) {
+			ret = objs.firstElement();
+			return ret;
+		}
+		if (objs.size() == 2) {
+			ret = objs.get(0) + c.getString(R.string.stringhandler_and1) + objs.get(1);
+			return ret;
+		}
+		for (int i = 0; i<objs.size() - 1; i++) {
+			ret += objs.get(i);
+			if (i < objs.size() - 2)
+				ret +=  c.getString(R.string.stringhandler_comma);
+			else
+				ret +=  c.getString(R.string.stringhandler_and2);
+		}
+		ret += objs.lastElement();
+		return ret;
+	}
+	
+	public static String signedString(int i) {
+		if (i < 0) return Integer.toString(i);
+		return "+" + Integer.toString(i);
+	}
 	
 	public static String get(Context c, int id) {
 		return format(c, c.getString(id), null);
