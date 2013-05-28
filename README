@@ -46,6 +46,16 @@ memory) as backgrounds.
 handles a simple TileMap of squares.
 
 
+Example code:
+
+A very simple example project can also be found on github:
+https://github.com/micabyte/android_game_example
+
+I would like to demonstrate how I use the framework with fragments, etc.,
+but for the moment I don't have the time to build anything more elaborate,
+so at the moment this is very simple (just shows how a map is displayed).
+
+
 Limitations:
 
 The library requires Android 2.3.3 or better. The reason for this is entirely
