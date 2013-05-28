@@ -12,7 +12,12 @@
  */
 package com.micabyte.android;
 
+import java.util.Locale;
+
 import android.content.Context;
+
+import com.micabyte.android.game.R;
+import com.micabyte.android.util.StringHandler;
 
 /**
  * BaseObject is a generic Object that contains a number of frequently used attributes.
@@ -78,10 +83,46 @@ public abstract class BaseObject {
      * text replacement in strings (see StringHandler) where it is useful to retrieve data from many
      * different types of game objects.
      */
-    public abstract int getInteger(String id);
+	private enum ValueToken {
+		error, name, value, tag;
 
-    public abstract double getDouble(String id);
+		public static ValueToken get(String str) {
+			try {
+				return valueOf(str.trim().toLowerCase(Locale.US));
+			}
+			catch (Exception ex) {
+				return error;
+			}
+		}
+	}
 
-    public abstract String getString(Context c, String id);
+	public int getInteger(String id) {
+		switch (ValueToken.get(id)) {
+			case value:
+				return getValue();
+			default:
+				return 0;
+		}
+	}
+
+	public double getDouble(String id) {
+		switch (ValueToken.get(id)) {
+			case value:
+				return getValue();
+			default:
+				return 0.0;
+		}
+	}
+
+	public String getString(Context c, String id) {
+		switch (ValueToken.get(id)) {
+			case name:
+				return getName();
+			case tag:
+				return getTag();
+			default:
+				return StringHandler.get(c, R.string.default_error);
+		}
+	}
 
 }
