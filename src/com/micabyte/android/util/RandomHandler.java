@@ -22,7 +22,7 @@ import java.util.Random;
  * 
  * @author micabyte 
  */
-public class DiceHandler {
+public class RandomHandler {
     // Random Generator
     private static Random random = null;
     // Dice Rolling
@@ -56,7 +56,7 @@ public class DiceHandler {
         int ret = 0;
         int roll;
         for (int i = 0; i < nDice; i++) {
-            roll = DiceHandler.random(dSize) + 1;
+            roll = RandomHandler.random(dSize) + 1;
             if (roll >= toHit) {
                 ret++;
             }
@@ -75,10 +75,10 @@ public class DiceHandler {
         int ret = 0;
         int roll;
         for (int i = 0; i < nDice; i++) {
-            roll = DiceHandler.random(dSize) + 1;
+            roll = RandomHandler.random(dSize) + 1;
             while (roll == dSize) { // Wild Dice
                 ret++;
-                roll = DiceHandler.random(dSize) + 1;
+                roll = RandomHandler.random(dSize) + 1;
             }
             if (roll >= toHit) {
                 ret++;
