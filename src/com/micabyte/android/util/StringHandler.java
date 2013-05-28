@@ -65,7 +65,7 @@ public class StringHandler {
 				String replace = ret.substring(start, end + 2);
 				String sub = ret.substring(start + 2, end);
 				String tokens[] = sub.split("[/]");
-				ret = ret.replace(replace, tokens[DiceHandler.random(tokens.length)]);
+				ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
 				start = ret.indexOf("[/");
 			}
 			else
@@ -181,7 +181,7 @@ public class StringHandler {
 			String tokens[];
 			tokens = str.split("[/]");
 			if (tokens.length > 0) {
-				return tokens[DiceHandler.random(tokens.length)];
+				return tokens[RandomHandler.random(tokens.length)];
 			}
 		}
 		return str;
