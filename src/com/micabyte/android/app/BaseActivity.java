@@ -16,6 +16,7 @@ import java.text.DecimalFormat;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -54,6 +55,12 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 		super.onCreate(savedInstanceState);
 		// No title bar
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+	}
+
+	public void restart() {
+		Intent intent = getIntent();
+		finish();
+		startActivity(intent);
 	}
 	
 	/**
