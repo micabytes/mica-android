@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -79,6 +80,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     protected CheckBox getCheckBox(int resId_) {
         CheckBox b = (CheckBox) getView().findViewById(resId_);
+        return b;
+    }
+
+    protected RadioButton getRadioButton(int resId_) {
+    	RadioButton b = (RadioButton) getView().findViewById(resId_);
         return b;
     }
 
