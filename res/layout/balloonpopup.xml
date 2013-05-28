@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/dummy"
-        android:background="@drawable/balloonpopup_background_body"
+        android:background="@drawable/ui_balloonpopup_background_body"
         android:textColor="#000000"
         android:fadingEdgeLength="0dip"
         android:paddingLeft="1dip"
@@ -26,7 +26,7 @@
         android:layout_alignLeft="@id/BalloonPopupText"
         android:layout_alignRight="@id/BalloonPopupText"
         android:layout_marginBottom="-1dip"
-        android:background="@drawable/balloonpopup_background_top" />
+        android:background="@drawable/ui_balloonpopup_background_top" />
     <FrameLayout
         android:id="@+id/BalloonPopupFooter"
         android:layout_width="wrap_content"
@@ -34,13 +34,13 @@
         android:layout_alignLeft="@id/BalloonPopupText"
         android:layout_alignRight="@id/BalloonPopupText"
         android:layout_below="@id/BalloonPopupText"
-        android:background="@drawable/balloonpopup_background_bottom" />
+        android:background="@drawable/ui_balloonpopup_background_bottom" />
     <ImageView
         android:id="@+id/arrow_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/default_gui"
-        android:src="@drawable/balloonpopup_arrow_up" />
+        android:src="@drawable/ui_balloonpopup_arrow_up" />
     <ImageView
         android:id="@+id/arrow_down"
         android:layout_width="wrap_content"
@@ -48,5 +48,5 @@
         android:layout_below="@id/BalloonPopupFooter"
         android:layout_marginTop="-1dip"
         android:contentDescription="@string/default_gui"
-        android:src="@drawable/balloonpopup_arrow_down" />
+        android:src="@drawable/ui_balloonpopup_arrow_down" />
 </RelativeLayout>
