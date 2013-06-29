@@ -55,8 +55,10 @@ public class StringHandler {
 	 * @return String with all of the scripting code replaced appropriately
 	 */
 	public static String format(Context c, String text, HashMap<String, Object> variables) {
-		String ret = text;
 		int start, end;
+		String ret = text;
+		// Insert Line breaks
+		ret = ret.replace("\\n", System.getProperty("line.separator"));		
 		// Handle random choice
 		start = ret.indexOf("[/");
 		while (start != NOTFOUND) {

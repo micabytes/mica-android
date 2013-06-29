@@ -15,64 +15,170 @@ package com.micabyte.android.app;
 import java.text.DecimalFormat;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.webkit.WebView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.ToggleButton;
+
+import com.google.android.gms.appstate.AppStateClient;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.games.GamesClient;
+import com.google.android.gms.plus.PlusClient;
+import com.micabyte.android.util.GameHelper;
 
 /**
- * Convenience class to replace FragmentActivity. 
+ * Base class for Game Activities.
+ * 
+ * This implementation now also implements the GamesClient object from Google Play Games services
+ * and manages its lifecycle. Subclasses should override the @link{#onSignInSucceeded} and
+ * 
+ * @link{#onSignInFailed abstract methods.
  * 
  * @author micabyte
  */
-public abstract class BaseActivity extends FragmentActivity implements View.OnClickListener {
+public abstract class BaseActivity extends FragmentActivity implements GameHelper.GameHelperListener {
+	  // The game helper object. This class is mainly a wrapper around this object.
+    protected GameHelper mHelper;
 
-	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		// No title bar
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-	}
+    // We expose these constants here because we don't want users of this class
+    // to have to know about GameHelper at all.
+    public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
+    public static final int CLIENT_APPSTATE = GameHelper.CLIENT_APPSTATE;
+    public static final int CLIENT_PLUS = GameHelper.CLIENT_PLUS;
+    public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
 
-	public void restart() {
-		Intent intent = getIntent();
-		finish();
-		startActivity(intent);
-	}
-	
-	/**
-	 * Removes the reference to the activity from every view in a view hierarchy
-	 * (listeners, images etc.) in order to limit/eliminate memory leaks. This is
-	 * a "fix" for memory problems on older versions of Android; it may not be
-	 * necessary on newer versions.
+    // Requested clients. By default, that's just the games client.
+    protected int mRequestedClients = CLIENT_GAMES;
+
+    /** Constructs a BaseGameActivity with default client (GamesClient). */
+    protected BaseActivity() {
+        super();
+        this.mHelper = new GameHelper(this);
+    }
+
+    /**
+     * Constructs a BaseGameActivity with the requested clients.
+     * @param requestedClients The requested clients (a combination of CLIENT_GAMES,
+     *         CLIENT_PLUS and CLIENT_APPSTATE).
+     */
+    protected BaseActivity(int requestedClients) {
+        super();
+        setRequestedClients(requestedClients);
+    }
+
+    /**
+     * Sets the requested clients. The preferred way to set the requested clients is
+     * via the constructor, but this method is available if for some reason your code
+     * cannot do this in the constructor. This must be called before onCreate in order to
+     * have any effect. If called after onCreate, this method is a no-op.
      *
-     * see http://code.google.com/p/android/issues/detail?id=8488
+     * @param requestedClients A combination of the flags CLIENT_GAMES, CLIENT_PLUS
+     *         and CLIENT_APPSTATE, or CLIENT_ALL to request all available clients.
+     */
+    protected void setRequestedClients(int requestedClients) {
+        this.mRequestedClients = requestedClients;
+    }
+
+    @Override
+    protected void onCreate(Bundle b) {
+        super.onCreate(b);
+        this.mHelper = new GameHelper(this);
+        this.mHelper.setup(this, this.mRequestedClients);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        this.mHelper.onStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.mHelper.onStop();
+    }
+
+    @Override
+    protected void onActivityResult(int request, int response, Intent data) {
+        super.onActivityResult(request, response, data);
+        this.mHelper.onActivityResult(request, response, data);
+    }
+
+    protected GamesClient getGamesClient() {
+        return this.mHelper.getGamesClient();
+    }
+
+    protected AppStateClient getAppStateClient() {
+        return this.mHelper.getAppStateClient();
+    }
+
+    protected PlusClient getPlusClient() {
+        return this.mHelper.getPlusClient();
+    }
+
+    protected boolean isSignedIn() {
+        return this.mHelper.isSignedIn();
+    }
+
+    protected void beginUserInitiatedSignIn() {
+        this.mHelper.beginUserInitiatedSignIn();
+    }
+
+    protected void signOut() {
+        this.mHelper.signOut();
+    }
+
+    protected void showAlert(String title, String message) {
+        this.mHelper.showAlert(title, message);
+    }
+
+    protected void showAlert(String message) {
+        this.mHelper.showAlert(message);
+    }
+
+    protected void enableDebugLog(boolean enabled, String tag) {
+        this.mHelper.enableDebugLog(enabled, tag);
+    }
+
+    protected String getInvitationId() {
+        return this.mHelper.getInvitationId();
+    }
+
+    protected void reconnectClients(int whichClients) {
+        this.mHelper.reconnectClients(whichClients);
+    }
+    
+
+    protected String getScopes() {
+        return this.mHelper.getScopes();
+    }
+
+    protected boolean hasSignInError() {
+        return this.mHelper.hasSignInError();
+    }
+
+    protected ConnectionResult getSignInError() {
+        return this.mHelper.getSignInError();
+    }
+
+    protected void setSignInMessages(String signingInMessage, String signingOutMessage) {
+        this.mHelper.setSigningInMessage(signingInMessage);
+        this.mHelper.setSigningOutMessage(signingOutMessage);
+    }
+	/**
+	 * Removes the reference to the activity from every view in a view hierarchy (listeners, images
+	 * etc.) in order to limit/eliminate memory leaks. This is a "fix" for memory problems on older
+	 * versions of Android; it may not be necessary on newer versions.
 	 * 
-	 * If used, this method should be called in the onDestroy() method of each
-	 * activity.
+	 * see http://code.google.com/p/android/issues/detail?id=8488
+	 * 
+	 * If used, this method should be called in the onDestroy() method of each activity.
 	 * 
 	 * @param viewID normally the id of the root layout
 	 */
@@ -81,13 +187,13 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 			View view = activity.findViewById(viewID);
 			if (view != null) {
 				unbindViewReferences(view);
-				if (view instanceof ViewGroup)
-					unbindViewGroupReferences((ViewGroup) view);
+				if (view instanceof ViewGroup) unbindViewGroupReferences((ViewGroup) view);
 			}
-		} catch (Throwable e) {
+		}
+		catch (Throwable e) {
 			// whatever exception is thrown just ignore it because a crash is
 			// likely to be worse than this method not doing what it's supposed to do
-            // e.printStackTrace();
+			// e.printStackTrace();
 		}
 		System.gc();
 	}
@@ -97,12 +203,12 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 		for (int i = 0; i < nrOfChildren; i++) {
 			View view = viewGroup.getChildAt(i);
 			unbindViewReferences(view);
-			if (view instanceof ViewGroup)
-				unbindViewGroupReferences((ViewGroup) view);
+			if (view instanceof ViewGroup) unbindViewGroupReferences((ViewGroup) view);
 		}
 		try {
 			viewGroup.removeAllViews();
-		} catch (Throwable mayHappen) {
+		}
+		catch (Throwable mayHappen) {
 			// AdapterViews, ListViews and potentially other ViewGroups don't
 			// support the removeAllViews operation
 		}
@@ -112,32 +218,38 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 		// set all listeners to null
 		try {
 			view.setOnClickListener(null);
-		} catch (Throwable mayHappen) {
+		}
+		catch (Throwable mayHappen) {
 			// NOOP - not supported by all views/versions
 		}
 		try {
 			view.setOnCreateContextMenuListener(null);
-		} catch (Throwable mayHappen) {
+		}
+		catch (Throwable mayHappen) {
 			// NOOP - not supported by all views/versions
 		}
 		try {
 			view.setOnFocusChangeListener(null);
-		} catch (Throwable mayHappen) {
+		}
+		catch (Throwable mayHappen) {
 			// NOOP - not supported by all views/versions
 		}
 		try {
 			view.setOnKeyListener(null);
-		} catch (Throwable mayHappen) {
+		}
+		catch (Throwable mayHappen) {
 			// NOOP - not supported by all views/versions
 		}
 		try {
 			view.setOnLongClickListener(null);
-		} catch (Throwable mayHappen) {
+		}
+		catch (Throwable mayHappen) {
 			// NOOP - not supported by all views/versions
 		}
 		try {
 			view.setOnClickListener(null);
-		} catch (Throwable mayHappen) {
+		}
+		catch (Throwable mayHappen) {
 			// NOOP - not supported by all views/versions
 		}
 		// set background to null
@@ -168,160 +280,21 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 			((WebView) view).destroy();
 		}
 	}
-	
+
 	/*
 	 * Show Heap
 	 */
 	@SuppressWarnings("rawtypes")
 	public static void logHeap(Class clazz) {
-	    DecimalFormat df = new DecimalFormat();
-	    df.setMaximumFractionDigits(2);
-	    df.setMinimumFractionDigits(2);
-	    Log.d(clazz.getName(), "DEBUG_MEMORY allocated " + df.format(Double.valueOf(Runtime.getRuntime().totalMemory()/1048576)) + "/" + df.format(Double.valueOf(Runtime.getRuntime().maxMemory()/1048576))+ "MB (" + df.format(Double.valueOf(Runtime.getRuntime().freeMemory()/1048576)) +"MB free)");
-	    System.gc();
-	    System.gc();
-	}
-
-	// User Interface Elements
-	private ProgressDialog progress_;
-
-	protected void showProgressIndicator(final int messageId) {
-		this.progress_ = ProgressDialog.show(this, null, getString(messageId));
-	}
-
-	protected void showProgressIndicator(final String message) {
-		this.progress_ = ProgressDialog.show(this, null, message);
-	}
-
-	public void hideProgressIndicator() {
-		this.progress_.hide();
-		this.progress_ = null;
-	}
-
-	public TextView getTextView(int resId) {
-		return (TextView) findViewById(resId);
-	}
-
-	public TextView setTextView(int resId, Typeface font) {
-		TextView t = (TextView) findViewById(resId);
-		if (t != null) {
-			t.setTypeface(font);
-			t.setOnClickListener(this);
-		}
-		return t;
-	}	
-	
-	protected EditText getEditText(int resId) {
-		return (EditText) findViewById(resId);
-	}
-
-	protected ImageView getImageView(int resId) {
-		return (ImageView) findViewById(resId);
-	}
-
-	protected ImageView setImageView(int resId, Bitmap img) {
-		if (img == null)
-			throw new IllegalArgumentException("setting image view " + resId
-					+ "with null bitmap");
-		ImageView v = (ImageView) findViewById(resId);
-		v.setImageBitmap(img);
-		return v;
-	}
-
-	protected CheckBox getCheckBox(int resId_) {
-		CheckBox b = (CheckBox) findViewById(resId_);
-		return b;
-	}
-
-	protected ImageButton getImageButton(int resId) {
-		return (ImageButton) findViewById(resId);
-	}
-
-	protected ImageButton setImageButton(int resId) {
-		ImageButton b = (ImageButton) findViewById(resId);
-		if (b != null) {
-			b.setOnClickListener(this);
-		}
-		return b;
-	}
-
-	protected ImageButton setImageButton(int resId, Bitmap img) {
-		if (img == null)
-			throw new IllegalArgumentException("setting image button " + resId
-					+ "with null bitmap");
-		ImageButton b = (ImageButton) findViewById(resId);
-		b.setOnClickListener(this);
-		b.setImageBitmap(img);
-		return b;
-	}
-
-	protected Button setButton(int resId) {
-		Button b = (Button) findViewById(resId);
-		if (b != null) {
-			b.setOnClickListener(this);
-		}
-		return b;
-	}
-
-	protected Button setButton(int resId, Typeface font) {
-		Button b = (Button) findViewById(resId);
-		if (b != null) {
-			if (font != null)
-				b.setTypeface(font);
-			b.setOnClickListener(this);
-		}
-		return b;
-	}
-
-	protected Button getButton(int resId) {
-		return (Button) findViewById(resId);
-	}
-
-	protected ToggleButton setToggleButton(int resId) {
-		ToggleButton b = (ToggleButton) findViewById(resId);
-		if (b != null) {
-			b.setOnClickListener(this);
-		}
-		return b;
-	}
-
-	protected ToggleButton getToggleButton(int resId) {
-		return (ToggleButton) findViewById(resId);
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+		df.setMinimumFractionDigits(2);
+		Log.d(clazz.getName(),
+						"DEBUG_MEMORY allocated " + df.format(Double.valueOf(Runtime.getRuntime().totalMemory() / 1048576)) + "/"
+										+ df.format(Double.valueOf(Runtime.getRuntime().maxMemory() / 1048576)) + "MB ("
+										+ df.format(Double.valueOf(Runtime.getRuntime().freeMemory() / 1048576)) + "MB free)");
+		System.gc();
+		System.gc();
 	}
 	
-	protected Spinner setSpinner(int resId, int arrId) {
-		Spinner s = (Spinner) findViewById(resId);
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-				this, arrId, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		s.setAdapter(adapter);
-		return s;
-	}
-
-	protected Spinner getSpinner(int resId) {
-		Spinner s = (Spinner) findViewById(resId);
-		return s;
-	}
-
-	protected ListView setListView(int resId, BaseAdapter adapter) {
-		ListView l = (ListView) findViewById(resId);
-		l.setAdapter(adapter);
-		return l;
-	}
-
-	protected RelativeLayout getRelativeLayout(int resId) {
-		RelativeLayout l = (RelativeLayout) findViewById(resId);
-		return l;
-	}
-
-	protected LinearLayout getLinearLayout(int resId) {
-		LinearLayout l = (LinearLayout) findViewById(resId);
-		return l;
-	}
-
-	protected ProgressBar getProgressBar(int resId) {
-		ProgressBar p = (ProgressBar) findViewById(resId);
-		return p;
-	}
-
 }

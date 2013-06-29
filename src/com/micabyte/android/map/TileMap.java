@@ -27,8 +27,8 @@ import com.micabyte.android.graphics.SurfaceRenderer.ViewPort;
  * @author micabyte
  */
 public abstract class TileMap extends BaseObject {
-    protected int mapWidth_;
-    protected int mapHeight_;
+    public static int mapWidth;
+    public static int mapHeight;
     protected TileMapZone[][] zones_;
     protected Rect tileRect_;
 
@@ -38,25 +38,17 @@ public abstract class TileMap extends BaseObject {
 
     public void setTileMap(Context c, TileMapZone[][] map) {
         this.zones_ = map;
-        this.mapHeight_ = map[0].length;
-        this.mapWidth_ = map.length;
+        TileMap.mapHeight = map[0].length;
+        TileMap.mapWidth = map.length;
         this.tileRect_ = new Rect(0, 0, map[0][0].getTileSize(c), map[0][0].getTileSize(c));
-    }
-
-    public int getHeight() {
-    	return this.mapHeight_;
-    }
-    
-    public int getWidth() {
-    	return this.mapWidth_;
     }
     
     public int getRenderHeight() {
-        return (this.mapHeight_ * this.tileRect_.height());
+        return (TileMap.mapHeight * this.tileRect_.height());
     }
 
     public int getRenderWidth() {
-        return (this.mapWidth_ * this.tileRect_.width());
+        return (TileMap.mapWidth * this.tileRect_.width());
     }
     
     public int getTileHeight() {
@@ -89,9 +81,9 @@ public abstract class TileMap extends BaseObject {
         int jMn = windowTop / tileSize;
         if (jMn < 0) jMn = 0;
         int iMx = (windowRight / tileSize) + 1;
-        if (iMx >= this.mapWidth_) iMx = this.mapWidth_;
+        if (iMx >= TileMap.mapWidth) iMx = TileMap.mapWidth;
         int jMx = (windowBottom / tileSize) + 1;
-        if (jMx >= this.mapHeight_) jMx = this.mapHeight_;
+        if (jMx >= TileMap.mapHeight) jMx = TileMap.mapHeight;
         // Draw Tiles
         for (int i = iMn; i < iMx; i++) {
             for (int j = jMn; j < jMx; j++) {

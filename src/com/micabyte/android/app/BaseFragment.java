@@ -196,9 +196,14 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return l;
     }
 
+	public abstract void updateFragment();
+    
     protected void error(String tag, String message) {
         Log.e(tag, message);
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
+    protected void debug(String tag, String message) {
+        Log.d(tag, message);
+    }
 }

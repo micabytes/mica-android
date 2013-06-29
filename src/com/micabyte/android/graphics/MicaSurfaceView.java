@@ -46,7 +46,8 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	private GestureDetector gesture_;
 	private ScaleGestureDetector scaleGesture_;
 	// Rendering Thread
-	private GameSurfaceViewThread thread_;
+	private GameSurfaceViewThread thread_ = null;
+	private Runnable threadEvent_ = null;
 
 	public MicaSurfaceView(Context context) {
 		super(context);
@@ -116,6 +117,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	public void surfaceCreated(SurfaceHolder holder) {
 		this.thread_ = new GameSurfaceViewThread(holder);
 		this.thread_.start();
+		this.thread_.setEvent(this.threadEvent_);
 		this.renderer_.start();
 		this.touch_.start();
 	}
@@ -157,7 +159,9 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 
 	// Set a Runnable to be run on the rendering thread.
 	public void setEvent(Runnable r) {
-		this.thread_.setEvent(r);
+		this.threadEvent_ = r;
+		if (this.thread_ != null)
+			this.thread_.setEvent(r);
 	}
 
 	// Clears the runnable event, if any, from the rendering thread.
