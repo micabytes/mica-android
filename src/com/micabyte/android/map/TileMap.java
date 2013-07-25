@@ -52,11 +52,11 @@ public abstract class TileMap extends BaseObject {
     }
     
     public int getTileHeight() {
-    	return this.tileRect_.width();
+    	return this.tileRect_.height();
     }
 
     public int getTileWidth() {
-    	return this.tileRect_.height();
+    	return this.tileRect_.width();
     }
     
     public void drawBase(Context c, ViewPort p, float scaleFactor) {
