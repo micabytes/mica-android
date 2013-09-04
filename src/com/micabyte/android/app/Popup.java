@@ -1,17 +1,18 @@
 package com.micabyte.android.app;
 
+import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
-import android.view.View.OnTouchListener;
-
 import android.widget.PopupWindow;
-import android.content.Context;
+
+import com.micabyte.android.game.R;
+import com.micabyte.android.graphics.ImageHandler;
 
 /**
  * Custom Popup Window
@@ -72,7 +73,7 @@ public class Popup {
 		if (this.rootView_ == null) throw new IllegalStateException("setContentView was not called with a view to display.");
 		onShow();
 		if (this.background_ == null)
-			this.window_.setBackgroundDrawable(new BitmapDrawable(this.context_.getResources()));
+			this.window_.setBackgroundDrawable(new BitmapDrawable(this.context_.getResources(), ImageHandler.getInstance(this.context_).get(R.drawable.ic_blank)));
 		else
 			this.window_.setBackgroundDrawable(this.background_);
 		this.window_.setWidth(LayoutParams.WRAP_CONTENT);
