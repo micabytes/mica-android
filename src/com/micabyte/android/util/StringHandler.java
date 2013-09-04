@@ -151,11 +151,11 @@ public class StringHandler {
 							ret = ret.replace(variable, ((BaseObject) obj).getName());
 						}
 						else {
-							ret = ret.replace(variable, "VariableTypeError:" + tokens[0].trim().toLowerCase(Locale.US));
+							ret = ret.replace(variable, "VariableTypeError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
 						}
 					}
 					else {
-						ret = ret.replace(variable, "VariableMissingError:" + tokens[0].trim().toLowerCase(Locale.US));
+						ret = ret.replace(variable, "VariableMissingError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
 					}
 				}
 				else {
@@ -169,7 +169,7 @@ public class StringHandler {
 						}
 					}
 					else {
-						ret = ret.replace(variable, "VariableMissingError:" + tokens[0].trim().toLowerCase(Locale.US));
+						ret = ret.replace(variable, "VariableMissingError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
 					}
 				}
 				start = ret.indexOf('$');
@@ -197,15 +197,19 @@ public class StringHandler {
 			return ret;
 		}
 		if (objs.size() == 2) {
-			ret = objs.get(0).getName() + c.getString(R.string.stringhandler_and1) + objs.get(1).getName();
+			ret = objs.get(0).getName() + " " + c.getString(R.string.stringhandler_and1) + " " + objs.get(1).getName();
 			return ret;
 		}
 		for (int i = 0; i<objs.size() - 1; i++) {
 			ret += objs.get(i).getName();
-			if (i < objs.size() - 2)
+			if (i < objs.size() - 2) {
 				ret +=  c.getString(R.string.stringhandler_comma);
-			else
+				ret += " ";
+			}
+			else {
 				ret +=  c.getString(R.string.stringhandler_and2);
+				ret += " ";
+			}
 		}
 		ret += objs.lastElement().getName();
 		return ret;
