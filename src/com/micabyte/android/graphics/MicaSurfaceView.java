@@ -65,14 +65,14 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	}
 
 	private void initialize(Context context) {
+		// This ensures that we don't get errors when using it in Eclipse layout editing
+		if (isInEditMode()) return;
 		// Set SurfaceHolder callback
 		getHolder().addCallback(this);
 		// Initialize touch handlers
 		this.touch_ = new TouchHandler(context);
 		this.gesture_ = new GestureDetector(context, this);
 		this.scaleGesture_ = new ScaleGestureDetector(context, new ScaleListener());
-		// This ensures that we don't get errors when using it in Eclipse layout editing
-		if (isInEditMode()) return;
 		// Allow focus
 		setFocusable(true);
 	}
