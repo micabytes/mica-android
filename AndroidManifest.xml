@@ -2,5 +2,5 @@
     package="com.micabyte.android.game" >
     <uses-sdk
         android:minSdkVersion="10"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 </manifest>
