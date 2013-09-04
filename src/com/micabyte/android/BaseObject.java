@@ -96,6 +96,16 @@ public abstract class BaseObject {
 		}
 	}
 
+	public boolean getBoolean(String id) {
+		switch (ValueToken.get(id)) {
+			case value:
+				if (getValue() > 0) return true;
+				return false;
+			default:
+				return false;
+		}
+	}
+
 	public int getInteger(String id) {
 		switch (ValueToken.get(id)) {
 			case value:
