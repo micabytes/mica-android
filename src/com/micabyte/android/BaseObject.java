@@ -31,25 +31,25 @@ public abstract class BaseObject {
     private String name_ = null;
     // Value of Object
     private int value_ = 0;
-    // Tag of Object
-    private String tag_ = null;
 
-    protected BaseObject(String id, String name) {
-        this.id_ = id;
-        this.name_ = name;
+    protected BaseObject() {
+    	// NOOP
     }
 
-    protected BaseObject(String id, String name, int v, String t) {
+    protected BaseObject(String id, String name, int v) {
         this.id_ = id;
         this.name_ = name;
         this.value_ = v;
-        this.tag_ = t;
     }
 
     public String getId() {
         return this.id_;
     }
 
+    public void setId(String s) {
+    	this.id_ = s;
+    }
+    
     public boolean equalsId(String id) {
         return this.id_.equalsIgnoreCase(id);
     }
@@ -68,14 +68,6 @@ public abstract class BaseObject {
 
     public void setValue(int v) {
         this.value_ = v;
-    }
-
-    public String getTag() {
-        return this.tag_;
-    }
-
-    public void setTag(String t) {
-        this.tag_ = t;
     }
 
     /*
@@ -128,8 +120,6 @@ public abstract class BaseObject {
 		switch (ValueToken.get(id)) {
 			case name:
 				return getName();
-			case tag:
-				return getTag();
 			default:
 				return StringHandler.get(c, R.string.default_error);
 		}

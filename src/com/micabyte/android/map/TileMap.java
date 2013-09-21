@@ -33,7 +33,7 @@ public abstract class TileMap extends BaseObject {
     protected Rect tileRect_;
 
     protected TileMap(String id, String name) {
-        super(id, name);
+        super(id, name, 0);
     }
 
     public void setTileMap(Context c, TileMapZone[][] map) {

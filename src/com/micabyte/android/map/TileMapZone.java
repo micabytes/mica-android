@@ -26,23 +26,20 @@ import com.micabyte.android.graphics.ImageHandler;
 * @author micabyte
 */
 public abstract class TileMapZone extends BaseObject {
-    // The image ID of the
-    private int baseBitmapId_ = 0;
 
     protected TileMapZone(String id, String name, int bmp) {
-        super(id, name);
-        this.baseBitmapId_ = bmp;
+        super(id, name, bmp);
     }
 
     /** Get the size of a tile */
     public int getTileSize(Context c) {
         // We assume that the width and height of the tile are identical; this should probably be checked
-        return ImageHandler.getInstance(c).get(this.baseBitmapId_).getWidth();
+        return ImageHandler.getInstance(c).get(getValue()).getWidth();
     }
 
     /** Draw the base bitmap of the tile on a canvas */
     public void drawBase(Context c, Canvas canvas, Rect tileRect, Rect destRect, Paint paint) {
-        canvas.drawBitmap(ImageHandler.getInstance(c).get(this.baseBitmapId_), tileRect, destRect, paint);
+        canvas.drawBitmap(ImageHandler.getInstance(c).get(getValue()), tileRect, destRect, paint);
     }
 
 

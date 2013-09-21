@@ -12,6 +12,10 @@
  */
 package com.micabyte.android.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Vector;
@@ -58,7 +62,7 @@ public class StringHandler {
 		int start, end;
 		String ret = text;
 		// Insert Line breaks
-		ret = ret.replace("\\n", System.getProperty("line.separator"));		
+		ret = ret.replace("\\n", System.getProperty("line.separator"));
 		// Handle random choice
 		start = ret.indexOf("[/");
 		while (start != NOTFOUND) {
@@ -200,14 +204,14 @@ public class StringHandler {
 			ret = objs.get(0).getName() + " " + c.getString(R.string.stringhandler_and1) + " " + objs.get(1).getName();
 			return ret;
 		}
-		for (int i = 0; i<objs.size() - 1; i++) {
+		for (int i = 0; i < objs.size() - 1; i++) {
 			ret += objs.get(i).getName();
 			if (i < objs.size() - 2) {
-				ret +=  c.getString(R.string.stringhandler_comma);
+				ret += c.getString(R.string.stringhandler_comma);
 				ret += " ";
 			}
 			else {
-				ret +=  c.getString(R.string.stringhandler_and2);
+				ret += c.getString(R.string.stringhandler_and2);
 				ret += " ";
 			}
 		}
@@ -226,22 +230,22 @@ public class StringHandler {
 			ret = objs.get(0) + c.getString(R.string.stringhandler_and1) + objs.get(1);
 			return ret;
 		}
-		for (int i = 0; i<objs.size() - 1; i++) {
+		for (int i = 0; i < objs.size() - 1; i++) {
 			ret += objs.get(i);
 			if (i < objs.size() - 2)
-				ret +=  c.getString(R.string.stringhandler_comma);
+				ret += c.getString(R.string.stringhandler_comma);
 			else
-				ret +=  c.getString(R.string.stringhandler_and2);
+				ret += c.getString(R.string.stringhandler_and2);
 		}
 		ret += objs.lastElement();
 		return ret;
 	}
-	
+
 	public static String signedString(int i) {
 		if (i < 0) return Integer.toString(i);
 		return "+" + Integer.toString(i);
 	}
-	
+
 	public static String get(Context c, int id) {
 		return format(c, c.getString(id), null);
 	}
@@ -254,4 +258,27 @@ public class StringHandler {
 		return format(c, c.getString(id, args), variables);
 	}
 
+	public static String getString(InputStream is) {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuilder sb = new StringBuilder();
+
+		String line = null;
+		try {
+			while ((line = reader.readLine()) != null) {
+				sb.append(line + "\n");
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				is.close();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return sb.toString();
+	}
 }
