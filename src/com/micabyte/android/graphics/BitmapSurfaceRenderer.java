@@ -88,10 +88,13 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
 	public void setBitmap(InputStream inputStream) throws IOException {
 		BitmapFactory.Options opt = new BitmapFactory.Options();
 		this.decoder_ = BitmapRegionDecoder.newInstance(inputStream, false);
+		inputStream.reset();
 		// Grab the bounds of the background bitmap
 		opt.inPreferredConfig = DEFAULT_CONFIG;
 		opt.inJustDecodeBounds = true;
+		if (BuildConfig.DEBUG) Log.d(TAG, "Decode inputStream for Background Bitmap");
 		BitmapFactory.decodeStream(inputStream, null, opt);
+		inputStream.reset();
 		this.backgroundSize_.set(opt.outWidth, opt.outHeight);
 		if (BuildConfig.DEBUG) Log.i(TAG, "Background Image: w=" + opt.outWidth + " h=" + opt.outHeight);
 		// Create the low resolution background
