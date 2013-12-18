@@ -146,7 +146,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return b;
     }
 
-    protected ToggleButton getToggleButton(int resId) {
+    public ToggleButton getToggleButton(int resId) {
         return (ToggleButton) getView().findViewById(resId);
     }
 
@@ -163,6 +163,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     protected Spinner getSpinner(int resId) {
         Spinner s = (Spinner) getView().findViewById(resId);
         return s;
+    }
+
+    protected ListView getListView(int resId) {
+        ListView l = (ListView) getView().findViewById(resId);
+        return l;
     }
 
     protected ListView setListView(int resId, BaseAdapter adapter) {
@@ -186,7 +191,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return p;
     }
 
-    protected SeekBar getSeekBar(int resId) {
+    public SeekBar getSeekBar(int resId) {
         SeekBar p = (SeekBar) getView().findViewById(resId);
         return p;
     }

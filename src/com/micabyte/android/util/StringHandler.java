@@ -33,7 +33,7 @@ import com.micabyte.android.game.R;
  */
 public class StringHandler {
 	private final static int NOTFOUND = -1;
-	private final static String punctuation = new String("(),;.!?");
+	private final static String punctuation = new String("(),;.!?\"");
 
 	/**
 	 * This is the workhorse function of the class. It takes a string and strips out the formatting
@@ -89,7 +89,7 @@ public class StringHandler {
 				String nStr = tokens[0];
 				int nInt = 0;
 				try {
-					nInt = Integer.parseInt(nStr);
+					nInt = Integer.parseInt(nStr.trim());
 				}
 				catch (NumberFormatException e) {
 					if (variables != null) {

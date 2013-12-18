@@ -149,8 +149,11 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		this.renderer_.setViewPosition(p.x, p.y);
 		// Debug
 		if (BuildConfig.DEBUG) Log.d(TAG, "surfaceChanged; new dimensions: w=" + w + ", h= " + h);
+		// Required to ensure thread has focus
+		if (this.thread_ != null)
+			this.thread_.onWindowFocusChanged(true);
 	}
-
+	
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);

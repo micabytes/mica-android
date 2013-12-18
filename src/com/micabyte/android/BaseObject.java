@@ -124,5 +124,10 @@ public abstract class BaseObject {
 				return StringHandler.get(c, R.string.default_error);
 		}
 	}
+	
+	@SuppressWarnings("static-method")
+	public BaseObject getObject(String id) {
+		return null;
+	}
 
 }
