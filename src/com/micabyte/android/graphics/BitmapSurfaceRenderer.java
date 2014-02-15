@@ -111,15 +111,20 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
 	}
 
 	@Override
-	protected void drawBase(ViewPort p) {
-		this.cachedBitmap_.draw(p);
+	protected void drawBase() {
+		this.cachedBitmap_.draw(this.viewPort_);
 	}
 
 	@Override
-	protected void drawLayer(ViewPort p) {
+	protected void drawLayer() {
 		// NOOP - override function and add game specific code
 	}
 
+	@Override
+	protected void drawFinal() {
+		// NOOP - override function and add game specific code
+	}
+	
 	/** Starts the renderer */
 	@Override
 	public void start() {
@@ -143,246 +148,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
 		this.cachedBitmap_.invalidate();
 	}
 
-	/** The current state of the cached bitmap */
-	private enum CacheState {
-		READY, NOT_INITIALIZED, IS_INITIALIZED, BEGIN_UPDATE, IS_UPDATING, DISABLED
-	}
 
-	/**
-	 * The cached bitmap object. This object is continually kept up to date by CacheThread. If the
-	 * object is locked, the background is updated using the low resolution background image instead
-	 */
-	private class CacheBitmap {
-		/** The current state of the cache */
-		private CacheState state_ = CacheState.NOT_INITIALIZED;
-		/** The current position and dimensions of the cache within the background image */
-		final Rect cacheWindow_ = new Rect();
-		/** The currently cached bitmap */
-		Bitmap bitmap_ = null;
-		/** The cache bitmap loading thread */
-		private CacheThread cacheThread_;
-
-		public CacheBitmap() {
-			super();
-		}
-
-		CacheState getState() {
-			return this.state_;
-		}
-
-		void setState(CacheState newState) {
-			this.state_ = newState;
-		}
-
-		void start() {
-			if (this.cacheThread_ != null) stop();
-			this.cacheThread_ = new CacheThread(this);
-			this.cacheThread_.start();
-		}
-
-		void stop() {
-			this.cacheThread_.done();
-			this.cacheThread_.interrupt();
-			boolean done = false;
-			while (!done) {
-				try {
-					this.cacheThread_.join();
-					done = true;
-				}
-				catch (InterruptedException e) {
-					// Wait until thread is dead
-				}
-			}
-			this.cacheThread_ = null;
-		}
-
-		public void suspend(boolean suspend) {
-			// Suspends or resume the cache thread.
-			if (suspend) {
-				synchronized (this) {
-					setState(CacheState.DISABLED);
-				}
-			}
-			else {
-				if (getState() == CacheState.DISABLED) {
-					synchronized (this) {
-						setState(CacheState.IS_INITIALIZED);
-					}
-				}
-			}
-		}
-
-		void invalidate() {
-			synchronized (this) {
-				setState(CacheState.IS_INITIALIZED);
-				this.cacheThread_.interrupt();
-			}
-		}
-
-		/** Draw the CacheBitmap on the viewport */
-		void draw(ViewPort p) {
-			Bitmap bitmap = null;
-			synchronized (this) {
-				switch (getState()) {
-					case NOT_INITIALIZED:
-						// Error
-						Log.e(TAG, "Attempting to update an unitialized CacheBitmap");
-						return;
-					case IS_INITIALIZED:
-						// Start data caching
-						setState(CacheState.BEGIN_UPDATE);
-						this.cacheThread_.interrupt();
-						break;
-					case BEGIN_UPDATE:
-					case IS_UPDATING:
-						// Currently updating; low resolution version used
-						break;
-					case DISABLED:
-						// Use of high resolution version disabled
-						break;
-					case READY:
-						if (this.bitmap_ == null) {
-							// No data loaded
-							setState(CacheState.BEGIN_UPDATE);
-							this.cacheThread_.interrupt();
-						}
-						else if (!this.cacheWindow_.contains(p.getScaledViewPort())) {
-							// No cached data available
-							setState(CacheState.BEGIN_UPDATE);
-							this.cacheThread_.interrupt();
-						}
-						else {
-							bitmap = this.bitmap_;
-						}
-						break;
-				}
-			}
-			// Use the low resolution version if the cache is empty or scale factor is < threshold
-			if ((bitmap == null) || (BitmapSurfaceRenderer.this.scaleFactor_ < BitmapSurfaceRenderer.this.lowResThreshold_))
-				drawLowResolution(p);
-			else
-				drawHighResolution(bitmap, p);
-		}
-
-		/** Used to hold the source Rect for bitmap drawing */
-		private final Rect srcRect_ = new Rect();
-
-		/** Use the high resolution cached bitmap for drawing */
-		void drawHighResolution(Bitmap bitmap, ViewPort p) {
-			Rect wSize = p.getScaledViewPort();
-			if (bitmap != null) {
-				synchronized (p) {
-					int left = wSize.left - this.cacheWindow_.left;
-					int top = wSize.top - this.cacheWindow_.top;
-					int right = left + wSize.width();
-					int bottom = top + wSize.height();
-					this.srcRect_.set(left, top, right, bottom);
-					Canvas canvas = new Canvas(p.bitmap_);
-					canvas.drawBitmap(bitmap, this.srcRect_, p.getViewPortSize(), null);
-				}
-			}
-		}
-
-		void drawLowResolution(ViewPort p) {
-			if (getState() != CacheState.NOT_INITIALIZED) {
-				synchronized (p) {
-					drawLowResolutionBackground(p.bitmap_, p.getScaledViewPort());
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * This thread handles the background loading of the {@link CacheBitmap}.
-	 * 
-	 * The CacheThread starts an update when the {@link CacheBitmap#state_} is
-	 * {@link CacheState#BEGIN_UPDATE} and updates the bitmap given the current window.
-	 * 
-	 * The CacheThread needs to be careful how it locks {@link CacheBitmap} in order to ensure the
-	 * smoothest possible performance (loading can take a while).
-	 */
-	class CacheThread extends Thread {
-		private boolean isDone_ = false;
-		// The CacheBitmap
-		private final CacheBitmap cache_;
-
-		CacheThread(CacheBitmap cache) {
-			setName("CacheThread");
-			this.cache_ = cache;
-		}
-
-		@Override
-		public void run() {
-			final Rect viewportRect = new Rect(0, 0, 0, 0);
-			while (!this.isDone_) {
-				// Wait until we are ready to go
-				while ((!this.isDone_) && (this.cache_.getState() != CacheState.BEGIN_UPDATE)) {
-					try {
-						Thread.sleep(Integer.MAX_VALUE);
-					}
-					catch (InterruptedException e) {
-						// NOOP
-					}
-				}
-				if (this.isDone_) return;
-				// Start Loading Timer
-				long startTime = System.currentTimeMillis();
-				// Load Data
-				boolean continueLoading = false;
-				synchronized (this.cache_) {
-					if (this.cache_.getState() == CacheState.BEGIN_UPDATE) {
-						this.cache_.setState(CacheState.IS_UPDATING);
-						this.cache_.bitmap_ = null;
-						continueLoading = true;
-					}
-				}
-				if (continueLoading) {
-					synchronized (BitmapSurfaceRenderer.this.viewPort_) {
-						viewportRect.set(BitmapSurfaceRenderer.this.viewPort_.getUnScaledViewPort());
-					}
-					synchronized (this.cache_) {
-						if (this.cache_.getState() == CacheState.IS_UPDATING)
-							this.cache_.cacheWindow_.set(calculateCacheDimensions(viewportRect));
-						else
-							continueLoading = false;
-					}
-					if (continueLoading) {
-						try {
-							Bitmap bitmap = loadCachedBitmap(this.cache_.cacheWindow_);
-							synchronized (this.cache_) {
-								if (this.cache_.getState() == CacheState.IS_UPDATING) {
-									this.cache_.bitmap_ = bitmap;
-									this.cache_.setState(CacheState.READY);
-								}
-								else {
-									Log.w(TAG, "Loading of background image cache aborted");
-								}
-							}
-							// End Loading Timer
-							long endTime = System.currentTimeMillis();
-							if (BuildConfig.DEBUG) Log.d(TAG, "Loaded background image in " + (endTime - startTime) + "ms");
-						}
-						catch (OutOfMemoryError e) {
-							Log.d(TAG, "CacheThread out of memory");
-							// Out of memory error detected. Lower the memory allocation
-							synchronized (this.cache_) {
-								cacheBitmapOutOfMemoryError(e);
-								if (this.cache_.getState() == CacheState.IS_UPDATING) {
-									this.cache_.setState(CacheState.BEGIN_UPDATE);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		public void done() {
-			this.isDone_ = true;
-		}
-
-	}
 
 	/**
 	 * Loads the relevant slice of the background bitmap that needs to be kept in memory.
@@ -486,5 +252,263 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
 		if (BuildConfig.DEBUG) Log.d(TAG, "new cache.originRect = " + this.calculatedCacheWindowRect.toShortString() + " size=" + sz.toString());
 		return this.calculatedCacheWindowRect;
 	}
+	
+	
+	
+	
 
+	/** The current state of the cached bitmap */
+	private enum CacheState {
+		READY, NOT_INITIALIZED, IS_INITIALIZED, BEGIN_UPDATE, IS_UPDATING, DISABLED
+	}
+
+	/**
+	 * The cached bitmap object. This object is continually kept up to date by CacheThread. If the
+	 * object is locked, the background is updated using the low resolution background image instead
+	 */
+	private class CacheBitmap {
+		/** The current position and dimensions of the cache within the background image */
+		final Rect cacheWindow_ = new Rect(0,0,0,0);
+		/** The current state of the cache */
+		private CacheState state_ = CacheState.NOT_INITIALIZED;
+		/** The currently cached bitmap */
+		Bitmap bitmap_ = null;
+		/** The cache bitmap loading thread */
+		private CacheThread cacheThread_;
+
+		public CacheBitmap() {
+			super();
+		}
+
+		CacheState getState() {
+			return this.state_;
+		}
+
+		void setState(CacheState newState) {
+			this.state_ = newState;
+		}
+
+		void start() {
+			if (this.cacheThread_ != null) {
+				this.cacheThread_.setRunning(false);
+				this.cacheThread_.interrupt();
+				this.cacheThread_ = null;
+			}
+			this.cacheThread_ = new CacheThread(this);
+			this.cacheThread_.setName("cacheThread");
+			this.cacheThread_.start();
+		}
+
+		void stop() {
+			this.cacheThread_.setRunning(false);
+			this.cacheThread_.interrupt();
+			boolean retry = true;
+			while (retry) {
+				try {
+					this.cacheThread_.join();
+					retry = false;
+				}
+				catch (InterruptedException e) {
+					// Wait until thread is dead
+				}
+			}
+			this.cacheThread_ = null;
+		}
+
+		void invalidate() {
+			synchronized(this) {
+				setState(CacheState.IS_INITIALIZED);
+				this.cacheThread_.interrupt();
+			}
+		}
+		
+		public void suspend(boolean suspend) {
+			// Suspends or resume the cache thread.
+			if (suspend) {
+				synchronized (this) {
+					setState(CacheState.DISABLED);
+				}
+			}
+			else {
+				if (getState() == CacheState.DISABLED) {
+					synchronized (this) {
+						setState(CacheState.IS_INITIALIZED);
+					}
+				}
+			}
+		}
+
+		/** Draw the CacheBitmap on the viewport */
+		void draw(ViewPort p) {
+			Bitmap bitmap = null;
+			synchronized (this) {
+				switch (getState()) {
+					case NOT_INITIALIZED:
+						// Error
+						Log.e(TAG, "Attempting to update an unitialized CacheBitmap");
+						return;
+					case IS_INITIALIZED:
+						// Start data caching
+						setState(CacheState.BEGIN_UPDATE);
+						this.cacheThread_.interrupt();
+						break;
+					case BEGIN_UPDATE:
+					case IS_UPDATING:
+						// Currently updating; low resolution version used
+						break;
+					case DISABLED:
+						// Use of high resolution version disabled
+						break;
+					case READY:
+						if (this.bitmap_ == null) {
+							// No data loaded
+							setState(CacheState.BEGIN_UPDATE);
+							this.cacheThread_.interrupt();
+						}
+						else if (!this.cacheWindow_.contains(p.window)) {
+							// No cached data available
+							setState(CacheState.BEGIN_UPDATE);
+							this.cacheThread_.interrupt();
+						}
+						else {
+							bitmap = this.bitmap_;
+						}
+						break;
+				}
+			}
+			// Use the low resolution version if the cache is empty or scale factor is < threshold
+			if (bitmap == null) //|| (BitmapSurfaceRenderer.this.scaleFactor_ < BitmapSurfaceRenderer.this.lowResThreshold_))
+				drawLowResolution(p);
+			else
+				drawHighResolution(bitmap, p);
+		}
+
+		/** Used to hold the source Rect for bitmap drawing */
+		private final Rect srcRect_ = new Rect( 0, 0, 0, 0 );
+		/** Used to hold the dest Rect for bitmap drawing */
+		private final Rect dstRect_ = new Rect( 0, 0, 0, 0 );
+		private final Point dstSize_ = new Point();
+		
+		/** Use the high resolution cached bitmap for drawing */
+		void drawHighResolution(Bitmap bitmap, ViewPort p) {
+			Rect wSize = p.window;
+			if (bitmap != null) {
+				synchronized (p) {
+					int left = wSize.left - this.cacheWindow_.left;
+					int top = wSize.top - this.cacheWindow_.top;
+					int right = left + wSize.width();
+					int bottom = top + wSize.height();
+					p.getPhysicalSize(this.dstSize_);
+					this.srcRect_.set(left, top, right, bottom);
+					this.dstRect_.set( 0, 0, this.dstSize_.x, this.dstSize_.y );
+					Canvas canvas = new Canvas(p.bitmap_);
+					canvas.drawBitmap(bitmap, this.srcRect_, this.dstRect_, null);
+				}
+			}
+		}
+
+		void drawLowResolution(ViewPort p) {
+			if (getState() != CacheState.NOT_INITIALIZED) {
+				synchronized (p) {
+					drawLowResolutionBackground(p.bitmap_, p.window);
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * This thread handles the background loading of the {@link CacheBitmap}.
+	 * 
+	 * The CacheThread starts an update when the {@link CacheBitmap#state_} is
+	 * {@link CacheState#BEGIN_UPDATE} and updates the bitmap given the current window.
+	 * 
+	 * The CacheThread needs to be careful how it locks {@link CacheBitmap} in order to ensure the
+	 * smoothest possible performance (loading can take a while).
+	 */
+	class CacheThread extends Thread {
+		private boolean isRunning_ = false;
+		// The CacheBitmap
+		private final CacheBitmap cache_;
+
+		CacheThread(CacheBitmap cache) {
+			setName("CacheThread");
+			this.cache_ = cache;
+		}
+
+		@Override
+		public void run() {
+			this.isRunning_ = true;
+			Rect viewportRect = new Rect(0, 0, 0, 0);
+			while (this.isRunning_) {
+				// Wait until we are ready to go
+				while (this.isRunning_ && this.cache_.getState() != CacheState.BEGIN_UPDATE) {
+					try {
+						Thread.sleep(Integer.MAX_VALUE);
+					}
+					catch (InterruptedException e) {
+						// NOOP
+					}
+				}
+				if (!this.isRunning_) return;
+				// Start Loading Timer
+				long startTime = System.currentTimeMillis();
+				// Load Data
+				boolean continueLoading = false;
+				synchronized (this.cache_) {
+					if (this.cache_.getState() == CacheState.BEGIN_UPDATE) {
+						this.cache_.setState(CacheState.IS_UPDATING);
+						this.cache_.bitmap_ = null;
+						continueLoading = true;
+					}
+				}
+				if (continueLoading) {
+					synchronized (BitmapSurfaceRenderer.this.viewPort_) {
+						viewportRect.set(BitmapSurfaceRenderer.this.viewPort_.window);
+					}
+					synchronized (this.cache_) {
+						if (this.cache_.getState() == CacheState.IS_UPDATING)
+							this.cache_.cacheWindow_.set(calculateCacheDimensions(viewportRect));
+						else
+							continueLoading = false;
+					}
+					if (continueLoading) {
+						try {
+							Bitmap bitmap = loadCachedBitmap(this.cache_.cacheWindow_);
+							if (bitmap != null) {
+								synchronized (this.cache_) {
+									if (this.cache_.getState() == CacheState.IS_UPDATING) {
+										this.cache_.bitmap_ = bitmap;
+										this.cache_.setState(CacheState.READY);
+									}
+									else {
+										Log.w(TAG, "Loading of background image cache aborted");
+									}
+								}
+							}
+							// End Loading Timer
+							long endTime = System.currentTimeMillis();
+							if (BuildConfig.DEBUG) Log.d(TAG, "Loaded background image in " + (endTime - startTime) + "ms");
+						}
+						catch (OutOfMemoryError e) {
+							Log.d(TAG, "CacheThread out of memory");
+							// Out of memory error detected. Lower the memory allocation
+							synchronized (this.cache_) {
+								cacheBitmapOutOfMemoryError(e);
+								if (this.cache_.getState() == CacheState.IS_UPDATING) {
+									this.cache_.setState(CacheState.BEGIN_UPDATE);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		public void setRunning(boolean b) {
+			this.isRunning_ = b;
+		}
+
+	}
+	
 }

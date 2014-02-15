@@ -132,6 +132,14 @@ public class ImageHandler {
         return output;
     }
 
+    public BitmapFactory.Options getDimensions(int key) {
+    	BitmapFactory.Options opt = new BitmapFactory.Options();
+    	opt.inPreferredConfig = BitmapSurfaceRenderer.DEFAULT_CONFIG;
+    	opt.inJustDecodeBounds = true;
+    	BitmapFactory.decodeResource(this.resources_, key, opt);
+    	return opt;
+    }
+    
     // Instance Code
     private static ImageHandler instance_ = null;
 

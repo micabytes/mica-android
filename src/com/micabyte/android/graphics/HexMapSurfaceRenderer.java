@@ -14,24 +14,24 @@ package com.micabyte.android.graphics;
 
 import android.content.Context;
 
-import com.micabyte.android.map.TileMap;
+import com.micabyte.android.map.HexMap;
 
 /**
  * GameSurfaceRendererGameSurfaceTileMap is a renderer that handles the rendering of a GameSurfaceTiled (square) map to
  * the screen. The game should subclass the renderer and extend the drawing methods to add other
  * game elements.
  */
-public class TileMapSurfaceRenderer extends SurfaceRenderer {
-    public static final String TAG = TileMapSurfaceRenderer.class.getName();
+public class HexMapSurfaceRenderer extends SurfaceRenderer {
+    public static final String TAG = HexMapSurfaceRenderer.class.getName();
     // The low resolution version of the background image
-    private TileMap GameSurfaceTileMap_ = null;
+    private HexMap GameSurfaceTileMap_ = null;
 
-    public TileMapSurfaceRenderer(Context c) {
+    public HexMapSurfaceRenderer(Context c) {
         super(c);
     }
 
     /** Set the TileMap */
-    public void setTileMap(TileMap map)  {
+    public void setTileMap(HexMap map)  {
         this.GameSurfaceTileMap_ = map;
         this.backgroundSize_.set(this.GameSurfaceTileMap_.getRenderWidth(), this.GameSurfaceTileMap_.getRenderHeight());
     }

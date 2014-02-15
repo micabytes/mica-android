@@ -15,6 +15,7 @@ package com.micabyte.android.graphics;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -42,25 +43,30 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	/** The Game Renderer. This handles all of the drawing duties to the Surface view */
 	protected SurfaceRenderer renderer_ = null;
 	// The Touch Handlers
-	private TouchHandler touch_;
+	private final TouchHandler touch_;
 	private GestureDetector gesture_;
 	private ScaleGestureDetector scaleGesture_;
+	long lastScaleTime_ = 0;
+    private long SCALE_MOVE_GUARD = 500; // milliseconds after scale to ignore move events
 	// Rendering Thread
 	private GameSurfaceViewThread thread_ = null;
-	private Runnable threadEvent_ = null;
+	//private Runnable threadEvent_ = null;
 
 	public MicaSurfaceView(Context context) {
 		super(context);
+		this.touch_ = new TouchHandler(context);
 		initialize(context);
 	}
 
 	public MicaSurfaceView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		this.touch_ = new TouchHandler(context);
 		initialize(context);
 	}
 
 	public MicaSurfaceView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		this.touch_ = new TouchHandler(context);
 		initialize(context);
 	}
 
@@ -70,7 +76,6 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		// Set SurfaceHolder callback
 		getHolder().addCallback(this);
 		// Initialize touch handlers
-		this.touch_ = new TouchHandler(context);
 		this.gesture_ = new GestureDetector(context, this);
 		this.scaleGesture_ = new ScaleGestureDetector(context, new ScaleListener());
 		// Allow focus
@@ -87,7 +92,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		this.renderer_ = r;
 	}
 
-	/** Return the position of the current view (center) */
+	// Return the position of the current view (center)
 	public Point getViewPosition() {
 		Point ret = new Point();
 		this.renderer_.getViewPosition(ret);
@@ -99,25 +104,35 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	}
 
 	public void centerViewPosition() {
-		Point backgroundSize = this.renderer_.getBackgroundSize();
-		int x = backgroundSize.x / 2;
-		int y = backgroundSize.y / 2;
-		this.renderer_.setViewPosition(x, y);
+        Point viewportSize = new Point();
+        Point sceneSize = this.renderer_.getBackgroundSize();
+        this.renderer_.getViewSize(viewportSize);
+
+        int x = (sceneSize.x - viewportSize.x) / 2;
+        int y = (sceneSize.y - viewportSize.y) / 2;
+        this.renderer_.setViewPosition(x, y);
 	}
 
-	public float getScaleFactor() {
-		return this.renderer_.getScaleFactor();
+	public Point getViewSize() {
+		Point ret = new Point();
+		this.renderer_.getViewPosition(ret);
+		return ret;
 	}
 
-	public void setScaleFactor(float s) {
-		this.renderer_.setScaleFactor(s);
+	public float getZoom() {
+		return this.renderer_.getZoom();
+	}
+
+	public void setZoom(float z, PointF center) {
+		this.renderer_.zoom(z, center);
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		this.thread_ = new GameSurfaceViewThread(holder);
+		this.thread_.setName("drawThread");
+		this.thread_.setRunning(true);
 		this.thread_.start();
-		this.thread_.setEvent(this.threadEvent_);
 		this.renderer_.start();
 		this.touch_.start();
 	}
@@ -126,12 +141,13 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		this.touch_.stop();
 		this.renderer_.stop();
+		this.thread_.setRunning(false);
 		this.thread_.surfaceDestroyed();
-		boolean done = true;
-		while (!done) {
+		boolean retry = true;
+		while (retry) {
 			try {
 				this.thread_.join();
-				done = true;
+				retry = false;
 			}
 			catch (InterruptedException e) {
 				// Repeat until success
@@ -143,10 +159,10 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
 		this.renderer_.setView(w, h);
 		// Recheck scale factor and reset position to prevent out of bounds
-		this.renderer_.setScaleFactor(this.renderer_.getScaleFactor());
-		Point p = new Point();
-		this.renderer_.getViewPosition(p);
-		this.renderer_.setViewPosition(p.x, p.y);
+		//this.renderer_.setScaleFactor(this.renderer_.getScaleFactor());
+		//Point p = new Point();
+		//this.renderer_.getViewPosition(p);
+		//this.renderer_.setViewPosition(p.x, p.y);
 		// Debug
 		if (BuildConfig.DEBUG) Log.d(TAG, "surfaceChanged; new dimensions: w=" + w + ", h= " + h);
 		// Required to ensure thread has focus
@@ -161,16 +177,16 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	}
 
 	// Set a Runnable to be run on the rendering thread.
-	public void setEvent(Runnable r) {
+	/*public void setEvent(Runnable r) {
 		this.threadEvent_ = r;
 		if (this.thread_ != null)
 			this.thread_.setEvent(r);
-	}
+	}*/
 
 	// Clears the runnable event, if any, from the rendering thread.
-	public void clearEvent() {
+	/*public void clearEvent() {
 		this.thread_.clearEvent();
-	}
+	}*/
 
 	// ----------------------------------------------------------------------
 
@@ -178,7 +194,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	class GameSurfaceViewThread extends Thread {
 		private final SurfaceHolder surfaceHolder_;
 		private Runnable event_ = null;
-		private boolean isDone_ = false;
+		private boolean running_ = false;
 		private boolean hasFocus_ = false;
 
 		public GameSurfaceViewThread(SurfaceHolder surfaceHolder) {
@@ -186,11 +202,15 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 			this.surfaceHolder_ = surfaceHolder;
 		}
 
+		public void setRunning(boolean b) {
+			this.running_ = b;
+		}
+
 		@Override
 		public void run() {
 			Canvas canvas;
 			// This is the rendering loop; it goes until asked to quit.
-			while (!this.isDone_) {
+			while (this.running_) {
 				// CPU timeout - help keep things cool
 				try {
 					Thread.sleep(5);
@@ -245,7 +265,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 
 		public void surfaceDestroyed() {
 			synchronized (this) {
-				this.isDone_ = true;
+				this.running_ = false;
 			}
 		}
 
@@ -275,21 +295,18 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		// Calculate actual event_ position in background view
 		Point c = new Point();
 		this.renderer_.getViewPosition(c);
-		Point b = new Point();
-		this.renderer_.getViewSize(b);
-		float s = this.renderer_.getScaleFactor();
-		int x = (int) (c.x - (((b.x / 2) - event.getX()) / s));
-		int y = (int) (c.y - (((b.y / 2) - event.getY()) / s));
+		float s = this.renderer_.getZoom();
+		int x = (int) (c.x + (event.getX() * s));
+		int y = (int) (c.y + (event.getY() * s));
 		// Resolve events
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 			case MotionEvent.ACTION_DOWN:
 				this.listener_.onTouchDown(x, y);
 				return this.touch_.down(event);
 			case MotionEvent.ACTION_MOVE:
-				if (!this.scaleGesture_.isInProgress()) {
-					return this.touch_.move(event);
-				}
-				break;
+				if (this.scaleGesture_.isInProgress() || System.currentTimeMillis()-this.lastScaleTime_<this.SCALE_MOVE_GUARD)
+					break;
+				return this.touch_.move(event);
 			case MotionEvent.ACTION_UP:
 				this.listener_.onTouchUp(x, y);
 				return this.touch_.up(event);
@@ -336,16 +353,26 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	 * Scale Listener Used to change the scale factor on the GameSurfaceRenderer
 	 */
 	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-		public ScaleListener() {
+        private PointF screenFocus = new PointF();
+
+        public ScaleListener() {
 			super();
 		}
 
 		@Override
 		public boolean onScale(ScaleGestureDetector detector) {
-			MicaSurfaceView.this.renderer_.changeScaleFactor(detector.getScaleFactor());
-			MicaSurfaceView.this.invalidate();
-			return true;
-		}
+            float scaleFactor = detector.getScaleFactor();
+            if (scaleFactor!=0f && scaleFactor!=1.0f){
+                scaleFactor = 1/scaleFactor;
+                this.screenFocus.set(detector.getFocusX(),detector.getFocusY());
+                MicaSurfaceView.this.renderer_.zoom(
+                        scaleFactor,
+                        this.screenFocus);
+                invalidate();
+            }
+            MicaSurfaceView.this.lastScaleTime_ = System.currentTimeMillis();
+            return true;
+ 		}
 	}
 
 	enum TouchState {
@@ -361,6 +388,10 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		private final Point viewCenterAtDown_ = new Point(0, 0);
 		// View Center onFling
 		private final Point viewCenterAtFling_ = new Point();
+		// View Center onFling
+		private final Point viewSizeAtFling_ = new Point();
+		// View Center onFling
+		private Point backgroundSizeAtFling_ = new Point();
 		// Scroller
 		final Scroller scroller_;
 		// Thread for handling
@@ -372,11 +403,12 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 
 		void start() {
 			this.touchThread_ = new TouchHandlerThread(this);
+			this.touchThread_.setName("touchThread");
 			this.touchThread_.start();
 		}
 
 		void stop() {
-			this.touchThread_.done();
+			this.touchThread_.isRunning_ = false;
 			this.touchThread_.interrupt();
 			boolean retry = true;
 			while (retry) {
@@ -398,12 +430,11 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 			// Get position
 			synchronized (this) {
 				this.state_ = TouchState.IN_TOUCH;
-				Point p = new Point();
-				MicaSurfaceView.this.renderer_.getViewPosition(p);
 				this.touchDown_.x = (int) event.getX();
 				this.touchDown_.y = (int) event.getY();
-				this.viewCenterAtDown_.x = p.x;
-				this.viewCenterAtDown_.y = p.y;
+				Point p = new Point();
+				MicaSurfaceView.this.renderer_.getViewPosition(p);
+				this.viewCenterAtDown_.set(p.x, p.y);
 			}
 			return true;
 		}
@@ -411,9 +442,12 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		/** Handle a move event_ */
 		boolean move(MotionEvent event) {
 			if (this.state_ == TouchState.IN_TOUCH) {
-				int deltaX = (int) (event.getX() - this.touchDown_.x);
-				int deltaY = (int) (event.getY() - this.touchDown_.y);
-				MicaSurfaceView.this.renderer_.moveViewPosition(this.viewCenterAtDown_.x, this.viewCenterAtDown_.y, deltaX, deltaY);
+				float zoom = MicaSurfaceView.this.renderer_.getZoom();
+				float deltaX = (event.getX() - this.touchDown_.x) * zoom;
+				float deltaY = (event.getY() - this.touchDown_.y) * zoom;
+				float newX = this.viewCenterAtDown_.x - deltaX;
+				float newY = this.viewCenterAtDown_.y - deltaY;
+				MicaSurfaceView.this.renderer_.setViewPosition((int) newX, (int) newY);
 				MicaSurfaceView.this.invalidate();
 				return true;
 			}
@@ -438,11 +472,12 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 
 		boolean fling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			MicaSurfaceView.this.renderer_.getViewPosition(this.viewCenterAtFling_);
-			Point backSize = MicaSurfaceView.this.renderer_.getBackgroundSize();
+			MicaSurfaceView.this.renderer_.getViewSize(this.viewSizeAtFling_);
+			this.backgroundSizeAtFling_ = MicaSurfaceView.this.renderer_.getBackgroundSize();
 			synchronized (this) {
 				this.state_ = TouchState.ON_FLING;
 				MicaSurfaceView.this.renderer_.suspend(true);
-				this.scroller_.fling(this.viewCenterAtFling_.x, this.viewCenterAtFling_.y, (int) -velocityX, (int) -velocityY, 0, backSize.x, 0, backSize.y);
+				this.scroller_.fling(this.viewCenterAtFling_.x, this.viewCenterAtFling_.y, (int) -velocityX, (int) -velocityY, 0, this.backgroundSizeAtFling_.x - this.viewSizeAtFling_.x, 0, this.backgroundSizeAtFling_.y - this.viewSizeAtFling_.y);
 				this.touchThread_.interrupt();
 			}
 			return true;
@@ -453,7 +488,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		 */
 		class TouchHandlerThread extends Thread {
 			private final TouchHandler touchHandler_;
-			private boolean isDone_ = false;
+			boolean isRunning_ = false;
 
 			TouchHandlerThread(TouchHandler touch) {
 				this.touchHandler_ = touch;
@@ -462,7 +497,8 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 
 			@Override
 			public void run() {
-				while (!this.isDone_) {
+				this.isRunning_ = true;
+				while (this.isRunning_) {
 					while ((this.touchHandler_.state_ != TouchState.ON_FLING) && (this.touchHandler_.state_ != TouchState.IN_FLING)) {
 						try {
 							Thread.sleep(Integer.MAX_VALUE);
@@ -470,7 +506,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 						catch (InterruptedException e) {
 							// NOOP
 						}
-						if (this.isDone_) return;
+						if (!this.isRunning_) return;
 					}
 					synchronized (this.touchHandler_) {
 						if (this.touchHandler_.state_ == TouchState.ON_FLING) {
@@ -496,8 +532,8 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 				}
 			}
 
-			public void done() {
-				this.isDone_ = true;
+			public void setRunning(boolean b) {
+				this.isRunning_ = b;
 			}
 
 		}

@@ -22,35 +22,42 @@ import com.micabyte.android.BaseObject;
 import com.micabyte.android.graphics.SurfaceRenderer.ViewPort;
 
 /**
- * TileMap superclass
+ * HexMap superclass
+ * 
+ * This implementation works for pointy-side up hexmaps. Needs to be adjusted
+ * if it is going to be used for flat-side up maps.
  * 
  * @author micabyte
  */
-public abstract class TileMap extends BaseObject {
+public abstract class HexMap extends BaseObject {
     public static int mapWidth;
     public static int mapHeight;
     protected TileMapZone[][] zones_;
     protected Rect tileRect_;
 	protected final Point viewPortOrigin_ = new Point();
 	protected final Point viewPortSize_ = new Point();
+	protected final Paint tilePaint = new Paint();
 
-    protected TileMap(String id, String name) {
+    protected HexMap(String id, String name) {
         super(id, name, 0);
+        this.tilePaint.setAntiAlias(true);
+        this.tilePaint.setFilterBitmap(true);
+        this.tilePaint.setDither(true);
     }
 
-    public void setTileMap(Context c, TileMapZone[][] map) {
+    public void setHexMap(Context c, TileMapZone[][] map) {
         this.zones_ = map;
-        TileMap.mapHeight = map[0].length;
-        TileMap.mapWidth = map.length;
+        HexMap.mapHeight = map[0].length;
+        HexMap.mapWidth = map.length;
         this.tileRect_ = new Rect(0, 0, map[0][0].getWidth(c), map[0][0].getHeight(c));
     }
     
     public int getRenderHeight() {
-        return (TileMap.mapHeight * this.tileRect_.height());
+        return (HexMap.mapHeight * this.tileRect_.width());
     }
 
     public int getRenderWidth() {
-        return (TileMap.mapWidth * this.tileRect_.width());
+        return ((HexMap.mapWidth - 1)* this.tileRect_.width());
     }
     
     public int getTileHeight() {
@@ -63,12 +70,10 @@ public abstract class TileMap extends BaseObject {
     
     public void drawBase(Context c, ViewPort p) {
     	Canvas canvas = new Canvas(p.bitmap_);
-        Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        paint.setFilterBitmap(true);
-        paint.setDither(true);
     	float scaleFactor = p.getZoom();
         int tileSize = this.tileRect_.width();
+        int yOffset = (this.tileRect_.height() - tileSize);// / 2;
+        int xOffset = 0;
 		p.getOrigin(this.viewPortOrigin_);
 		p.getSize(this.viewPortSize_);
         int windowLeft = this.viewPortOrigin_.x;
@@ -77,23 +82,27 @@ public abstract class TileMap extends BaseObject {
         int windowBottom = this.viewPortOrigin_.y + this.viewPortSize_.y;
         Rect destRect = new Rect();
         // Clip tiles not in view
-        int iMn = windowLeft / tileSize;
+        int iMn = (windowLeft / tileSize) - 1;
         if (iMn < 0) iMn = 0;
-        int jMn = windowTop / tileSize;
+        int jMn = (windowTop / tileSize) - 1;
         if (jMn < 0) jMn = 0;
-        int iMx = (windowRight / tileSize) + 1;
-        if (iMx >= TileMap.mapWidth) iMx = TileMap.mapWidth;
-        int jMx = (windowBottom / tileSize) + 1;
-        if (jMx >= TileMap.mapHeight) jMx = TileMap.mapHeight;
+        int iMx = (windowRight / tileSize) + 2;
+        if (iMx >= HexMap.mapWidth) iMx = HexMap.mapWidth;
+        int jMx = (windowBottom / tileSize) + 2;
+        if (jMx >= HexMap.mapHeight) jMx = HexMap.mapHeight;
         // Draw Tiles
         for (int i = iMn; i < iMx; i++) {
             for (int j = jMn; j < jMx; j++) {
                 if (this.zones_[i][j] != null) {
-                    destRect.left = (int) (((i * tileSize) - windowLeft) / scaleFactor);
-                    destRect.top = (int) (((j * tileSize) - windowTop) / scaleFactor);
-                    destRect.right = (int) (((i * tileSize) + tileSize - windowLeft) / scaleFactor);
-                    destRect.bottom = (int) (((j * tileSize) + tileSize - windowTop) / scaleFactor);
-                    this.zones_[i][j].drawBase(c, canvas, this.tileRect_, destRect, paint);
+                	if (j % 2 == 0)
+                		xOffset = tileSize/2;
+                	else
+                		xOffset = 0;
+                    destRect.left = (int) (((i * tileSize) - windowLeft - xOffset) / scaleFactor);
+                    destRect.top = (int) (((j * tileSize) - windowTop - yOffset) / scaleFactor);
+                    destRect.right = (int) (((i * tileSize) + tileSize - windowLeft - xOffset) / scaleFactor);
+                    destRect.bottom = (int) (((j * tileSize) + tileSize - windowTop + yOffset) / scaleFactor);
+                    this.zones_[i][j].drawBase(c, canvas, this.tileRect_, destRect, this.tilePaint);
                 }
             }
         }

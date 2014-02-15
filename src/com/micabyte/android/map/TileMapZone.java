@@ -21,7 +21,7 @@ import com.micabyte.android.BaseObject;
 import com.micabyte.android.graphics.ImageHandler;
 
 /**
-* Zone superclass for TileMap
+* Zone superclass for TileMap and HexMap
 * 
 * @author micabyte
 */
@@ -31,12 +31,16 @@ public abstract class TileMapZone extends BaseObject {
         super(id, name, bmp);
     }
 
-    /** Get the size of a tile */
-    public int getTileSize(Context c) {
-        // We assume that the width and height of the tile are identical; this should probably be checked
+    /** Get the width of a tile */
+    public int getWidth(Context c) {
         return ImageHandler.getInstance(c).get(getValue()).getWidth();
     }
 
+    /** Get the height of a tile */
+    public int getHeight(Context c) {
+        return ImageHandler.getInstance(c).get(getValue()).getHeight();
+    }
+    
     /** Draw the base bitmap of the tile on a canvas */
     public void drawBase(Context c, Canvas canvas, Rect tileRect, Rect destRect, Paint paint) {
         canvas.drawBitmap(ImageHandler.getInstance(c).get(getValue()), tileRect, destRect, paint);
