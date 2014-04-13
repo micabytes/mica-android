@@ -26,10 +26,7 @@ import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.google.android.gms.appstate.AppStateClient;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.games.GamesClient;
-import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.micabyte.android.util.GameHelper;
 
 /**
@@ -43,7 +40,7 @@ import com.micabyte.android.util.GameHelper;
  * @author micabyte
  */
 public abstract class BaseActivity extends FragmentActivity implements GameHelper.GameHelperListener {
-	  // The game helper object. This class is mainly a wrapper around this object.
+	// The game helper object. This class is mainly a wrapper around this object.
     protected GameHelper mHelper;
 
     // We expose these constants here because we don't want users of this class
@@ -56,10 +53,12 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
     // Requested clients. By default, that's just the games client.
     protected int mRequestedClients = CLIENT_GAMES;
 
+    private final static String TAG = "BaseGameActivity";
+    protected boolean mDebugLog = false;
+
     /** Constructs a BaseGameActivity with default client (GamesClient). */
     protected BaseActivity() {
         super();
-        this.mHelper = new GameHelper(this);
     }
 
     /**
@@ -75,8 +74,9 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
     /**
      * Sets the requested clients. The preferred way to set the requested clients is
      * via the constructor, but this method is available if for some reason your code
-     * cannot do this in the constructor. This must be called before onCreate in order to
-     * have any effect. If called after onCreate, this method is a no-op.
+     * cannot do this in the constructor. This must be called before onCreate or getGameHelper()
+     * in order to have any effect. If called after onCreate()/getGameHelper(), this method
+     * is a no-op.
      *
      * @param requestedClients A combination of the flags CLIENT_GAMES, CLIENT_PLUS
      *         and CLIENT_APPSTATE, or CLIENT_ALL to request all available clients.
@@ -85,11 +85,21 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
         this.mRequestedClients = requestedClients;
     }
 
+    public GameHelper getGameHelper() {
+        if (this.mHelper == null) {
+            this.mHelper = new GameHelper(this, this.mRequestedClients);
+            this.mHelper.enableDebugLog(this.mDebugLog);
+        }
+        return this.mHelper;
+    }
+
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        this.mHelper = new GameHelper(this);
-        this.mHelper.setup(this, this.mRequestedClients);
+        if (this.mHelper == null) {
+            getGameHelper();
+        }
+        this.mHelper.setup(this);
     }
 
     @Override
@@ -110,16 +120,8 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
         this.mHelper.onActivityResult(request, response, data);
     }
 
-    protected GamesClient getGamesClient() {
-        return this.mHelper.getGamesClient();
-    }
-
-    protected AppStateClient getAppStateClient() {
-        return this.mHelper.getAppStateClient();
-    }
-
-    protected PlusClient getPlusClient() {
-        return this.mHelper.getPlusClient();
+    protected GoogleApiClient getApiClient() {
+        return this.mHelper.getApiClient();
     }
 
     protected boolean isSignedIn() {
@@ -134,44 +136,46 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
         this.mHelper.signOut();
     }
 
-    protected void showAlert(String title, String message) {
-        this.mHelper.showAlert(title, message);
-    }
-
     protected void showAlert(String message) {
-        this.mHelper.showAlert(message);
+        this.mHelper.makeSimpleDialog(message).show();
     }
 
+    protected void showAlert(String title, String message) {
+        this.mHelper.makeSimpleDialog(title, message).show();
+    }
+
+    protected void enableDebugLog(boolean enabled) {
+        this.mDebugLog = true;
+        if (this.mHelper != null) {
+            this.mHelper.enableDebugLog(enabled);
+        }
+    }
+
+    @Deprecated
     protected void enableDebugLog(boolean enabled, String tag) {
-        this.mHelper.enableDebugLog(enabled, tag);
+        Log.w(TAG, "BaseGameActivity.enabledDebugLog(bool,String) is " +
+                "deprecated. Use enableDebugLog(boolean)");
+        enableDebugLog(enabled);
     }
 
     protected String getInvitationId() {
         return this.mHelper.getInvitationId();
     }
 
-    protected void reconnectClients(int whichClients) {
-        this.mHelper.reconnectClients(whichClients);
-    }
-    
-
-    protected String getScopes() {
-        return this.mHelper.getScopes();
+    protected void reconnectClient() {
+        this.mHelper.reconnectClient();
     }
 
     protected boolean hasSignInError() {
         return this.mHelper.hasSignInError();
     }
 
-    protected ConnectionResult getSignInError() {
+    protected GameHelper.SignInFailureReason getSignInError() {
         return this.mHelper.getSignInError();
     }
-
-    protected void setSignInMessages(String signingInMessage, String signingOutMessage) {
-        this.mHelper.setSigningInMessage(signingInMessage);
-        this.mHelper.setSigningOutMessage(signingOutMessage);
-    }
-	/**
+    
+    
+    /**
 	 * Removes the reference to the activity from every view in a view hierarchy (listeners, images
 	 * etc.) in order to limit/eliminate memory leaks. This is a "fix" for memory problems on older
 	 * versions of Android; it may not be necessary on newer versions.
