@@ -50,7 +50,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     public TextView setTextView(int resId, Typeface font) {
         TextView t = (TextView) getView().findViewById(resId);
         if (t != null) {
-            t.setTypeface(font);
+        	if (font != null)
+        		t.setTypeface(font);
             t.setOnClickListener(this);
         }
         return t;

@@ -26,6 +26,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.SparseArray;
 
 /**
@@ -65,6 +66,8 @@ public class ImageHandler {
     }
 
     public Bitmap get(int key, Config config) {
+    	if (key == 0)
+    		Log.d(TAG, "Null resource sent to get()", new Exception());
         Bitmap ret = null;
         SoftReference<Bitmap> ref = this.cachedBitmaps_.get(key);
         if (ref != null) {

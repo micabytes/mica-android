@@ -177,7 +177,7 @@ public abstract class SurfaceRenderer {
         
         public void setSize( int w, int h ){
             synchronized (this) {
-                if (this.bitmap_ !=null){
+                if (this.bitmap_ != null){
                     this.bitmap_.recycle();
                     this.bitmap_ = null;
                 }

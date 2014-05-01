@@ -33,7 +33,7 @@ public class HexMapSurfaceRenderer extends SurfaceRenderer {
     /** Set the TileMap */
     public void setTileMap(HexMap map)  {
         this.GameSurfaceTileMap_ = map;
-        this.backgroundSize_.set(this.GameSurfaceTileMap_.getRenderWidth(), this.GameSurfaceTileMap_.getRenderHeight());
+        this.backgroundSize_.set(HexMap.getRenderWidth(), HexMap.getRenderHeight());
     }
 
     @Override
