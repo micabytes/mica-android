@@ -17,6 +17,7 @@ import android.graphics.Typeface;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -221,4 +222,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
+	public class ContentDescriptionClickListener implements OnClickListener {
+		@Override
+		public void onClick(View v) {
+			Toast.makeText(getActivity(), v.getContentDescription(), Toast.LENGTH_LONG).show();
+		}
+	}
+    
 }
