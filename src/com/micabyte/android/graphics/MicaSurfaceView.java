@@ -174,6 +174,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 		this.thread_.onWindowFocusChanged(hasFocus);
+		Log.d(TAG, "onWindowFocusChanged");
 	}
 
 	// Set a Runnable to be run on the rendering thread.

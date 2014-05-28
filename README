@@ -25,6 +25,18 @@ If you do bug fixes, improvements or extensions, please consider contributing
 them back to the library to be incorporated in future iterations.
 
 
+Usage:
+
+The current project setup uses two libraries:
+ 
+  * google-play-services_lib: The standard Google Play Services lib that exists
+  in the Android SDK.
+  
+  * google-compatibility_lib: A library project containing app compatibility
+  libraries for v4 and v7. Google will create this automatically if you use
+  Kitkat to create a new library with minimum SDK 10.
+
+
 Main Components:
 
 * ImageHandler: This is a standard singleton class image cache using 

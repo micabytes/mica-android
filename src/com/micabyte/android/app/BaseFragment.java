@@ -44,6 +44,10 @@ import android.widget.ViewFlipper;
  */
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
 
+	public BaseActivity getBaseActivity() {
+		return (BaseActivity) getActivity();
+	}
+	
     public TextView getTextView(int resId) {
         return (TextView) getView().findViewById(resId);
     }

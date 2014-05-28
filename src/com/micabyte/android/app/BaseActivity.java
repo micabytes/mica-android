@@ -56,6 +56,8 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
     private final static String TAG = "BaseGameActivity";
     protected boolean mDebugLog = false;
 
+    public abstract void setFragment();
+    
     /** Constructs a BaseGameActivity with default client (GamesClient). */
     protected BaseActivity() {
         super();
