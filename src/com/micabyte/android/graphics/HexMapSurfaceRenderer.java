@@ -17,9 +17,9 @@ import android.content.Context;
 import com.micabyte.android.map.HexMap;
 
 /**
- * GameSurfaceRendererGameSurfaceTileMap is a renderer that handles the rendering of a GameSurfaceTiled (square) map to
- * the screen. The game should subclass the renderer and extend the drawing methods to add other
- * game elements.
+ * HexMapSurfaceRenderer is a renderer that handles the rendering of a Tiled
+ * (hexagonal) map to the screen. The game should subclass the renderer and
+ * extend the drawing methods to add other game elements.
  */
 public class HexMapSurfaceRenderer extends SurfaceRenderer {
     public static final String TAG = HexMapSurfaceRenderer.class.getName();
@@ -38,7 +38,6 @@ public class HexMapSurfaceRenderer extends SurfaceRenderer {
 
     @Override
     public void drawBase() {
-        // TODO: Check that GameSurfaceTilemap is set 
         this.GameSurfaceTileMap_.drawBase(this.context_, this.viewPort_);
     }
 

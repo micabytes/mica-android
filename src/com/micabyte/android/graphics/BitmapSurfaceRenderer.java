@@ -223,8 +223,8 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
 		if (vw + mw > sz.x) mw = Math.max(0, sz.x - vw);
 		if (vh + mh > sz.y) mh = Math.max(0, sz.y - vh);
 		// Figure out the left & right based on the margin.
-		// FIXME: THe logic here assumes that the viewport
-		// is <= our size. If that's not the case, then this logic breaks.
+		// FIXME: THe logic here assumes that the viewport is <= our size.
+		// If that's not the case, then this logic breaks.
 		int left = rect.left - (mw >> 1);
 		int right = rect.right + (mw >> 1);
 		if (left < 0) {
