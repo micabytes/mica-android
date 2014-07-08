@@ -30,17 +30,20 @@ import android.util.Log;
 import com.google.android.gms.appstate.AppStateManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.Api.ApiOptions.NoOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.Games.GamesOptions;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
 import com.google.android.gms.games.request.GameRequest;
 import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.Plus.PlusOptions;
 
 public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
 	static final String TAG = "GameHelper";
 
 	/** Listener for sign-in success or failure events. */
@@ -48,7 +51,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 		/**
 		 * Called when sign-in fails. As a result, a "Sign-In" button can be shown to the user; when
 		 * that button is clicked, call
-		 * 
+		 *
 		 * @link{GamesHelper#beginUserInitiatedSignIn . Note that not all calls to this method mean
 		 *                                            an error; it may be a result of the fact that
 		 *                                            automatic sign-in could not proceed because
@@ -98,9 +101,9 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	GoogleApiClient.Builder mGoogleApiClientBuilder = null;
 
 	// Api options to use when adding each API, null for none
-	GoogleApiClient.ApiOptions mGamesApiOptions = null;
-	GoogleApiClient.ApiOptions mPlusApiOptions = null;
-	GoogleApiClient.ApiOptions mAppStateApiOptions = null;
+	GamesOptions mGamesApiOptions = GamesOptions.builder().build();
+	PlusOptions mPlusApiOptions = null;
+	NoOptions mAppStateApiOptions = null;
 
 	// Google API client object we manage.
 	GoogleApiClient mGoogleApiClient = null;
@@ -110,7 +113,8 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	public final static int CLIENT_GAMES = 0x01;
 	public final static int CLIENT_PLUS = 0x02;
 	public final static int CLIENT_APPSTATE = 0x04;
-	public final static int CLIENT_ALL = CLIENT_GAMES | CLIENT_PLUS | CLIENT_APPSTATE;
+	public final static int CLIENT_SNAPSHOT = 0x05;
+	public final static int CLIENT_ALL = CLIENT_GAMES | CLIENT_PLUS | CLIENT_APPSTATE | CLIENT_SNAPSHOT;
 
 	// What clients were requested? (bit flags)
 	int mRequestedClients = CLIENT_NONE;
@@ -172,7 +176,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	/**
 	 * Construct a GameHelper object, initially tied to the given Activity. After constructing this
 	 * object, call @link{setup} from the onCreate() method of your Activity.
-	 * 
+	 *
 	 * @param clientsToUse the API clients to use (a combination of the CLIENT_* flags, or
 	 *        CLIENT_ALL to mean all clients).
 	 */
@@ -218,7 +222,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	/**
 	 * Sets the options to pass when setting up the Games API. Call before setup().
 	 */
-	public void setGamesApiOptions(GoogleApiClient.ApiOptions options) {
+	public void setGamesApiOptions(GamesOptions options) {
 		doApiOptionsPreCheck();
 		this.mGamesApiOptions = options;
 	}
@@ -226,7 +230,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	/**
 	 * Sets the options to pass when setting up the AppState API. Call before setup().
 	 */
-	public void setAppStateApiOptions(GoogleApiClient.ApiOptions options) {
+	public void setAppStateApiOptions(NoOptions options) {
 		doApiOptionsPreCheck();
 		this.mAppStateApiOptions = options;
 	}
@@ -234,7 +238,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	/**
 	 * Sets the options to pass when setting up the Plus API. Call before setup().
 	 */
-	public void setPlusApiOptions(GoogleApiClient.ApiOptions options) {
+	public void setPlusApiOptions(PlusOptions options) {
 		doApiOptionsPreCheck();
 		this.mPlusApiOptions = options;
 	}
@@ -261,13 +265,18 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 		}
 
 		if (0 != (this.mRequestedClients & CLIENT_PLUS)) {
-			builder.addApi(Plus.API, this.mPlusApiOptions);
+			builder.addApi(Plus.API);
 			builder.addScope(Plus.SCOPE_PLUS_LOGIN);
 		}
 
 		if (0 != (this.mRequestedClients & CLIENT_APPSTATE)) {
-			builder.addApi(AppStateManager.API, this.mAppStateApiOptions);
+			builder.addApi(AppStateManager.API);
 			builder.addScope(AppStateManager.SCOPE_APP_STATE);
+		}
+
+		if (0 != (this.mRequestedClients & CLIENT_SNAPSHOT)) {
+			builder.addScope(Drive.SCOPE_APPFOLDER);
+			builder.addApi(Drive.API);
 		}
 
 		this.mGoogleApiClientBuilder = builder;
@@ -278,7 +287,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	 * Performs setup on this GameHelper object. Call this from the onCreate() method of your
 	 * Activity. This will create the clients and do a few other initialization tasks. Next, call
 	 * @link{#onStart} from the onStart() method of your Activity.
-	 * 
+	 *
 	 * @param listener The listener to be notified of sign-in events.
 	 */
 	public void setup(GameHelperListener listener) {
@@ -391,7 +400,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	/**
 	 * Returns the invitation ID received through an invitation notification. This should be called
 	 * from your GameHelperListener's
-	 * 
+	 *
 	 * @link{GameHelperListener#onSignInSucceeded method, to check if there's an invitation
 	 *                                            available. In that case, accept the invitation.
 	 * @return The id of the invitation, or null if none was received.
@@ -406,7 +415,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	/**
 	 * Returns the invitation received through an invitation notification. This should be called
 	 * from your GameHelperListener's
-	 * 
+	 *
 	 * @link{GameHelperListener#onSignInSucceeded method, to check if there's an invitation
 	 *                                            available. In that case, accept the invitation.
 	 * @return The invitation, or null if none was received.
@@ -445,7 +454,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	/**
 	 * Returns the tbmp match received through an invitation notification. This should be called
 	 * from your GameHelperListener's
-	 * 
+	 *
 	 * @link{GameHelperListener#onSignInSucceeded method, to check if there's a match available.
 	 * @return The match, or null if none was received.
 	 */
@@ -459,7 +468,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 	/**
 	 * Returns the requests received through the onConnected bundle. This should be called from your
 	 * GameHelperListener's
-	 * 
+	 *
 	 * @link{GameHelperListener#onSignInSucceeded method, to check if there are incoming requests
 	 *                                            that must be handled.
 	 * @return The requests, or null if none were received.
@@ -503,7 +512,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 		// For the games client, signing out means calling signOut and
 		// disconnecting
 		if (0 != (this.mRequestedClients & CLIENT_GAMES)) {
-			debugLog("Signing out from GamesClient.");
+			debugLog("Signing out from the Google API Client.");
 			Games.signOut(this.mGoogleApiClient);
 		}
 

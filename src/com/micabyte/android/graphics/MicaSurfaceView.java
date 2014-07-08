@@ -135,6 +135,9 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		this.thread_.start();
 		this.renderer_.start();
 		this.touch_.start();
+		// Required to ensure thread has focus
+		//if (this.thread_ != null)
+		//	this.thread_.onWindowFocusChanged(true);
 	}
 
 	@Override
@@ -142,7 +145,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		this.touch_.stop();
 		this.renderer_.stop();
 		this.thread_.setRunning(false);
-		this.thread_.surfaceDestroyed();
+		//this.thread_.surfaceDestroyed();
 		boolean retry = true;
 		while (retry) {
 			try {
@@ -166,14 +169,14 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		// Debug
 		if (BuildConfig.DEBUG) Log.d(TAG, "surfaceChanged; new dimensions: w=" + w + ", h= " + h);
 		// Required to ensure thread has focus
-		if (this.thread_ != null)
-			this.thread_.onWindowFocusChanged(true);
+		//if (this.thread_ != null)
+		//	this.thread_.onWindowFocusChanged(true);
 	}
 	
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
-		this.thread_.onWindowFocusChanged(hasFocus);
+		//this.thread_.onWindowFocusChanged(hasFocus);
 		Log.d(TAG, "onWindowFocusChanged");
 	}
 
@@ -194,9 +197,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	/** The Rendering thread for the MicaSurfaceView */
 	class GameSurfaceViewThread extends Thread {
 		private final SurfaceHolder surfaceHolder_;
-		private Runnable event_ = null;
 		private boolean running_ = false;
-		private boolean hasFocus_ = false;
 
 		public GameSurfaceViewThread(SurfaceHolder surfaceHolder) {
 			setName("GameSurfaceViewThread");
@@ -219,23 +220,6 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 				catch (InterruptedException e) {
 					// NOOP
 				}
-				synchronized (this) {
-					// If there is a Runnable, run it now
-					if (this.event_ != null) {
-						this.event_.run();
-					}
-					// Rendering paused
-					if (!this.hasFocus_) {
-						while (!this.hasFocus_) {
-							try {
-								wait();
-							}
-							catch (InterruptedException e) {
-								// NOOP
-							}
-						}
-					}
-				}
 				// Render Graphics
 				canvas = null;
 				try {
@@ -255,6 +239,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 
 		}
 
+		/*
 		public void onWindowFocusChanged(boolean hasFocus) {
 			synchronized (this) {
 				this.hasFocus_ = hasFocus;
@@ -282,6 +267,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 				this.event_ = null;
 			}
 		}
+		*/
 
 	}
 

@@ -23,7 +23,7 @@ import com.micabyte.android.map.HexMap;
  */
 public class HexMapSurfaceRenderer extends SurfaceRenderer {
     public static final String TAG = HexMapSurfaceRenderer.class.getName();
-    // The low resolution version of the background image
+    // The Hexmap object
     private HexMap GameSurfaceTileMap_ = null;
 
     public HexMapSurfaceRenderer(Context c) {

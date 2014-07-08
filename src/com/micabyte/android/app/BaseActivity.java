@@ -57,6 +57,7 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
     protected boolean mDebugLog = false;
 
     public abstract void setFragment();
+    public abstract void openMenu();
     
     /** Constructs a BaseGameActivity with default client (GamesClient). */
     protected BaseActivity() {

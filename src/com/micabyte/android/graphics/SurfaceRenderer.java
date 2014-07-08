@@ -20,6 +20,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 
 /**
  * SurfaceRenderer is the superclass of the renderer. The game should subclass 
@@ -182,6 +183,7 @@ public abstract class SurfaceRenderer {
                     this.bitmap_ = null;
                 }
                 this.bitmap_ = Bitmap.createBitmap(w, h, Config.RGB_565);
+                Log.d("SF", "Created bitmap of size " + w + " " + h);
                 this.window.set(
                         this.window.left,
                         this.window.top,

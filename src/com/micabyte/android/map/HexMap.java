@@ -18,6 +18,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.util.Log;
 
 import com.micabyte.android.BaseObject;
 import com.micabyte.android.graphics.SurfaceRenderer.ViewPort;
@@ -77,6 +78,10 @@ public abstract class HexMap extends BaseObject {
     }
     
     public void drawBase(Context c, ViewPort p) {
+    	if (p.bitmap_ == null) {
+    		Log.e("HM", "Viewport bitmap is null");
+    		return;
+    	}
     	Canvas canvas = new Canvas(p.bitmap_);
     	this.scaleFactor = p.getZoom();
         int yOffset = (HexMap.tileRect.height() - HexMap.tileSlope);
