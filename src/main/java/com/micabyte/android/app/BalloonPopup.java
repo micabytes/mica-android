@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
 
-import com.micabyte.android.game.R;
+import com.micabyte.android.R;
 
 public class BalloonPopup extends Popup implements OnDismissListener {
 	private ImageView arrowUp_;

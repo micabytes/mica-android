@@ -16,7 +16,6 @@ import java.util.Locale;
 
 import android.content.Context;
 
-import com.micabyte.android.game.R;
 import com.micabyte.android.util.StringHandler;
 
 /**

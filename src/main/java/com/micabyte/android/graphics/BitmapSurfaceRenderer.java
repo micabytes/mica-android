@@ -25,7 +25,7 @@ import android.graphics.Rect;
 import android.graphics.Bitmap.Config;
 import android.util.Log;
 
-import com.micabyte.android.game.BuildConfig;
+import com.micabyte.android.BuildConfig;
 
 /**
  * GameSurfaceRendererBitmap is a renderer that handles the rendering of a background bitmap to the

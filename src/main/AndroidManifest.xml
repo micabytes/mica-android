@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.micabyte.android">
+
+    <application android:allowBackup="true"
+        android:label="@string/lib_base"
+        android:icon="@drawable/ic_launcher"
+>
+
+    </application>
+
+</manifest>

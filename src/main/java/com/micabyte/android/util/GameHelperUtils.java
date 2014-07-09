@@ -12,7 +12,7 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.games.GamesActivityResultCodes;
-import com.micabyte.android.game.R;
+import com.micabyte.android.R;
 
 /**
  * Created by btco on 2/10/14.

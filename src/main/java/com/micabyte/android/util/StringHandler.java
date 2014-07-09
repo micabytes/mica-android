@@ -23,7 +23,7 @@ import java.util.Vector;
 import android.content.Context;
 
 import com.micabyte.android.BaseObject;
-import com.micabyte.android.game.R;
+import com.micabyte.android.R;
 
 /**
  * StringHandler is a wrapper around the standard Android getString functionality. It is primarily

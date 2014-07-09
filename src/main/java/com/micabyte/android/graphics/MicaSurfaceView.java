@@ -25,7 +25,7 @@ import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.widget.Scroller;
 
-import com.micabyte.android.game.BuildConfig;
+import com.micabyte.android.BuildConfig;
 
 /**
  * MicaSurfaceView encapsulates all of the logic for handling 2D game maps. Pass it a

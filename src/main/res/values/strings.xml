@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="lib_base">MicaByte Game Library</string>
     <string name="default_error">Error</string>
     <string name="default_number">999999</string>
     <string name="default_smallnumber">99</string>

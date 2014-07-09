@@ -11,7 +11,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
-import com.micabyte.android.game.R;
+import com.micabyte.android.R;
 import com.micabyte.android.graphics.ImageHandler;
 
 /**
