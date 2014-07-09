@@ -1,3 +1,19 @@
+Note:
+I have recently converted my projects to Android Studio, and converted the library to work with Gradle/Android Studio.
+
+Short instructions on how to integrate:
+
+1. From your projects root directory (assuming it is version controlled in Git), run:
+> git submodule add git@github.com:micabyte/lib_base.git
+
+2. In settings.gradle, add:
+include ':lib_base'
+
+Then sync the project, and make sure to add a dependency on lib_base in the core project file.
+
+
+Old README: To be updated
+
 The MicaByte Game Library (micabyte/android_game) is an Android library that
 encapsulates some of the logic required for creating a simple 2D game using
 the native Android graphics library.
