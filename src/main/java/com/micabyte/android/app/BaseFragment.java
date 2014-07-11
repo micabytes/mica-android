@@ -14,6 +14,7 @@ package com.micabyte.android.app;
 
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
@@ -44,7 +45,25 @@ import android.widget.ViewFlipper;
  */
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
 
-	public BaseActivity getBaseActivity() {
+    @Override
+    public void onActivityCreated(Bundle saved) {
+        super.onActivityCreated(saved);
+        createFragment();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateFragment();
+    }
+
+    // Used to set up UI elements
+    protected abstract void createFragment();
+    // Used to update the UI elements
+    public abstract void updateFragment();
+
+
+    public BaseActivity getBaseActivity() {
 		return (BaseActivity) getActivity();
 	}
 	
@@ -207,8 +226,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return l;
     }
 
-	public abstract void updateFragment();
-    
     public void error(String tag, String message) {
         Log.e(tag, message);
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();

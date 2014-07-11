@@ -33,7 +33,7 @@ import com.micabyte.android.R;
  */
 public class StringHandler {
 	private final static int NOTFOUND = -1;
-	private final static String punctuation = new String("(),;.!?\"");
+	private final static String punctuation = "(),;.!?\"";
 
 	/**
 	 * This is the workhorse function of the class. It takes a string and strips out the formatting
@@ -143,10 +143,10 @@ public class StringHandler {
 					Object obj = variables.get(tokens[0].trim().toLowerCase(Locale.US));
 					if (obj != null) {
 						if (obj instanceof Integer) {
-							ret = ret.replace(variable, ((Integer) obj).toString());
+							ret = ret.replace(variable, obj.toString());
 						}
 						else if (obj instanceof Double) {
-							ret = ret.replace(variable, ((Double) obj).toString());
+							ret = ret.replace(variable, obj.toString());
 						}
 						else if (obj instanceof String) {
 							ret = ret.replace(variable, ((String) obj));
@@ -194,7 +194,7 @@ public class StringHandler {
 	}
 
 	public static String list(Context c, Vector<BaseObject> objs) {
-		String ret = new String();
+		String ret = "";
 		if (objs.size() == 0) return ret;
 		if (objs.size() == 1) {
 			ret = objs.firstElement().getName();
@@ -220,7 +220,7 @@ public class StringHandler {
 	}
 
 	public static String listString(Context c, Vector<String> objs) {
-		String ret = new String();
+		String ret = "";
 		if (objs.size() == 0) return ret;
 		if (objs.size() == 1) {
 			ret = objs.firstElement();
@@ -265,7 +265,7 @@ public class StringHandler {
 		String line = null;
 		try {
 			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
+				sb.append(line).append("\n");
 			}
 		}
 		catch (IOException e) {
