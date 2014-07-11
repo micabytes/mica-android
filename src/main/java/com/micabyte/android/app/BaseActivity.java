@@ -31,16 +31,15 @@ import com.micabyte.android.util.GameHelper;
 
 /**
  * Base class for Game Activities.
- * 
+ * <p/>
  * This implementation now also implements the GamesClient object from Google Play Games services
  * and manages its lifecycle. Subclasses should override the @link{#onSignInSucceeded} and
- * 
- * @link{#onSignInFailed abstract methods.
- * 
+ *
  * @author micabyte
+ * @link{#onSignInFailed abstract methods.
  */
 public abstract class BaseActivity extends FragmentActivity implements GameHelper.GameHelperListener {
-	// The game helper object. This class is mainly a wrapper around this object.
+    // The game helper object. This class is mainly a wrapper around this object.
     protected GameHelper mHelper;
 
     // We expose these constants here because we don't want users of this class
@@ -57,17 +56,21 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
     protected boolean mDebugLog = false;
 
     public abstract void setFragment();
+
     public abstract void openMenu();
-    
-    /** Constructs a BaseGameActivity with default client (GamesClient). */
+
+    /**
+     * Constructs a BaseGameActivity with default client (GamesClient).
+     */
     protected BaseActivity() {
         super();
     }
 
     /**
      * Constructs a BaseGameActivity with the requested clients.
+     *
      * @param requestedClients The requested clients (a combination of CLIENT_GAMES,
-     *         CLIENT_PLUS and CLIENT_APPSTATE).
+     *                         CLIENT_PLUS and CLIENT_APPSTATE).
      */
     protected BaseActivity(int requestedClients) {
         super();
@@ -82,7 +85,7 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
      * is a no-op.
      *
      * @param requestedClients A combination of the flags CLIENT_GAMES, CLIENT_PLUS
-     *         and CLIENT_APPSTATE, or CLIENT_ALL to request all available clients.
+     *                         and CLIENT_APPSTATE, or CLIENT_ALL to request all available clients.
      */
     protected void setRequestedClients(int requestedClients) {
         this.mRequestedClients = requestedClients;
@@ -176,132 +179,125 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
     protected GameHelper.SignInFailureReason getSignInError() {
         return this.mHelper.getSignInError();
     }
-    
-    
+
+
     /**
-	 * Removes the reference to the activity from every view in a view hierarchy (listeners, images
-	 * etc.) in order to limit/eliminate memory leaks. This is a "fix" for memory problems on older
-	 * versions of Android; it may not be necessary on newer versions.
-	 * 
-	 * see http://code.google.com/p/android/issues/detail?id=8488
-	 * 
-	 * If used, this method should be called in the onDestroy() method of each activity.
-	 * 
-	 * @param viewID normally the id of the root layout
-	 */
-	protected static void unbindReferences(Activity activity, int viewID, int adViewId) {
-		try {
-			View view = activity.findViewById(viewID);
-			if (view != null) {
-				unbindViewReferences(view);
-				if (view instanceof ViewGroup) unbindViewGroupReferences((ViewGroup) view);
-			}
-		}
-		catch (Throwable e) {
-			// whatever exception is thrown just ignore it because a crash is
-			// likely to be worse than this method not doing what it's supposed to do
-			// e.printStackTrace();
-		}
-		System.gc();
-	}
+     * Removes the reference to the activity from every view in a view hierarchy (listeners, images
+     * etc.) in order to limit/eliminate memory leaks. This is a "fix" for memory problems on older
+     * versions of Android; it may not be necessary on newer versions.
+     * <p/>
+     * see http://code.google.com/p/android/issues/detail?id=8488
+     * <p/>
+     * If used, this method should be called in the onDestroy() method of each activity.
+     *
+     * @param viewID normally the id of the root layout
+     */
+    protected static void unbindReferences(Activity activity, int viewID, int adViewId) {
+        try {
+            View view = activity.findViewById(viewID);
+            if (view != null) {
+                unbindViewReferences(view);
+                if (view instanceof ViewGroup) unbindViewGroupReferences((ViewGroup) view);
+            }
+        } catch (Throwable e) {
+            // whatever exception is thrown just ignore it because a crash is
+            // likely to be worse than this method not doing what it's supposed to do
+            // e.printStackTrace();
+        }
+        System.gc();
+    }
 
-	private static void unbindViewGroupReferences(ViewGroup viewGroup) {
-		int nrOfChildren = viewGroup.getChildCount();
-		for (int i = 0; i < nrOfChildren; i++) {
-			View view = viewGroup.getChildAt(i);
-			unbindViewReferences(view);
-			if (view instanceof ViewGroup) unbindViewGroupReferences((ViewGroup) view);
-		}
-		try {
-			viewGroup.removeAllViews();
-		}
-		catch (Throwable mayHappen) {
-			// AdapterViews, ListViews and potentially other ViewGroups don't
-			// support the removeAllViews operation
-		}
-	}
+    private static void unbindViewGroupReferences(ViewGroup viewGroup) {
+        int nrOfChildren = viewGroup.getChildCount();
+        for (int i = 0; i < nrOfChildren; i++) {
+            View view = viewGroup.getChildAt(i);
+            unbindViewReferences(view);
+            if (view instanceof ViewGroup) unbindViewGroupReferences((ViewGroup) view);
+        }
+        try {
+            viewGroup.removeAllViews();
+        } catch (Throwable mayHappen) {
+            // AdapterViews, ListViews and potentially other ViewGroups don't
+            // support the removeAllViews operation
+        }
+    }
 
-	private static void unbindViewReferences(View view) {
-		// set all listeners to null
-		try {
-			view.setOnClickListener(null);
-		}
-		catch (Throwable mayHappen) {
-			// NOOP - not supported by all views/versions
-		}
-		try {
-			view.setOnCreateContextMenuListener(null);
-		}
-		catch (Throwable mayHappen) {
-			// NOOP - not supported by all views/versions
-		}
-		try {
-			view.setOnFocusChangeListener(null);
-		}
-		catch (Throwable mayHappen) {
-			// NOOP - not supported by all views/versions
-		}
-		try {
-			view.setOnKeyListener(null);
-		}
-		catch (Throwable mayHappen) {
-			// NOOP - not supported by all views/versions
-		}
-		try {
-			view.setOnLongClickListener(null);
-		}
-		catch (Throwable mayHappen) {
-			// NOOP - not supported by all views/versions
-		}
-		try {
-			view.setOnClickListener(null);
-		}
-		catch (Throwable mayHappen) {
-			// NOOP - not supported by all views/versions
-		}
-		// set background to null
-		Drawable d = view.getBackground();
-		if (d != null) {
-			d.setCallback(null);
-		}
-		if (view instanceof ImageView) {
-			ImageView imageView = (ImageView) view;
-			d = imageView.getDrawable();
-			if (d != null) {
-				d.setCallback(null);
-			}
-			imageView.setImageDrawable(null);
-			imageView.setImageBitmap(null);
-		}
-		if (view instanceof ImageButton) {
-			ImageButton imageB = (ImageButton) view;
-			d = imageB.getDrawable();
-			if (d != null) {
-				d.setCallback(null);
-			}
-			imageB.setImageDrawable(null);
-		}
-		// destroy webview
-		if (view instanceof WebView) {
-			((WebView) view).destroyDrawingCache();
-			((WebView) view).destroy();
-		}
-	}
+    private static void unbindViewReferences(View view) {
+        // set all listeners to null
+        try {
+            view.setOnClickListener(null);
+        } catch (Throwable mayHappen) {
+            // NOOP - not supported by all views/versions
+        }
+        try {
+            view.setOnCreateContextMenuListener(null);
+        } catch (Throwable mayHappen) {
+            // NOOP - not supported by all views/versions
+        }
+        try {
+            view.setOnFocusChangeListener(null);
+        } catch (Throwable mayHappen) {
+            // NOOP - not supported by all views/versions
+        }
+        try {
+            view.setOnKeyListener(null);
+        } catch (Throwable mayHappen) {
+            // NOOP - not supported by all views/versions
+        }
+        try {
+            view.setOnLongClickListener(null);
+        } catch (Throwable mayHappen) {
+            // NOOP - not supported by all views/versions
+        }
+        try {
+            view.setOnClickListener(null);
+        } catch (Throwable mayHappen) {
+            // NOOP - not supported by all views/versions
+        }
+        // set background to null
+        Drawable d = view.getBackground();
+        if (d != null) {
+            d.setCallback(null);
+        }
+        if (view instanceof ImageView) {
+            ImageView imageView = (ImageView) view;
+            d = imageView.getDrawable();
+            if (d != null) {
+                d.setCallback(null);
+            }
+            imageView.setImageDrawable(null);
+            imageView.setImageBitmap(null);
+        }
+        if (view instanceof ImageButton) {
+            ImageButton imageB = (ImageButton) view;
+            d = imageB.getDrawable();
+            if (d != null) {
+                d.setCallback(null);
+            }
+            imageB.setImageDrawable(null);
+        }
+        // destroy webview
+        if (view instanceof WebView) {
+            view.destroyDrawingCache();
+            ((WebView)view).destroy();
+        }
+    }
 
-	/*
-	 * Show Heap
-	 */
-	@SuppressWarnings("rawtypes")
-	public static void logHeap(Class clazz) {
-		DecimalFormat df = new DecimalFormat();
-		df.setMaximumFractionDigits(2);
-		df.setMinimumFractionDigits(2);
-		Log.d(clazz.getName(),
-						"DEBUG_MEMORY allocated " + df.format(Double.valueOf(Runtime.getRuntime().totalMemory() / 1048576)) + "/"
-										+ df.format(Double.valueOf(Runtime.getRuntime().maxMemory() / 1048576)) + "MB ("
-										+ df.format(Double.valueOf(Runtime.getRuntime().freeMemory() / 1048576)) + "MB free)");
-		System.gc();
-		System.gc();
-	}
-	
+    /*
+     * Show Heap
+     */
+    @SuppressWarnings("rawtypes")
+    public static void logHeap(Class clazz) {
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+        df.setMinimumFractionDigits(2);
+        Log.d(clazz.getName(),
+                "DEBUG_MEMORY allocated " + df.format(Double.valueOf(Runtime.getRuntime().totalMemory() / 1048576)) + "/"
+                        + df.format(Double.valueOf(Runtime.getRuntime().maxMemory() / 1048576)) + "MB ("
+                        + df.format(Double.valueOf(Runtime.getRuntime().freeMemory() / 1048576)) + "MB free)"
+        );
+        System.gc();
+        System.gc();
+    }
+
 }

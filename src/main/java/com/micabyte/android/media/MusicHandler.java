@@ -21,10 +21,10 @@ import android.util.SparseArray;
 /**
  * MusicHandler is a simple, dumb wrapper around the Android mediaplayer. It plays music files placed
  * in the raw resource directory.
- * 
+ * <p/>
  * General usage: Start it in the onResume of an activity, and stop the music in the onPause.
  * release should be called in onDestroy of the root activity.
- * 
+ *
  * @author micabyte
  */
 public class MusicHandler {
@@ -34,15 +34,17 @@ public class MusicHandler {
     private static int nextMusic_ = INVALID_NUMBER;
     private static int currentMusic_ = INVALID_NUMBER;
 
-    /** Start playing a music resource */
+    /**
+     * Start playing a music resource
+     */
     public static void start(Context c, int music) {
         start(c, music, false);
     }
 
     /**
      * Start playing a music resource
-     * 
-     * @param c The context (application or activity)
+     *
+     * @param c     The context (application or activity)
      * @param music The resource id of the music file
      * @param force Force-start playing this file
      */
@@ -101,7 +103,9 @@ public class MusicHandler {
         }
     }
 
-    /** Pause all media players */
+    /**
+     * Pause all media players
+     */
     public static void pause() {
         for (int i = 0; i < players_.size(); i++) {
             MediaPlayer p = players_.valueAt(i);
@@ -114,7 +118,9 @@ public class MusicHandler {
         currentMusic_ = INVALID_NUMBER;
     }
 
-    /** Advance to the next resource */
+    /**
+     * Advance to the next resource
+     */
     public static void next() {
         if (nextMusic_ == INVALID_NUMBER) {
             return;

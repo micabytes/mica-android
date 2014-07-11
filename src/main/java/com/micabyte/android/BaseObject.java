@@ -20,7 +20,7 @@ import com.micabyte.android.util.StringHandler;
 
 /**
  * BaseObject is a generic Object that contains a number of frequently used attributes.
- * 
+ *
  * @author micabyte
  */
 public abstract class BaseObject {
@@ -32,7 +32,7 @@ public abstract class BaseObject {
     private int value_ = 0;
 
     protected BaseObject() {
-    	// NOOP
+        // NOOP
     }
 
     protected BaseObject(String id, String name, int v) {
@@ -46,9 +46,9 @@ public abstract class BaseObject {
     }
 
     public void setId(String s) {
-    	this.id_ = s;
+        this.id_ = s;
     }
-    
+
     public boolean equalsId(String id) {
         return this.id_.equalsIgnoreCase(id);
     }
@@ -74,59 +74,58 @@ public abstract class BaseObject {
      * text replacement in strings (see StringHandler) where it is useful to retrieve data from many
      * different types of game objects.
      */
-	private enum ValueToken {
-		error, name, value, tag;
+    private enum ValueToken {
+        error, name, value, tag;
 
-		public static ValueToken get(String str) {
-			try {
-				return valueOf(str.trim().toLowerCase(Locale.US));
-			}
-			catch (Exception ex) {
-				return error;
-			}
-		}
-	}
+        public static ValueToken get(String str) {
+            try {
+                return valueOf(str.trim().toLowerCase(Locale.US));
+            } catch (Exception ex) {
+                return error;
+            }
+        }
+    }
 
-	public boolean getBoolean(String id) {
-		switch (ValueToken.get(id)) {
-			case value:
-				if (getValue() > 0) return true;
-				return false;
-			default:
-				return false;
-		}
-	}
+    public boolean getBoolean(String id) {
+        switch (ValueToken.get(id)) {
+            case value:
+                if (getValue() > 0) return true;
+                return false;
+            default:
+                return false;
+        }
+    }
 
-	public int getInteger(String id) {
-		switch (ValueToken.get(id)) {
-			case value:
-				return getValue();
-			default:
-				return 0;
-		}
-	}
+    public int getInteger(String id) {
+        switch (ValueToken.get(id)) {
+            case value:
+                return getValue();
+            default:
+                return 0;
+        }
+    }
 
-	public double getDouble(String id) {
-		switch (ValueToken.get(id)) {
-			case value:
-				return getValue();
-			default:
-				return 0.0;
-		}
-	}
+    public double getDouble(String id) {
+        switch (ValueToken.get(id)) {
+            case value:
+                return getValue();
+            default:
+                return 0.0;
+        }
+    }
 
-	public String getString(Context c, String id) {
-		switch (ValueToken.get(id)) {
-			case name:
-				return getName();
-			default:
-				return StringHandler.get(c, R.string.default_error);
-		}
-	}
-	
-	@SuppressWarnings("static-method")
-	public BaseObject getObject(String id) {
-		return null;
-	}
+    public String getString(Context c, String id) {
+        switch (ValueToken.get(id)) {
+            case name:
+                return getName();
+            default:
+                return StringHandler.get(c, R.string.default_error);
+        }
+    }
+
+    @SuppressWarnings("static-method")
+    public BaseObject getObject(String id) {
+        return null;
+    }
 
 }

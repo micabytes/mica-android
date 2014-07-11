@@ -15,7 +15,7 @@ package com.micabyte.android.math;
 
 /**
  * Minimal Polygon class for Android.
- * 
+ * <p/>
  * Basic polygon wrapper to handle simple point in polygon problems.
  */
 public class Polygon {
@@ -30,7 +30,9 @@ public class Polygon {
         this.polyN_ = ps;
     }
 
-    /** Checks if the Polygon contains the point x, y */
+    /**
+     * Checks if the Polygon contains the point x, y
+     */
     public boolean contains(int x, int y) {
         boolean oddTransitions = false;
         for (int i = 0, j = this.polyN_ - 1; i < this.polyN_; j = i++) {

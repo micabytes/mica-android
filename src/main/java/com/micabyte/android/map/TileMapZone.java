@@ -21,27 +21,33 @@ import com.micabyte.android.BaseObject;
 import com.micabyte.android.graphics.ImageHandler;
 
 /**
-* Zone superclass for TileMap and HexMap
-* 
-* @author micabyte
-*/
+ * Zone superclass for TileMap and HexMap
+ *
+ * @author micabyte
+ */
 public abstract class TileMapZone extends BaseObject {
 
     protected TileMapZone(String id, String name, int bmp) {
         super(id, name, bmp);
     }
 
-    /** Get the width of a tile */
+    /**
+     * Get the width of a tile
+     */
     public int getWidth(Context c) {
         return ImageHandler.getInstance(c).get(getValue()).getWidth();
     }
 
-    /** Get the height of a tile */
+    /**
+     * Get the height of a tile
+     */
     public int getHeight(Context c) {
         return ImageHandler.getInstance(c).get(getValue()).getHeight();
     }
-    
-    /** Draw the base bitmap of the tile on a canvas */
+
+    /**
+     * Draw the base bitmap of the tile on a canvas
+     */
     public void drawBase(Context c, Canvas canvas, Rect tileRect, Rect destRect, Paint paint) {
         canvas.drawBitmap(ImageHandler.getInstance(c).get(getValue()), tileRect, destRect, paint);
     }

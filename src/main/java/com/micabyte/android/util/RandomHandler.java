@@ -16,11 +16,11 @@ import java.util.Random;
 
 /**
  * Game Utility Class
- * 
+ * <p/>
  * This class provides a number of simple static utility functions. This includes the random number
  * generator, a dice roller, and a "wild dice" roller.
- * 
- * @author micabyte 
+ *
+ * @author micabyte
  */
 public class RandomHandler {
     // Random Generator
@@ -29,7 +29,9 @@ public class RandomHandler {
     public static final int WDICE_DEFAULT_HIT = 4;
     public static final int BASE_DICE_THRESHOLD = 4;
 
-    /** Returns a random double */
+    /**
+     * Returns a random double
+     */
     public static double random() {
         if (random == null) random = new Random();
         return random.nextDouble();
@@ -37,7 +39,7 @@ public class RandomHandler {
 
     /**
      * Returns a random integer between 0 and i-1 inclusive
-     * 
+     * <p/>
      * Returns 0 if the input is less than or equal to 0 (this would otherwise be an error).
      */
     public static int random(int i) {
@@ -48,7 +50,7 @@ public class RandomHandler {
 
     /**
      * Roll a number of dice of a given size, with a given toHit number
-     * 
+     *
      * @return Number of dice that beat the Hit number
      */
     public static int roll(int nDice, int dSize, int toHit) {
@@ -67,7 +69,7 @@ public class RandomHandler {
     /**
      * Roll a number of "wild" dice of a given size, with a given toHit number. Wild dice means that
      * the maximum roll counts as a hit and is rerolled (and can generate further hits).
-     * 
+     *
      * @return Number of dice that beat the Hit number
      */
     public static int wRoll(int nDice, int dSize, int toHit) {

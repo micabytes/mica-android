@@ -39,15 +39,15 @@ import android.widget.ViewFlipper;
 
 /**
  * Convenience class to replace Fragment
- * 
+ *
  * @author micabyte
  */
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
 
-	public BaseActivity getBaseActivity() {
-		return (BaseActivity) getActivity();
-	}
-	
+    public BaseActivity getBaseActivity() {
+        return (BaseActivity) getActivity();
+    }
+
     public TextView getTextView(int resId) {
         return (TextView) getView().findViewById(resId);
     }
@@ -55,8 +55,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     public TextView setTextView(int resId, Typeface font) {
         TextView t = (TextView) getView().findViewById(resId);
         if (t != null) {
-        	if (font != null)
-        		t.setTypeface(font);
+            if (font != null)
+                t.setTypeface(font);
             t.setOnClickListener(this);
         }
         return t;
@@ -90,7 +90,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     protected RadioButton getRadioButton(int resId_) {
-    	RadioButton b = (RadioButton) getView().findViewById(resId_);
+        RadioButton b = (RadioButton) getView().findViewById(resId_);
         return b;
     }
 
@@ -207,8 +207,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return l;
     }
 
-	public abstract void updateFragment();
-    
+    public abstract void updateFragment();
+
     public void error(String tag, String message) {
         Log.e(tag, message);
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
@@ -219,18 +219,18 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     public void toast(String message) {
-    	toast(message, Toast.LENGTH_LONG);
+        toast(message, Toast.LENGTH_LONG);
     }
 
     public void toast(String message, int length) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
-	public class ContentDescriptionClickListener implements OnClickListener {
-		@Override
-		public void onClick(View v) {
-			Toast.makeText(getActivity(), v.getContentDescription(), Toast.LENGTH_LONG).show();
-		}
-	}
-    
+    public class ContentDescriptionClickListener implements OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(getActivity(), v.getContentDescription(), Toast.LENGTH_LONG).show();
+        }
+    }
+
 }

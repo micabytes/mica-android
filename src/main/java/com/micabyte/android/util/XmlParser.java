@@ -26,34 +26,31 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * A static function that does all the repetitive lifting for getting an XML reader from the
- * SAXParser and running the handler. Extend DefaultHandler to do the actual decoding work. 
- * 
+ * SAXParser and running the handler. Extend DefaultHandler to do the actual decoding work.
+ *
  * @author micabyte
  */
 public class XmlParser {
 
-	public static void parseXml(InputStream istream, DefaultHandler handler) {
-		try {
-			// Get a SAXParser from the SAXPArserFactory.
-			SAXParserFactory spf = SAXParserFactory.newInstance();
-			SAXParser sp;
-			sp = spf.newSAXParser();
-			// Get the XMLReader of the SAXParser we created.
-			XMLReader xr;
-			xr = sp.getXMLReader();
-			// Create a new ContentHandler and apply it to the XML-Reader
-			xr.setContentHandler(handler);
-			xr.parse(new InputSource(istream));
-		}
-		catch (SAXException e) {
-			e.printStackTrace();
-		}
-		catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    public static void parseXml(InputStream istream, DefaultHandler handler) {
+        try {
+            // Get a SAXParser from the SAXPArserFactory.
+            SAXParserFactory spf = SAXParserFactory.newInstance();
+            SAXParser sp;
+            sp = spf.newSAXParser();
+            // Get the XMLReader of the SAXParser we created.
+            XMLReader xr;
+            xr = sp.getXMLReader();
+            // Create a new ContentHandler and apply it to the XML-Reader
+            xr.setContentHandler(handler);
+            xr.parse(new InputSource(istream));
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

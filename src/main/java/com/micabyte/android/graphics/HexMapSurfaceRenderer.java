@@ -30,8 +30,10 @@ public class HexMapSurfaceRenderer extends SurfaceRenderer {
         super(c);
     }
 
-    /** Set the TileMap */
-    public void setTileMap(HexMap map)  {
+    /**
+     * Set the TileMap
+     */
+    public void setTileMap(HexMap map) {
         this.GameSurfaceTileMap_ = map;
         this.backgroundSize_.set(HexMap.getRenderWidth(), HexMap.getRenderHeight());
     }
@@ -46,12 +48,12 @@ public class HexMapSurfaceRenderer extends SurfaceRenderer {
         this.GameSurfaceTileMap_.drawLayer(this.context_, this.viewPort_);
     }
 
-	@Override
-	protected void drawFinal() {
-		this.GameSurfaceTileMap_.drawFinal(this.context_, this.viewPort_);
-	}
+    @Override
+    protected void drawFinal() {
+        this.GameSurfaceTileMap_.drawFinal(this.context_, this.viewPort_);
+    }
 
-	@Override
+    @Override
     public void start() {
         // NOOP
     }

@@ -23,7 +23,7 @@ import com.micabyte.android.graphics.SurfaceRenderer.ViewPort;
 
 /**
  * TileMap superclass
- * 
+ *
  * @author micabyte
  */
 public abstract class TileMap extends BaseObject {
@@ -31,8 +31,8 @@ public abstract class TileMap extends BaseObject {
     public static int mapHeight;
     protected TileMapZone[][] zones_;
     protected Rect tileRect_;
-	protected final Point viewPortOrigin_ = new Point();
-	protected final Point viewPortSize_ = new Point();
+    protected final Point viewPortOrigin_ = new Point();
+    protected final Point viewPortSize_ = new Point();
 
     protected TileMap(String id, String name) {
         super(id, name, 0);
@@ -44,7 +44,7 @@ public abstract class TileMap extends BaseObject {
         TileMap.mapWidth = map.length;
         this.tileRect_ = new Rect(0, 0, map[0][0].getWidth(c), map[0][0].getHeight(c));
     }
-    
+
     public int getRenderHeight() {
         return (TileMap.mapHeight * this.tileRect_.height());
     }
@@ -52,25 +52,25 @@ public abstract class TileMap extends BaseObject {
     public int getRenderWidth() {
         return (TileMap.mapWidth * this.tileRect_.width());
     }
-    
+
     public int getTileHeight() {
-    	return this.tileRect_.height();
+        return this.tileRect_.height();
     }
 
     public int getTileWidth() {
-    	return this.tileRect_.width();
+        return this.tileRect_.width();
     }
-    
+
     public void drawBase(Context c, ViewPort p) {
-    	Canvas canvas = new Canvas(p.bitmap_);
+        Canvas canvas = new Canvas(p.bitmap_);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setFilterBitmap(true);
         paint.setDither(true);
-    	float scaleFactor = p.getZoom();
+        float scaleFactor = p.getZoom();
         int tileSize = this.tileRect_.width();
-		p.getOrigin(this.viewPortOrigin_);
-		p.getSize(this.viewPortSize_);
+        p.getOrigin(this.viewPortOrigin_);
+        p.getSize(this.viewPortSize_);
         int windowLeft = this.viewPortOrigin_.x;
         int windowTop = this.viewPortOrigin_.y;
         int windowRight = this.viewPortOrigin_.x + this.viewPortSize_.x;
@@ -102,5 +102,5 @@ public abstract class TileMap extends BaseObject {
     public abstract void drawLayer(Context c, ViewPort p);
 
     public abstract void drawFinal(Context c, ViewPort p);
-    
+
 }
