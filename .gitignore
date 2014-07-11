@@ -8,7 +8,7 @@ Thumbs.db
 .DS_Store
 
 # Android Studio
-..idea/libraries/
+.idea/libraries/
 .idea/workspace.xml
 .gradle
 *.iml
