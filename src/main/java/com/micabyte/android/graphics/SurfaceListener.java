@@ -14,7 +14,7 @@ package com.micabyte.android.graphics;
 
 /**
  * Interface for SurfaceListener. Is used to return touch information to the game controller
- * 
+ *
  * @author micabyte
  */
 public interface SurfaceListener {

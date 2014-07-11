@@ -35,7 +35,7 @@ import android.util.SparseArray;
  * cache, we avoid the problem of leaking bitmaps in the code (assuming one doesn't copy them) and
  * reuse bitmaps where possible. Bitmaps are also placed in a SoftReference so that - at least in
  * theory - they are purged when memory runs low.
- * 
+ *
  * @author micabyte
  */
 public class ImageHandler {
@@ -66,8 +66,8 @@ public class ImageHandler {
     }
 
     public Bitmap get(int key, Config config) {
-    	if (key == 0)
-    		Log.d(TAG, "Null resource sent to get()", new Exception());
+        if (key == 0)
+            Log.d(TAG, "Null resource sent to get()", new Exception());
         Bitmap ret = null;
         SoftReference<Bitmap> ref = this.cachedBitmaps_.get(key);
         if (ref != null) {
@@ -117,13 +117,13 @@ public class ImageHandler {
     }
 
     public BitmapFactory.Options getDimensions(int key) {
-    	BitmapFactory.Options opt = new BitmapFactory.Options();
-    	opt.inPreferredConfig = BitmapSurfaceRenderer.DEFAULT_CONFIG;
-    	opt.inJustDecodeBounds = true;
-    	BitmapFactory.decodeResource(this.resources_, key, opt);
-    	return opt;
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inPreferredConfig = BitmapSurfaceRenderer.DEFAULT_CONFIG;
+        opt.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(this.resources_, key, opt);
+        return opt;
     }
-    
+
     // Instance Code
     private static ImageHandler instance_ = null;
 

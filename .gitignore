@@ -1,2 +1,15 @@
-/build
-/bin/
+# Java class files
+*.class
+
+# Windows thumbnail db
+Thumbs.db
+
+# OSX files
+.DS_Store
+
+# Android Studio
+.idea/libraries/
+.idea/workspace.xml
+.gradle
+*.iml
+build/
