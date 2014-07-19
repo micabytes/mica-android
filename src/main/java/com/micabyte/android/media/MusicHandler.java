@@ -87,7 +87,6 @@ public class MusicHandler {
                 mp.setLooping(true);
                 mp.setOnCompletionListener(null);
                 mp.start();
-                return;
             }
         } else {
             mp = MediaPlayer.create(c, music);

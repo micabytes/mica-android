@@ -292,9 +292,9 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
         df.setMaximumFractionDigits(2);
         df.setMinimumFractionDigits(2);
         Log.d(clazz.getName(),
-                "DEBUG_MEMORY allocated " + df.format(Double.valueOf(Runtime.getRuntime().totalMemory() / 1048576)) + "/"
-                        + df.format(Double.valueOf(Runtime.getRuntime().maxMemory() / 1048576)) + "MB ("
-                        + df.format(Double.valueOf(Runtime.getRuntime().freeMemory() / 1048576)) + "MB free)"
+                "DEBUG_MEMORY allocated " + df.format((double) (Runtime.getRuntime().totalMemory() / 1048576)) + "/"
+                        + df.format((double) (Runtime.getRuntime().maxMemory() / 1048576)) + "MB ("
+                        + df.format((double) (Runtime.getRuntime().freeMemory() / 1048576)) + "MB free)"
         );
         System.gc();
         System.gc();

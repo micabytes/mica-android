@@ -245,6 +245,7 @@ public abstract class SurfaceRenderer {
         }
 
         public void zoom(float factor, PointF screenFocus) {
+            if (this.bitmap_ == null) return;
             if (factor != 1.0) {
                 PointF screenSize = new PointF(this.bitmap_.getWidth(), this.bitmap_.getHeight());
                 PointF sceneSize = new PointF(getBackgroundSize());

@@ -98,7 +98,7 @@ public class StringHandler {
 						if (obj != null) {
 							if (vars.length == 1) {
 								if (obj instanceof Integer) {
-									nInt = ((Integer) obj).intValue();
+									nInt = (Integer) obj;
 								}
 								else if (obj instanceof Double) {
 									nInt = ((Double) obj).intValue();
@@ -193,20 +193,20 @@ public class StringHandler {
 		return str;
 	}
 
-	public static String list(Context c, Vector<BaseObject> objs) {
+	public static String list(Context c, Vector<BaseObject> list) {
 		String ret = "";
-		if (objs.size() == 0) return ret;
-		if (objs.size() == 1) {
-			ret = objs.firstElement().getName();
+		if (list.size() == 0) return ret;
+		if (list.size() == 1) {
+			ret = list.firstElement().getName();
 			return ret;
 		}
-		if (objs.size() == 2) {
-			ret = objs.get(0).getName() + " " + c.getString(R.string.stringhandler_and1) + " " + objs.get(1).getName();
+		if (list.size() == 2) {
+			ret = list.get(0).getName() + " " + c.getString(R.string.stringhandler_and1) + " " + list.get(1).getName();
 			return ret;
 		}
-		for (int i = 0; i < objs.size() - 1; i++) {
-			ret += objs.get(i).getName();
-			if (i < objs.size() - 2) {
+		for (int i = 0; i < list.size() - 1; i++) {
+			ret += list.get(i).getName();
+			if (i < list.size() - 2) {
 				ret += c.getString(R.string.stringhandler_comma);
 				ret += " ";
 			}
@@ -215,29 +215,29 @@ public class StringHandler {
 				ret += " ";
 			}
 		}
-		ret += objs.lastElement().getName();
+		ret += list.lastElement().getName();
 		return ret;
 	}
 
-	public static String listString(Context c, Vector<String> objs) {
+	public static String listString(Context c, Vector<String> list) {
 		String ret = "";
-		if (objs.size() == 0) return ret;
-		if (objs.size() == 1) {
-			ret = objs.firstElement();
+		if (list.size() == 0) return ret;
+		if (list.size() == 1) {
+			ret = list.firstElement();
 			return ret;
 		}
-		if (objs.size() == 2) {
-			ret = objs.get(0) + c.getString(R.string.stringhandler_and1) + objs.get(1);
+		if (list.size() == 2) {
+			ret = list.get(0) + c.getString(R.string.stringhandler_and1) + list.get(1);
 			return ret;
 		}
-		for (int i = 0; i < objs.size() - 1; i++) {
-			ret += objs.get(i);
-			if (i < objs.size() - 2)
+		for (int i = 0; i < list.size() - 1; i++) {
+			ret += list.get(i);
+			if (i < list.size() - 2)
 				ret += c.getString(R.string.stringhandler_comma);
 			else
 				ret += c.getString(R.string.stringhandler_and2);
 		}
-		ret += objs.lastElement();
+		ret += list.lastElement();
 		return ret;
 	}
 

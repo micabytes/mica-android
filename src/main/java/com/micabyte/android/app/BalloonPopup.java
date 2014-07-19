@@ -41,7 +41,7 @@ public class BalloonPopup extends Popup implements OnDismissListener {
      *
      * @param id Layout resource id
      */
-    public void setRootViewId(int id) {
+    void setRootViewId(int id) {
         this.rootView_ = this.inflater_.inflate(id, null);
         this.text_ = (TextView) this.rootView_.findViewById(R.id.BalloonPopupText);
         this.arrowDown_ = (ImageView) this.rootView_.findViewById(R.id.arrow_down);

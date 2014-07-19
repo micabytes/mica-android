@@ -18,7 +18,7 @@
         android:fadingEdgeLength="0dip"
         android:paddingLeft="1dip"
         android:scrollbars="none"
-        android:text="@string/default_shorttext"></TextView>
+        android:text="@string/default_shorttext"/>
 
     <FrameLayout
         android:id="@+id/BalloonPopupHeader"

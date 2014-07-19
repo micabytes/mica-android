@@ -195,9 +195,6 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      * this is our fall back solution in all the cases where the user is moving too fast for us to
      * load the actual bitmap data from memory. The quality of the user experience rests on the
      * speed of this function.
-     *
-     * @param canvas The Bitmap to fill
-     * @param rect   Rectangle within the Scene that this bitmap represents.
      */
     protected void drawLowResolutionBackground(Bitmap bitmap, Rect rect) {
         int left = (rect.left >> this.sampleSize_);
