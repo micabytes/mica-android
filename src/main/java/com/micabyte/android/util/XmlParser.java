@@ -30,7 +30,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author micabyte
  */
-public class XmlParser {
+class XmlParser {
 
     public static void parseXml(InputStream istream, DefaultHandler handler) {
         try {

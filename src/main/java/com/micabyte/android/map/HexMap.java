@@ -46,8 +46,8 @@ public abstract class HexMap extends BaseObject {
     protected int windowTop = 0;
     protected int windowRight = 0;
     protected int windowBottom = 0;
-    protected final Paint tilePaint = new Paint();
-    protected final Paint select = new Paint();
+    private final Paint tilePaint = new Paint();
+    private final Paint select = new Paint();
     protected final Paint tileText = new Paint();
 
     protected HexMap(String id, String name) {
@@ -61,7 +61,7 @@ public abstract class HexMap extends BaseObject {
 
     }
 
-    public void setHexMap(Context c, TileMapZone[][] map) {
+    protected void setHexMap(Context c, TileMapZone[][] map) {
         this.zones_ = map;
         HexMap.mapHeight = map[0].length;
         HexMap.mapWidth = map.length;
@@ -128,7 +128,7 @@ public abstract class HexMap extends BaseObject {
             if (iMx >= HexMap.mapWidth) iMx = HexMap.mapWidth;
             int jMx = HexMap.mapHeight - (this.windowTop / (HexMap.tileRect.height() - HexMap.tileSlope) + 1);
             if (jMx >= HexMap.mapHeight) jMx = HexMap.mapHeight;
-            //Log.d("HexMap", "Window Dimensions: " + iMn + " " + iMx + " " + jMn + " " + jMx + " " + windowLeft + " " + windowRight + " " + this.tileRect_.width());
+            //if (BuildConfig.DEBUG) Log.d("HexMap", "Window Dimensions: " + iMn + " " + iMx + " " + jMn + " " + jMx + " " + windowLeft + " " + windowRight + " " + this.tileRect_.width());
             // Draw Tiles
             for (int i = iMx; i >= iMn; i--) {
                 for (int j = jMx; j >= jMn; j--) {

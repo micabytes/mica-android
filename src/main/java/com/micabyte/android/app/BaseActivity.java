@@ -27,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.micabyte.android.BuildConfig;
 import com.micabyte.android.util.GameHelper;
 
 /**
@@ -40,37 +41,34 @@ import com.micabyte.android.util.GameHelper;
  */
 public abstract class BaseActivity extends FragmentActivity implements GameHelper.GameHelperListener {
     // The game helper object. This class is mainly a wrapper around this object.
-    protected GameHelper mHelper;
+    private GameHelper mHelper;
 
     // We expose these constants here because we don't want users of this class
     // to have to know about GameHelper at all.
-    public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
+    private static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
     public static final int CLIENT_APPSTATE = GameHelper.CLIENT_APPSTATE;
     public static final int CLIENT_PLUS = GameHelper.CLIENT_PLUS;
     public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
 
     // Requested clients. By default, that's just the games client.
-    protected int mRequestedClients = CLIENT_GAMES;
+    private int mRequestedClients = CLIENT_GAMES;
 
-    private final static String TAG = "BaseGameActivity";
-    protected boolean mDebugLog = false;
+    private final static String TAG = "BaseActivity";
+    private boolean mDebugLog = false;
 
     public abstract void setFragment();
 
     public abstract void openMenu();
 
-    /**
-     * Constructs a BaseGameActivity with default client (GamesClient).
-     */
+    /** Constructs a BaseGameActivity with default client (GamesClient). */
     protected BaseActivity() {
         super();
     }
 
     /**
      * Constructs a BaseGameActivity with the requested clients.
-     *
      * @param requestedClients The requested clients (a combination of CLIENT_GAMES,
-     *                         CLIENT_PLUS and CLIENT_APPSTATE).
+     *         CLIENT_PLUS and CLIENT_APPSTATE).
      */
     protected BaseActivity(int requestedClients) {
         super();
@@ -85,75 +83,75 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
      * is a no-op.
      *
      * @param requestedClients A combination of the flags CLIENT_GAMES, CLIENT_PLUS
-     *                         and CLIENT_APPSTATE, or CLIENT_ALL to request all available clients.
+     *         and CLIENT_APPSTATE, or CLIENT_ALL to request all available clients.
      */
-    protected void setRequestedClients(int requestedClients) {
-        this.mRequestedClients = requestedClients;
+    void setRequestedClients(int requestedClients) {
+        mRequestedClients = requestedClients;
     }
 
-    public GameHelper getGameHelper() {
-        if (this.mHelper == null) {
-            this.mHelper = new GameHelper(this, this.mRequestedClients);
-            this.mHelper.enableDebugLog(this.mDebugLog);
+    GameHelper getGameHelper() {
+        if (mHelper == null) {
+            mHelper = new GameHelper(this, mRequestedClients);
+            mHelper.enableDebugLog(mDebugLog);
         }
-        return this.mHelper;
+        return mHelper;
     }
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        if (this.mHelper == null) {
+        if (mHelper == null) {
             getGameHelper();
         }
-        this.mHelper.setup(this);
+        mHelper.setup(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        this.mHelper.onStart(this);
+        mHelper.onStart(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        this.mHelper.onStop();
+        mHelper.onStop();
     }
 
     @Override
     protected void onActivityResult(int request, int response, Intent data) {
         super.onActivityResult(request, response, data);
-        this.mHelper.onActivityResult(request, response, data);
+        mHelper.onActivityResult(request, response, data);
     }
 
     protected GoogleApiClient getApiClient() {
-        return this.mHelper.getApiClient();
+        return mHelper.getApiClient();
     }
 
     protected boolean isSignedIn() {
-        return this.mHelper.isSignedIn();
+        return mHelper.isSignedIn();
     }
 
     protected void beginUserInitiatedSignIn() {
-        this.mHelper.beginUserInitiatedSignIn();
+        mHelper.beginUserInitiatedSignIn();
     }
 
     protected void signOut() {
-        this.mHelper.signOut();
+        mHelper.signOut();
     }
 
     protected void showAlert(String message) {
-        this.mHelper.makeSimpleDialog(message).show();
+        mHelper.makeSimpleDialog(message).show();
     }
 
     protected void showAlert(String title, String message) {
-        this.mHelper.makeSimpleDialog(title, message).show();
+        mHelper.makeSimpleDialog(title, message).show();
     }
 
-    protected void enableDebugLog(boolean enabled) {
-        this.mDebugLog = true;
-        if (this.mHelper != null) {
-            this.mHelper.enableDebugLog(enabled);
+    void enableDebugLog(boolean enabled) {
+        mDebugLog = true;
+        if (mHelper != null) {
+            mHelper.enableDebugLog(enabled);
         }
     }
 
@@ -165,21 +163,20 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
     }
 
     protected String getInvitationId() {
-        return this.mHelper.getInvitationId();
+        return mHelper.getInvitationId();
     }
 
     protected void reconnectClient() {
-        this.mHelper.reconnectClient();
+        mHelper.reconnectClient();
     }
 
     protected boolean hasSignInError() {
-        return this.mHelper.hasSignInError();
+        return mHelper.hasSignInError();
     }
 
     protected GameHelper.SignInFailureReason getSignInError() {
-        return this.mHelper.getSignInError();
+        return mHelper.getSignInError();
     }
-
 
     /**
      * Removes the reference to the activity from every view in a view hierarchy (listeners, images
@@ -291,7 +288,7 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2);
         df.setMinimumFractionDigits(2);
-        Log.d(clazz.getName(),
+        if (BuildConfig.DEBUG) Log.d(clazz.getName(),
                 "DEBUG_MEMORY allocated " + df.format((double) (Runtime.getRuntime().totalMemory() / 1048576)) + "/"
                         + df.format((double) (Runtime.getRuntime().maxMemory() / 1048576)) + "MB ("
                         + df.format((double) (Runtime.getRuntime().freeMemory() / 1048576)) + "MB free)"

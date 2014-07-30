@@ -27,9 +27,9 @@ import android.util.SparseArray;
  *
  * @author micabyte
  */
-public class MusicHandler {
+class MusicHandler {
     private static final String TAG = MusicHandler.class.getName();
-    public static final int INVALID_NUMBER = 0;
+    private static final int INVALID_NUMBER = 0;
     private static SparseArray<MediaPlayer> players_ = new SparseArray<MediaPlayer>();
     private static int nextMusic_ = INVALID_NUMBER;
     private static int currentMusic_ = INVALID_NUMBER;
@@ -48,7 +48,7 @@ public class MusicHandler {
      * @param music The resource id of the music file
      * @param force Force-start playing this file
      */
-    public static void start(Context c, int music, boolean force) {
+    private static void start(Context c, int music, boolean force) {
         if ((!force) && (currentMusic_ != INVALID_NUMBER)) {
             // already playing some music and not forced to change immediately
             if (music != INVALID_NUMBER) {
@@ -105,7 +105,7 @@ public class MusicHandler {
     /**
      * Pause all media players
      */
-    public static void pause() {
+    private static void pause() {
         for (int i = 0; i < players_.size(); i++) {
             MediaPlayer p = players_.valueAt(i);
             if (p != null) {
@@ -120,7 +120,7 @@ public class MusicHandler {
     /**
      * Advance to the next resource
      */
-    public static void next() {
+    private static void next() {
         if (nextMusic_ == INVALID_NUMBER) {
             return;
         }

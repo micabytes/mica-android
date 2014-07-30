@@ -34,19 +34,19 @@ import com.micabyte.android.BuildConfig;
  * @author micabyte
  */
 public class MicaSurfaceView extends android.view.SurfaceView implements SurfaceHolder.Callback, OnGestureListener {
-	public static final String TAG = MicaSurfaceView.class.getName();
+	private static final String TAG = MicaSurfaceView.class.getName();
 	/**
 	 * The Game Controller. This where we send UI events other than scroll and pinch-zoom in order
 	 * to be handled
 	 */
 	private SurfaceListener listener_ = null;
 	/** The Game Renderer. This handles all of the drawing duties to the Surface view */
-	protected SurfaceRenderer renderer_ = null;
+    private SurfaceRenderer renderer_ = null;
 	// The Touch Handlers
 	private final TouchHandler touch_;
 	private GestureDetector gesture_;
 	private ScaleGestureDetector scaleGesture_;
-	long lastScaleTime_ = 0;
+	private long lastScaleTime_ = 0;
     private long SCALE_MOVE_GUARD = 500; // milliseconds after scale to ignore move events
 	// Rendering Thread
 	private GameSurfaceViewThread thread_ = null;
@@ -177,7 +177,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 		//this.thread_.onWindowFocusChanged(hasFocus);
-		Log.d(TAG, "onWindowFocusChanged");
+		if (BuildConfig.DEBUG) Log.d(TAG, "onWindowFocusChanged");
 	}
 
 	// Set a Runnable to be run on the rendering thread.

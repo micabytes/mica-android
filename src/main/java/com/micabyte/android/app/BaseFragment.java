@@ -38,6 +38,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
+import com.micabyte.android.BuildConfig;
+
 /**
  * Convenience class to replace Fragment
  * 
@@ -60,14 +62,14 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     // Used to set up UI elements
     protected abstract void createFragment();
     // Used to update the UI elements
-    public abstract void updateFragment();
+    protected abstract void updateFragment();
 
 
-    public BaseActivity getBaseActivity() {
+    protected BaseActivity getBaseActivity() {
 		return (BaseActivity) getActivity();
 	}
 	
-    public TextView getTextView(int resId) {
+    protected TextView getTextView(int resId) {
         return (TextView) getView().findViewById(resId);
     }
 
@@ -239,11 +241,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     	toast(message, Toast.LENGTH_LONG);
     }
 
-    public void toast(String message, int length) {
+    void toast(String message, int length) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
-	public class ContentDescriptionClickListener implements OnClickListener {
+	private class ContentDescriptionClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
 			Toast.makeText(getActivity(), v.getContentDescription(), Toast.LENGTH_LONG).show();

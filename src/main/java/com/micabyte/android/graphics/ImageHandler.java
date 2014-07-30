@@ -29,6 +29,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.micabyte.android.BuildConfig;
+
 /**
  * ImageHandler is a singleton class that is used to manage bitmaps resources used programmatically in
  * the app (i.e., not bitmaps assigned in layouts). By allocating and managing them in a central
@@ -39,7 +41,7 @@ import android.util.SparseArray;
  * @author micabyte
  */
 public class ImageHandler {
-    public static final String TAG = ImageHandler.class.getName();
+    private static final String TAG = ImageHandler.class.getName();
     // Default Config for Bitmap Retrieval
     private static final Config DEFAULT_CONFIG = Config.ARGB_8888;
     // Application context
@@ -50,7 +52,7 @@ public class ImageHandler {
     private SparseArray<SoftReference<Bitmap>> cachedBitmaps_ =
             new SparseArray<SoftReference<Bitmap>>();
 
-    public ImageHandler(Context c) {
+    private ImageHandler(Context c) {
         this.resources_ = c.getResources();
         DisplayMetrics metrics = this.resources_.getDisplayMetrics();
         ImageHandler.density = metrics.density;
@@ -65,9 +67,9 @@ public class ImageHandler {
         return get(key, DEFAULT_CONFIG);
     }
 
-    public Bitmap get(int key, Config config) {
+    Bitmap get(int key, Config config) {
         if (key == 0)
-            Log.d(TAG, "Null resource sent to get()", new Exception());
+            if (BuildConfig.DEBUG) Log.d(TAG, "Null resource sent to get()", new Exception());
         Bitmap ret = null;
         SoftReference<Bitmap> ref = this.cachedBitmaps_.get(key);
         if (ref != null) {

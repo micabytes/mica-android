@@ -22,6 +22,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
+import com.micabyte.android.BuildConfig;
+
 /**
  * SurfaceRenderer is the superclass of the renderer. The game should subclass
  * the renderer and extend the drawing methods to add game drawing.
@@ -37,15 +39,15 @@ public abstract class SurfaceRenderer {
     // View Size Minimum
     private final static int MINIMUM_PIXELS_IN_VIEW = 50;
     // Context
-    protected Context context_;
+    Context context_;
     // The ViewPort
-    protected final ViewPort viewPort_ = new ViewPort();
+    final ViewPort viewPort_ = new ViewPort();
     // The Dimensions of the Game Area
     Point backgroundSize_ = new Point();
     // The Current Scale Factor
     //protected float scaleFactor_ = 1.0f;
 
-    protected SurfaceRenderer(Context c) {
+    SurfaceRenderer(Context c) {
         this.context_ = c;
     }
 
@@ -209,7 +211,7 @@ public abstract class SurfaceRenderer {
                     this.bitmap_ = null;
                 }
                 this.bitmap_ = Bitmap.createBitmap(w, h, Config.RGB_565);
-                Log.d("SF", "Created bitmap of size " + w + " " + h);
+                if (BuildConfig.DEBUG) Log.d("SF", "Created bitmap of size " + w + " " + h);
                 this.window.set(
                         this.window.left,
                         this.window.top,
@@ -297,7 +299,7 @@ public abstract class SurfaceRenderer {
                     }
                     this.window.set((int) w2.left, (int) w2.top, (int) w2.right, (int) w2.bottom);
                     this.zoom = newZoom;
-//                    Log.d(TAG,String.format(
+//                    if (BuildConfig.DEBUG) Log.d(TAG,String.format(
 //                            "f=%.2f, z=%.2f, scrf(%.0f,%.0f), scnf(%.0f,%.0f) w1s(%.0f,%.0f) w2s(%.0f,%.0f) w1(%.0f,%.0f,%.0f,%.0f) w2(%.0f,%.0f,%.0f,%.0f)",
 //                            factor,
 //                            zoom,

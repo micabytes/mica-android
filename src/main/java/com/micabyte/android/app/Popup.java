@@ -17,19 +17,19 @@ import com.micabyte.android.graphics.ImageHandler;
 /**
  * Custom Popup Window
  */
-public class Popup {
-    protected Context context_;
-    protected WindowManager windowManager_;
-    protected PopupWindow window_;
-    protected View rootView_ = null;
-    protected Drawable background_ = null;
+class Popup {
+    private Context context_;
+    WindowManager windowManager_;
+    PopupWindow window_;
+    View rootView_ = null;
+    private Drawable background_ = null;
 
     /**
      * Constructor.
      *
      * @param context Context
      */
-    public Popup(Context context) {
+    Popup(Context context) {
         this.context_ = context;
         this.window_ = new PopupWindow(context);
         this.window_.setTouchInterceptor(new OnTouchListener() {
@@ -62,14 +62,14 @@ public class Popup {
     /**
      * On show
      */
-    protected void onShow() {
+    void onShow() {
         // NOOP
     }
 
     /**
      * On pre show
      */
-    protected void preShow() {
+    void preShow() {
         if (this.rootView_ == null)
             throw new IllegalStateException("setContentView was not called with a view to display.");
         onShow();
@@ -99,7 +99,7 @@ public class Popup {
      *
      * @param root Root view
      */
-    public void setContentView(View root) {
+    void setContentView(View root) {
         this.rootView_ = root;
         this.window_.setContentView(root);
     }
@@ -119,7 +119,7 @@ public class Popup {
      *
      * @param listener
      */
-    public void setOnDismissListener(PopupWindow.OnDismissListener listener) {
+    void setOnDismissListener(PopupWindow.OnDismissListener listener) {
         this.window_.setOnDismissListener(listener);
     }
 

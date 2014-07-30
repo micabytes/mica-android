@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
 
+import com.micabyte.android.BuildConfig;
 import com.micabyte.android.R;
 
 public class BalloonPopup extends Popup implements OnDismissListener {
@@ -73,7 +74,7 @@ public class BalloonPopup extends Popup implements OnDismissListener {
         //	yPos = anchorRect.bottom;
         //	onTop = false;
         //}
-        Log.d("Balloon", xPos + " " + yPos + " " + location[0] + " " + location[1] + " " + rootWidth + " " + rootHeight);
+        if (BuildConfig.DEBUG) Log.d("Balloon", xPos + " " + yPos + " " + location[0] + " " + location[1] + " " + rootWidth + " " + rootHeight);
         showArrow(((onTop) ? R.id.arrow_down : R.id.arrow_up), anchorRect.centerX() - xPos);
         //setAnimationStyle(screenWidth, anchorRect.centerX(), onTop);
         this.window_.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);

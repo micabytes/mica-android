@@ -27,12 +27,12 @@ import com.micabyte.android.graphics.SurfaceRenderer.ViewPort;
  * @author micabyte
  */
 public abstract class TileMap extends BaseObject {
-    public static int mapWidth;
-    public static int mapHeight;
-    protected TileMapZone[][] zones_;
-    protected Rect tileRect_;
-    protected final Point viewPortOrigin_ = new Point();
-    protected final Point viewPortSize_ = new Point();
+    private static int mapWidth;
+    private static int mapHeight;
+    private TileMapZone[][] zones_;
+    private Rect tileRect_;
+    private final Point viewPortOrigin_ = new Point();
+    private final Point viewPortSize_ = new Point();
 
     protected TileMap(String id, String name) {
         super(id, name, 0);

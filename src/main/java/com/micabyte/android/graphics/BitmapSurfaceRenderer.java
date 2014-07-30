@@ -36,7 +36,7 @@ import com.micabyte.android.BuildConfig;
  * @author micabyte
  */
 public class BitmapSurfaceRenderer extends SurfaceRenderer {
-    public static final String TAG = BitmapSurfaceRenderer.class.getName();
+    private static final String TAG = BitmapSurfaceRenderer.class.getName();
     // Default Settings
     public static final Config DEFAULT_CONFIG = Config.RGB_565;
     private static final int DEFAULT_SAMPLESIZE = 2;
@@ -65,13 +65,13 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     /**
      * Threshold for using low resolution image
      */
-    final float lowResThreshold_;
+    private final float lowResThreshold_;
     /**
      * Calculated rect
      */
     private Rect calculatedCacheWindowRect = new Rect();
 
-    public BitmapSurfaceRenderer(Context c) {
+    private BitmapSurfaceRenderer(Context c) {
         super(c);
         this.options_.inPreferredConfig = DEFAULT_CONFIG;
         this.sampleSize_ = DEFAULT_SAMPLESIZE;
@@ -79,7 +79,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
         this.lowResThreshold_ = DEFAULT_THRESHOLD;
     }
 
-    public BitmapSurfaceRenderer(Context c, Bitmap.Config config, int sampleSize, int memUsage, float threshold) {
+    private BitmapSurfaceRenderer(Context c, Bitmap.Config config, int sampleSize, int memUsage, float threshold) {
         super(c);
         this.options_.inPreferredConfig = config;
         this.sampleSize_ = sampleSize;
@@ -175,7 +175,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      * @param rect The portion of the background bitmap to be cached
      * @return The bitmap representing the requested area of the background
      */
-    protected Bitmap loadCachedBitmap(Rect rect) {
+    Bitmap loadCachedBitmap(Rect rect) {
         Bitmap ret = this.decoder_.decodeRegion(rect, this.options_);
         return ret;
     }
@@ -185,7 +185,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      *
      * @param error The OutOfMemoryError exception data
      */
-    protected void cacheBitmapOutOfMemoryError(OutOfMemoryError error) {
+    void cacheBitmapOutOfMemoryError(OutOfMemoryError error) {
         if (this.memUsage_ > 0) this.memUsage_ -= 1;
         Log.e(TAG, "OutOfMemory caught; reducing cache size to " + this.memUsage_ + " percent.");
     }
@@ -196,7 +196,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      * load the actual bitmap data from memory. The quality of the user experience rests on the
      * speed of this function.
      */
-    protected void drawLowResolutionBackground(Bitmap bitmap, Rect rect) {
+    void drawLowResolutionBackground(Bitmap bitmap, Rect rect) {
         int left = (rect.left >> this.sampleSize_);
         int top = (rect.top >> this.sampleSize_);
         int right = (rect.right >> this.sampleSize_);
@@ -217,7 +217,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      * @param rect The dimensions of the current viewport
      * @return The dimensions of the cache
      */
-    protected Rect calculateCacheDimensions(Rect rect) {
+    Rect calculateCacheDimensions(Rect rect) {
         final int BYTES_PER_PIXEL = 4;
         long bytesToUse = Runtime.getRuntime().maxMemory() * this.memUsage_ / 100;
         Point sz = getBackgroundSize();
@@ -264,7 +264,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
         // Set the origin based on our new calculated values.
         this.calculatedCacheWindowRect.set(left, top, right, bottom);
         if (BuildConfig.DEBUG)
-            Log.d(TAG, "new cache.originRect = " + this.calculatedCacheWindowRect.toShortString() + " size=" + sz.toString());
+            if (BuildConfig.DEBUG) Log.d(TAG, "new cache.originRect = " + this.calculatedCacheWindowRect.toShortString() + " size=" + sz.toString());
         return this.calculatedCacheWindowRect;
     }
 
@@ -513,9 +513,9 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                             // End Loading Timer
                             long endTime = System.currentTimeMillis();
                             if (BuildConfig.DEBUG)
-                                Log.d(TAG, "Loaded background image in " + (endTime - startTime) + "ms");
+                                if (BuildConfig.DEBUG) Log.d(TAG, "Loaded background image in " + (endTime - startTime) + "ms");
                         } catch (OutOfMemoryError e) {
-                            Log.d(TAG, "CacheThread out of memory");
+                            if (BuildConfig.DEBUG) Log.d(TAG, "CacheThread out of memory");
                             // Out of memory error detected. Lower the memory allocation
                             synchronized (this.cache_) {
                                 cacheBitmapOutOfMemoryError(e);
