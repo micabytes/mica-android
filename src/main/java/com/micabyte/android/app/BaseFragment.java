@@ -38,8 +38,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
-import com.micabyte.android.BuildConfig;
-
 /**
  * Convenience class to replace Fragment
  * 
@@ -106,13 +104,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     protected CheckBox getCheckBox(int resId_) {
-        CheckBox b = (CheckBox) getView().findViewById(resId_);
-        return b;
+        return (CheckBox) getView().findViewById(resId_);
     }
 
     protected RadioButton getRadioButton(int resId_) {
-    	RadioButton b = (RadioButton) getView().findViewById(resId_);
-        return b;
+    	return (RadioButton) getView().findViewById(resId_);
     }
 
     protected ImageButton getImageButton(int resId) {
@@ -188,13 +184,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     protected Spinner getSpinner(int resId) {
-        Spinner s = (Spinner) getView().findViewById(resId);
-        return s;
+        return (Spinner) getView().findViewById(resId);
     }
 
     protected ListView getListView(int resId) {
-        ListView l = (ListView) getView().findViewById(resId);
-        return l;
+        return (ListView) getView().findViewById(resId);
     }
 
     protected ListView setListView(int resId, BaseAdapter adapter) {
@@ -204,28 +198,23 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     protected RelativeLayout getRelativeLayout(int resId) {
-        RelativeLayout l = (RelativeLayout) getView().findViewById(resId);
-        return l;
+        return (RelativeLayout) getView().findViewById(resId);
     }
 
     protected LinearLayout getLinearLayout(int resId) {
-        LinearLayout l = (LinearLayout) getView().findViewById(resId);
-        return l;
+        return (LinearLayout) getView().findViewById(resId);
     }
 
     protected ProgressBar getProgressBar(int resId) {
-        ProgressBar p = (ProgressBar) getView().findViewById(resId);
-        return p;
+        return (ProgressBar) getView().findViewById(resId);
     }
 
     public SeekBar getSeekBar(int resId) {
-        SeekBar p = (SeekBar) getView().findViewById(resId);
-        return p;
+        return (SeekBar) getView().findViewById(resId);
     }
 
     protected ViewFlipper getViewFlipper(int resId) {
-        ViewFlipper l = (ViewFlipper) getView().findViewById(resId);
-        return l;
+        return (ViewFlipper) getView().findViewById(resId);
     }
 
     public void error(String tag, String message) {
@@ -253,3 +242,4 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 	}
     
 }
+

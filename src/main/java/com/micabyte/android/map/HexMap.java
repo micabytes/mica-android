@@ -26,7 +26,7 @@ import com.micabyte.android.graphics.SurfaceRenderer.ViewPort;
 /**
  * HexMap superclass
  * <p/>
- * This implementation works for pointy-side up hexmaps. Needs to be adjusted
+ * This implementation works for pointy-side up HexMaps. Needs to be adjusted
  * if it is going to be used for flat-side up maps.
  *
  * @author micabyte
@@ -47,17 +47,19 @@ public abstract class HexMap extends BaseObject {
     protected int windowRight = 0;
     protected int windowBottom = 0;
     private final Paint tilePaint = new Paint();
-    private final Paint select = new Paint();
     protected final Paint tileText = new Paint();
+    // Draw
+    protected final Canvas canvas = new Canvas();
 
     protected HexMap(String id, String name) {
         super(id, name, 0);
         this.tilePaint.setAntiAlias(true);
         this.tilePaint.setFilterBitmap(true);
         this.tilePaint.setDither(true);
-        this.select.setStyle(Paint.Style.STROKE);
-        this.select.setColor(Color.RED);
-        this.select.setStrokeWidth(2);
+        Paint select = new Paint();
+        select.setStyle(Paint.Style.STROKE);
+        select.setColor(Color.RED);
+        select.setStrokeWidth(2);
 
     }
 
@@ -82,10 +84,10 @@ public abstract class HexMap extends BaseObject {
             Log.e("HM", "Viewport bitmap is null");
             return;
         }
-        Canvas canvas = new Canvas(p.bitmap_);
+        canvas.setBitmap(p.bitmap_);
         this.scaleFactor = p.getZoom();
         int yOffset = (HexMap.tileRect.height() - HexMap.tileSlope);
-        int xOffset = 0;
+        int xOffset;
         p.getOrigin(this.viewPortOrigin_);
         p.getSize(this.viewPortSize_);
         this.windowLeft = this.viewPortOrigin_.x;
@@ -128,7 +130,6 @@ public abstract class HexMap extends BaseObject {
             if (iMx >= HexMap.mapWidth) iMx = HexMap.mapWidth;
             int jMx = HexMap.mapHeight - (this.windowTop / (HexMap.tileRect.height() - HexMap.tileSlope) + 1);
             if (jMx >= HexMap.mapHeight) jMx = HexMap.mapHeight;
-            //if (BuildConfig.DEBUG) Log.d("HexMap", "Window Dimensions: " + iMn + " " + iMx + " " + jMn + " " + jMx + " " + windowLeft + " " + windowRight + " " + this.tileRect_.width());
             // Draw Tiles
             for (int i = iMx; i >= iMn; i--) {
                 for (int j = jMx; j >= jMn; j--) {
@@ -151,5 +152,7 @@ public abstract class HexMap extends BaseObject {
     public abstract void drawLayer(Context c, ViewPort p);
 
     public abstract void drawFinal(Context c, ViewPort p);
+
+    public abstract Point getViewPortOrigin(int x, int y, ViewPort p);
 
 }

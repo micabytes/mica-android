@@ -32,7 +32,7 @@ import com.micabyte.android.R;
  * @author micabyte
  */
 public class StringHandler {
-	private final static int NOTFOUND = -1;
+	private final static int NOT_FOUND = -1;
 	private final static String punctuation = "(),;.!?\"";
 
 	/**
@@ -65,9 +65,9 @@ public class StringHandler {
 		ret = ret.replace("\\n", System.getProperty("line.separator"));
 		// Handle random choice
 		start = ret.indexOf("[/");
-		while (start != NOTFOUND) {
+		while (start != NOT_FOUND) {
 			end = ret.indexOf("/]", start);
-			if (end != NOTFOUND) {
+			if (end != NOT_FOUND) {
 				String replace = ret.substring(start, end + 2);
 				String sub = ret.substring(start + 2, end);
 				String tokens[] = sub.split("[/]");
@@ -75,13 +75,13 @@ public class StringHandler {
 				start = ret.indexOf("[/");
 			}
 			else
-				start = NOTFOUND;
+				start = NOT_FOUND;
 		}
 		// Handle plurals
 		start = ret.indexOf("[#");
-		while (start != NOTFOUND) {
+		while (start != NOT_FOUND) {
 			end = ret.indexOf("#]", start);
-			if (end == NOTFOUND) end = ret.length();
+			if (end == NOT_FOUND) end = ret.length();
 			String replace = ret.substring(start, end + 2);
 			String sub = ret.substring(start + 2, end);
 			String tokens[] = sub.split("[/]");
@@ -131,11 +131,11 @@ public class StringHandler {
 		// Game variable substitution
 		if (variables != null) {
 			start = ret.indexOf('$');
-			while (start != NOTFOUND) {
+			while (start != NOT_FOUND) {
 				// Regular Variable
 				end = ret.indexOf(' ', start);
-				if (end == NOTFOUND) end = ret.length();
-				while (punctuation.indexOf(ret.charAt(end - 1)) != NOTFOUND)
+				if (end == NOT_FOUND) end = ret.length();
+				while (punctuation.indexOf(ret.charAt(end - 1)) != NOT_FOUND)
 					end--;
 				String variable = ret.substring(start, end);
 				String tokens[] = variable.split("[.]");
@@ -262,7 +262,7 @@ public class StringHandler {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		StringBuilder sb = new StringBuilder();
 
-		String line = null;
+		String line;
 		try {
 			while ((line = reader.readLine()) != null) {
 				sb.append(line).append("\n");

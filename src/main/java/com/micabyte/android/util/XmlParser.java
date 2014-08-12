@@ -32,9 +32,9 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 class XmlParser {
 
-    public static void parseXml(InputStream istream, DefaultHandler handler) {
+    public static void parseXml(InputStream iStream, DefaultHandler handler) {
         try {
-            // Get a SAXParser from the SAXPArserFactory.
+            // Get a SAXParser from the SAXParserFactory.
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp;
             sp = spf.newSAXParser();
@@ -43,7 +43,7 @@ class XmlParser {
             xr = sp.getXMLReader();
             // Create a new ContentHandler and apply it to the XML-Reader
             xr.setContentHandler(handler);
-            xr.parse(new InputSource(istream));
+            xr.parse(new InputSource(iStream));
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {

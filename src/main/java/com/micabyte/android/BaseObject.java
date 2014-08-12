@@ -89,8 +89,7 @@ public abstract class BaseObject {
     public boolean getBoolean(String id) {
         switch (ValueToken.get(id)) {
             case value:
-                if (getValue() > 0) return true;
-                return false;
+                return getValue() > 0;
             default:
                 return false;
         }

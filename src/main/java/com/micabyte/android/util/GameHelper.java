@@ -153,7 +153,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
     // Print debug logs?
     private boolean mDebugLog = false;
 
-    private Handler mHandler;
+    private final Handler mHandler;
 
     /*
      * If we got an invitation when we connected to the games client, it's here.
@@ -798,7 +798,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
         debugLog("   - details: " + mConnectionResult.toString());
 
         int cancellations = getSignInCancellations();
-        boolean shouldResolve = false;
+        boolean shouldResolve;
 
         if (mUserInitiatedSignIn) {
             debugLog("onConnectionFailed: WILL resolve because user initiated sign-in.");
@@ -939,7 +939,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
             Log.e("GameHelper", "*** No Activity. Can't show failure dialog!");
             return;
         }
-        Dialog errorDialog = null;
+        Dialog errorDialog;
 
         switch (actResp) {
             case GamesActivityResultCodes.RESULT_APP_MISCONFIGURED:

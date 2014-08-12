@@ -18,9 +18,9 @@ import com.micabyte.android.graphics.ImageHandler;
  * Custom Popup Window
  */
 class Popup {
-    private Context context_;
-    WindowManager windowManager_;
-    PopupWindow window_;
+    private final Context context_;
+    final WindowManager windowManager_;
+    final PopupWindow window_;
     View rootView_ = null;
     private Drawable background_ = null;
 
@@ -110,8 +110,8 @@ class Popup {
      * @param layoutResID Resource id
      */
     public void setContentView(int layoutResID) {
-        LayoutInflater inflator = (LayoutInflater) this.context_.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        setContentView(inflator.inflate(layoutResID, null));
+        LayoutInflater inflater = (LayoutInflater) this.context_.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        setContentView(inflater.inflate(layoutResID, null));
     }
 
     /**

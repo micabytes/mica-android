@@ -1,144 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Standard Colors -->
-    <color name="White">#FFFFFF</color>
-    <color name="Ivory">#FFFFF0</color>
-    <color name="LightYellow">#FFFFE0</color>
-    <color name="Yellow">#FFFF00</color>
-    <color name="Snow">#FFFAFA</color>
-    <color name="FloralWhite">#FFFAF0</color>
-    <color name="LemonChiffon">#FFFACD</color>
-    <color name="Cornsilk">#FFF8DC</color>
-    <color name="Seashell">#FFF5EE</color>
-    <color name="LavenderBlush">#FFF0F5</color>
-    <color name="PapayaWhip">#FFEFD5</color>
-    <color name="BlanchedAlmond">#FFEBCD</color>
-    <color name="MistyRose">#FFE4E1</color>
-    <color name="Bisque">#FFE4C4</color>
-    <color name="Moccasin">#FFE4B5</color>
-    <color name="NavajoWhite">#FFDEAD</color>
-    <color name="PeachPuff">#FFDAB9</color>
-    <color name="Gold">#FFD700</color>
-    <color name="Pink">#FFC0CB</color>
-    <color name="LightPink">#FFB6C1</color>
-    <color name="Orange">#FFA500</color>
-    <color name="LightSalmon">#FFA07A</color>
-    <color name="DarkOrange">#FF8C00</color>
-    <color name="Coral">#FF7F50</color>
-    <color name="HotPink">#FF69B4</color>
-    <color name="Tomato">#FF6347</color>
-    <color name="OrangeRed">#FF4500</color>
-    <color name="DeepPink">#FF1493</color>
-    <color name="Fuchsia">#FF00FF</color>
-    <color name="Magenta">#FF00FF</color>
-    <color name="Red">#FF0000</color>
-    <color name="OldLace">#FDF5E6</color>
-    <color name="LightGoldenrodYellow">#FAFAD2</color>
-    <color name="Linen">#FAF0E6</color>
-    <color name="AntiqueWhite">#FAEBD7</color>
-    <color name="Salmon">#FA8072</color>
-    <color name="GhostWhite">#F8F8FF</color>
-    <color name="MintCream">#F5FFFA</color>
-    <color name="WhiteSmoke">#F5F5F5</color>
-    <color name="Beige">#F5F5DC</color>
-    <color name="Wheat">#F5DEB3</color>
-    <color name="SandyBrown">#F4A460</color>
-    <color name="Azure">#F0FFFF</color>
-    <color name="Honeydew">#F0FFF0</color>
-    <color name="AliceBlue">#F0F8FF</color>
-    <color name="Khaki">#F0E68C</color>
-    <color name="LightCoral">#F08080</color>
-    <color name="PaleGoldenrod">#EEE8AA</color>
-    <color name="Violet">#EE82EE</color>
-    <color name="DarkSalmon">#E9967A</color>
-    <color name="Lavender">#E6E6FA</color>
-    <color name="LightCyan">#E0FFFF</color>
-    <color name="BurlyWood">#DEB887</color>
-    <color name="Plum">#DDA0DD</color>
-    <color name="Gainsboro">#DCDCDC</color>
-    <color name="Crimson">#DC143C</color>
-    <color name="PaleVioletRed">#DB7093</color>
-    <color name="Goldenrod">#DAA520</color>
-    <color name="Orchid">#DA70D6</color>
-    <color name="Thistle">#D8BFD8</color>
-    <color name="LightGrey">#D3D3D3</color>
-    <color name="Tan">#D2B48C</color>
-    <color name="Chocolate">#D2691E</color>
-    <color name="Peru">#CD853F</color>
-    <color name="IndianRed">#CD5C5C</color>
-    <color name="MediumVioletRed">#C71585</color>
-    <color name="Silver">#C0C0C0</color>
-    <color name="DarkKhaki">#BDB76B</color>
-    <color name="RosyBrown">#BC8F8F</color>
-    <color name="MediumOrchid">#BA55D3</color>
-    <color name="DarkGoldenrod">#B8860B</color>
-    <color name="FireBrick">#B22222</color>
-    <color name="PowderBlue">#B0E0E6</color>
-    <color name="LightSteelBlue">#B0C4DE</color>
-    <color name="PaleTurquoise">#AFEEEE</color>
-    <color name="GreenYellow">#ADFF2F</color>
-    <color name="LightBlue">#ADD8E6</color>
-    <color name="DarkGray">#A9A9A9</color>
-    <color name="Brown">#A52A2A</color>
-    <color name="Sienna">#A0522D</color>
-    <color name="YellowGreen">#9ACD32</color>
-    <color name="DarkOrchid">#9932CC</color>
-    <color name="PaleGreen">#98FB98</color>
-    <color name="DarkViolet">#9400D3</color>
-    <color name="MediumPurple">#9370DB</color>
-    <color name="LightGreen">#90EE90</color>
-    <color name="DarkSeaGreen">#8FBC8F</color>
-    <color name="SaddleBrown">#8B4513</color>
-    <color name="DarkMagenta">#8B008B</color>
-    <color name="DarkRed">#8B0000</color>
-    <color name="BlueViolet">#8A2BE2</color>
-    <color name="LightSkyBlue">#87CEFA</color>
-    <color name="SkyBlue">#87CEEB</color>
-    <color name="Gray">#808080</color>
-    <color name="Olive">#808000</color>
-    <color name="Purple">#800080</color>
-    <color name="Maroon">#800000</color>
-    <color name="Aquamarine">#7FFFD4</color>
-    <color name="Chartreuse">#7FFF00</color>
-    <color name="LawnGreen">#7CFC00</color>
-    <color name="MediumSlateBlue">#7B68EE</color>
-    <color name="LightSlateGray">#778899</color>
-    <color name="SlateGray">#708090</color>
-    <color name="OliveDrab">#6B8E23</color>
-    <color name="SlateBlue">#6A5ACD</color>
-    <color name="DimGray">#696969</color>
-    <color name="MediumAquamarine">#66CDAA</color>
-    <color name="CornflowerBlue">#6495ED</color>
-    <color name="CadetBlue">#5F9EA0</color>
-    <color name="DarkOliveGreen">#556B2F</color>
-    <color name="Indigo">#4B0082</color>
-    <color name="MediumTurquoise">#48D1CC</color>
-    <color name="DarkSlateBlue">#483D8B</color>
-    <color name="SteelBlue">#4682B4</color>
-    <color name="RoyalBlue">#4169E1</color>
-    <color name="Turquoise">#40E0D0</color>
-    <color name="MediumSeaGreen">#3CB371</color>
-    <color name="LimeGreen">#32CD32</color>
-    <color name="DarkSlateGray">#2F4F4F</color>
-    <color name="SeaGreen">#2E8B57</color>
-    <color name="ForestGreen">#228B22</color>
-    <color name="LightSeaGreen">#20B2AA</color>
-    <color name="DodgerBlue">#1E90FF</color>
-    <color name="MidnightBlue">#191970</color>
-    <color name="Aqua">#00FFFF</color>
-    <color name="Cyan">#00FFFF</color>
-    <color name="SpringGreen">#00FF7F</color>
-    <color name="Lime">#00FF00</color>
-    <color name="MediumSpringGreen">#00FA9A</color>
-    <color name="DarkTurquoise">#00CED1</color>
-    <color name="DeepSkyBlue">#00BFFF</color>
-    <color name="DarkCyan">#008B8B</color>
-    <color name="Teal">#008080</color>
-    <color name="Green">#008000</color>
-    <color name="DarkGreen">#006400</color>
-    <color name="Blue">#0000FF</color>
-    <color name="MediumBlue">#0000CD</color>
-    <color name="DarkBlue">#00008B</color>
-    <color name="Navy">#000080</color>
-    <color name="Black">#000000</color>
+    <color name="White" tools:ignore="UnusedResources">#FFFFFF</color>
+    <color name="Ivory" tools:ignore="UnusedResources">#FFFFF0</color>
+    <color name="LightYellow" tools:ignore="UnusedResources">#FFFFE0</color>
+    <color name="Yellow" tools:ignore="UnusedResources">#FFFF00</color>
+    <color name="Snow" tools:ignore="UnusedResources">#FFFAFA</color>
+    <color name="FloralWhite" tools:ignore="UnusedResources">#FFFAF0</color>
+    <color name="LemonChiffon" tools:ignore="UnusedResources">#FFFACD</color>
+    <color name="Cornsilk" tools:ignore="UnusedResources">#FFF8DC</color>
+    <color name="Seashell" tools:ignore="UnusedResources">#FFF5EE</color>
+    <color name="LavenderBlush" tools:ignore="UnusedResources">#FFF0F5</color>
+    <color name="PapayaWhip" tools:ignore="UnusedResources">#FFEFD5</color>
+    <color name="BlanchedAlmond" tools:ignore="UnusedResources">#FFEBCD</color>
+    <color name="MistyRose" tools:ignore="UnusedResources">#FFE4E1</color>
+    <color name="Bisque" tools:ignore="UnusedResources">#FFE4C4</color>
+    <color name="Moccasin" tools:ignore="UnusedResources">#FFE4B5</color>
+    <color name="NavajoWhite" tools:ignore="UnusedResources">#FFDEAD</color>
+    <color name="PeachPuff" tools:ignore="UnusedResources">#FFDAB9</color>
+    <color name="Gold" tools:ignore="UnusedResources">#FFD700</color>
+    <color name="Pink" tools:ignore="UnusedResources">#FFC0CB</color>
+    <color name="LightPink" tools:ignore="UnusedResources">#FFB6C1</color>
+    <color name="Orange" tools:ignore="UnusedResources">#FFA500</color>
+    <color name="LightSalmon" tools:ignore="UnusedResources">#FFA07A</color>
+    <color name="DarkOrange" tools:ignore="UnusedResources">#FF8C00</color>
+    <color name="Coral" tools:ignore="UnusedResources">#FF7F50</color>
+    <color name="HotPink" tools:ignore="UnusedResources">#FF69B4</color>
+    <color name="Tomato" tools:ignore="UnusedResources">#FF6347</color>
+    <color name="OrangeRed" tools:ignore="UnusedResources">#FF4500</color>
+    <color name="DeepPink" tools:ignore="UnusedResources">#FF1493</color>
+    <color name="Fuchsia" tools:ignore="UnusedResources">#FF00FF</color>
+    <color name="Magenta" tools:ignore="UnusedResources">#FF00FF</color>
+    <color name="Red" tools:ignore="UnusedResources">#FF0000</color>
+    <color name="OldLace" tools:ignore="UnusedResources">#FDF5E6</color>
+    <color name="LightGoldenrodYellow" tools:ignore="UnusedResources">#FAFAD2</color>
+    <color name="Linen" tools:ignore="UnusedResources">#FAF0E6</color>
+    <color name="AntiqueWhite" tools:ignore="UnusedResources">#FAEBD7</color>
+    <color name="Salmon" tools:ignore="UnusedResources">#FA8072</color>
+    <color name="GhostWhite" tools:ignore="UnusedResources">#F8F8FF</color>
+    <color name="MintCream" tools:ignore="UnusedResources">#F5FFFA</color>
+    <color name="WhiteSmoke" tools:ignore="UnusedResources">#F5F5F5</color>
+    <color name="Beige" tools:ignore="UnusedResources">#F5F5DC</color>
+    <color name="Wheat" tools:ignore="UnusedResources">#F5DEB3</color>
+    <color name="SandyBrown" tools:ignore="UnusedResources">#F4A460</color>
+    <color name="Azure" tools:ignore="UnusedResources">#F0FFFF</color>
+    <color name="Honeydew" tools:ignore="UnusedResources">#F0FFF0</color>
+    <color name="AliceBlue" tools:ignore="UnusedResources">#F0F8FF</color>
+    <color name="Khaki" tools:ignore="UnusedResources">#F0E68C</color>
+    <color name="LightCoral" tools:ignore="UnusedResources">#F08080</color>
+    <color name="PaleGoldenrod" tools:ignore="UnusedResources">#EEE8AA</color>
+    <color name="Violet" tools:ignore="UnusedResources">#EE82EE</color>
+    <color name="DarkSalmon" tools:ignore="UnusedResources">#E9967A</color>
+    <color name="Lavender" tools:ignore="UnusedResources">#E6E6FA</color>
+    <color name="LightCyan" tools:ignore="UnusedResources">#E0FFFF</color>
+    <color name="BurlyWood" tools:ignore="UnusedResources">#DEB887</color>
+    <color name="Plum" tools:ignore="UnusedResources">#DDA0DD</color>
+    <color name="Gainsboro" tools:ignore="UnusedResources">#DCDCDC</color>
+    <color name="Crimson" tools:ignore="UnusedResources">#DC143C</color>
+    <color name="PaleVioletRed" tools:ignore="UnusedResources">#DB7093</color>
+    <color name="Goldenrod" tools:ignore="UnusedResources">#DAA520</color>
+    <color name="Orchid" tools:ignore="UnusedResources">#DA70D6</color>
+    <color name="Thistle" tools:ignore="UnusedResources">#D8BFD8</color>
+    <color name="LightGrey" tools:ignore="UnusedResources">#D3D3D3</color>
+    <color name="Tan" tools:ignore="UnusedResources">#D2B48C</color>
+    <color name="Chocolate" tools:ignore="UnusedResources">#D2691E</color>
+    <color name="Peru" tools:ignore="UnusedResources">#CD853F</color>
+    <color name="IndianRed" tools:ignore="UnusedResources">#CD5C5C</color>
+    <color name="MediumVioletRed" tools:ignore="UnusedResources">#C71585</color>
+    <color name="Silver" tools:ignore="UnusedResources">#C0C0C0</color>
+    <color name="DarkKhaki" tools:ignore="UnusedResources">#BDB76B</color>
+    <color name="RosyBrown" tools:ignore="UnusedResources">#BC8F8F</color>
+    <color name="MediumOrchid" tools:ignore="UnusedResources">#BA55D3</color>
+    <color name="DarkGoldenrod" tools:ignore="UnusedResources">#B8860B</color>
+    <color name="FireBrick" tools:ignore="UnusedResources">#B22222</color>
+    <color name="PowderBlue" tools:ignore="UnusedResources">#B0E0E6</color>
+    <color name="LightSteelBlue" tools:ignore="UnusedResources">#B0C4DE</color>
+    <color name="PaleTurquoise" tools:ignore="UnusedResources">#AFEEEE</color>
+    <color name="GreenYellow" tools:ignore="UnusedResources">#ADFF2F</color>
+    <color name="LightBlue" tools:ignore="UnusedResources">#ADD8E6</color>
+    <color name="DarkGray" tools:ignore="UnusedResources">#A9A9A9</color>
+    <color name="Brown" tools:ignore="UnusedResources">#A52A2A</color>
+    <color name="Sienna" tools:ignore="UnusedResources">#A0522D</color>
+    <color name="YellowGreen" tools:ignore="UnusedResources">#9ACD32</color>
+    <color name="DarkOrchid" tools:ignore="UnusedResources">#9932CC</color>
+    <color name="PaleGreen" tools:ignore="UnusedResources">#98FB98</color>
+    <color name="DarkViolet" tools:ignore="UnusedResources">#9400D3</color>
+    <color name="MediumPurple" tools:ignore="UnusedResources">#9370DB</color>
+    <color name="LightGreen" tools:ignore="UnusedResources">#90EE90</color>
+    <color name="DarkSeaGreen" tools:ignore="UnusedResources">#8FBC8F</color>
+    <color name="SaddleBrown" tools:ignore="UnusedResources">#8B4513</color>
+    <color name="DarkMagenta" tools:ignore="UnusedResources">#8B008B</color>
+    <color name="DarkRed" tools:ignore="UnusedResources">#8B0000</color>
+    <color name="BlueViolet" tools:ignore="UnusedResources">#8A2BE2</color>
+    <color name="LightSkyBlue" tools:ignore="UnusedResources">#87CEFA</color>
+    <color name="SkyBlue" tools:ignore="UnusedResources">#87CEEB</color>
+    <color name="Gray" tools:ignore="UnusedResources">#808080</color>
+    <color name="Olive" tools:ignore="UnusedResources">#808000</color>
+    <color name="Purple" tools:ignore="UnusedResources">#800080</color>
+    <color name="Maroon" tools:ignore="UnusedResources">#800000</color>
+    <color name="Aquamarine" tools:ignore="UnusedResources">#7FFFD4</color>
+    <color name="Chartreuse" tools:ignore="UnusedResources">#7FFF00</color>
+    <color name="LawnGreen" tools:ignore="UnusedResources">#7CFC00</color>
+    <color name="MediumSlateBlue" tools:ignore="UnusedResources">#7B68EE</color>
+    <color name="LightSlateGray" tools:ignore="UnusedResources">#778899</color>
+    <color name="SlateGray" tools:ignore="UnusedResources">#708090</color>
+    <color name="OliveDrab" tools:ignore="UnusedResources">#6B8E23</color>
+    <color name="SlateBlue" tools:ignore="UnusedResources">#6A5ACD</color>
+    <color name="DimGray" tools:ignore="UnusedResources">#696969</color>
+    <color name="MediumAquamarine" tools:ignore="UnusedResources">#66CDAA</color>
+    <color name="CornflowerBlue" tools:ignore="UnusedResources">#6495ED</color>
+    <color name="CadetBlue" tools:ignore="UnusedResources">#5F9EA0</color>
+    <color name="DarkOliveGreen" tools:ignore="UnusedResources">#556B2F</color>
+    <color name="Indigo" tools:ignore="UnusedResources">#4B0082</color>
+    <color name="MediumTurquoise" tools:ignore="UnusedResources">#48D1CC</color>
+    <color name="DarkSlateBlue" tools:ignore="UnusedResources">#483D8B</color>
+    <color name="SteelBlue" tools:ignore="UnusedResources">#4682B4</color>
+    <color name="RoyalBlue" tools:ignore="UnusedResources">#4169E1</color>
+    <color name="Turquoise" tools:ignore="UnusedResources">#40E0D0</color>
+    <color name="MediumSeaGreen" tools:ignore="UnusedResources">#3CB371</color>
+    <color name="LimeGreen" tools:ignore="UnusedResources">#32CD32</color>
+    <color name="DarkSlateGray" tools:ignore="UnusedResources">#2F4F4F</color>
+    <color name="SeaGreen" tools:ignore="UnusedResources">#2E8B57</color>
+    <color name="ForestGreen" tools:ignore="UnusedResources">#228B22</color>
+    <color name="LightSeaGreen" tools:ignore="UnusedResources">#20B2AA</color>
+    <color name="DodgerBlue" tools:ignore="UnusedResources">#1E90FF</color>
+    <color name="MidnightBlue" tools:ignore="UnusedResources">#191970</color>
+    <color name="Aqua" tools:ignore="UnusedResources">#00FFFF</color>
+    <color name="Cyan" tools:ignore="UnusedResources">#00FFFF</color>
+    <color name="SpringGreen" tools:ignore="UnusedResources">#00FF7F</color>
+    <color name="Lime" tools:ignore="UnusedResources">#00FF00</color>
+    <color name="MediumSpringGreen" tools:ignore="UnusedResources">#00FA9A</color>
+    <color name="DarkTurquoise" tools:ignore="UnusedResources">#00CED1</color>
+    <color name="DeepSkyBlue" tools:ignore="UnusedResources">#00BFFF</color>
+    <color name="DarkCyan" tools:ignore="UnusedResources">#008B8B</color>
+    <color name="Teal" tools:ignore="UnusedResources">#008080</color>
+    <color name="Green" tools:ignore="UnusedResources">#008000</color>
+    <color name="DarkGreen" tools:ignore="UnusedResources">#006400</color>
+    <color name="Blue" tools:ignore="UnusedResources">#0000FF</color>
+    <color name="MediumBlue" tools:ignore="UnusedResources">#0000CD</color>
+    <color name="DarkBlue" tools:ignore="UnusedResources">#00008B</color>
+    <color name="Navy" tools:ignore="UnusedResources">#000080</color>
+    <color name="Black" tools:ignore="UnusedResources">#000000</color>
 </resources>

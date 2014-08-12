@@ -39,11 +39,11 @@ public abstract class SurfaceRenderer {
     // View Size Minimum
     private final static int MINIMUM_PIXELS_IN_VIEW = 50;
     // Context
-    Context context_;
+    final Context context_;
     // The ViewPort
     final ViewPort viewPort_ = new ViewPort();
     // The Dimensions of the Game Area
-    Point backgroundSize_ = new Point();
+    final Point backgroundSize_ = new Point();
     // The Current Scale Factor
     //protected float scaleFactor_ = 1.0f;
 
@@ -99,6 +99,10 @@ public abstract class SurfaceRenderer {
      * Set the position (center) of the view
      */
     public void setViewPosition(int x, int y) {
+        this.viewPort_.setOrigin(x, y);
+    }
+
+    public void setMapPosition(int x, int y) {
         this.viewPort_.setOrigin(x, y);
     }
 
@@ -299,19 +303,6 @@ public abstract class SurfaceRenderer {
                     }
                     this.window.set((int) w2.left, (int) w2.top, (int) w2.right, (int) w2.bottom);
                     this.zoom = newZoom;
-//                    if (BuildConfig.DEBUG) Log.d(TAG,String.format(
-//                            "f=%.2f, z=%.2f, scrf(%.0f,%.0f), scnf(%.0f,%.0f) w1s(%.0f,%.0f) w2s(%.0f,%.0f) w1(%.0f,%.0f,%.0f,%.0f) w2(%.0f,%.0f,%.0f,%.0f)",
-//                            factor,
-//                            zoom,
-//                            screenFocus.x,
-//                            screenFocus.y,
-//                            sceneFocus.x,
-//                            sceneFocus.y,
-//                            w1.width(),w1.height(),
-//                            w2Width, w2Height,
-//                            w1.left,w1.top,w1.right,w1.bottom,
-//                            w2.left,w2.top,w2.right,w2.bottom
-//                            ));
                 }
             }
         }
@@ -326,110 +317,6 @@ public abstract class SurfaceRenderer {
                 }
             }
         }
-
-        /** A Rect that can be used for drawing. Same size as bitmap *
-         private final Rect bitmapSize_ = new Rect();
-         /**
-         * The center of the ViewPort, calculated as coordinates of the background/virtual image.
-         * This is the point used for calculations all over.
-         *
-         * Using the center point (rather than, e.g., the left upper or left lower) allows us to
-         * handle panning and zooming a lot easier.
-         *
-         private final Point viewPortCenter_ = new Point();
-
-         public void getViewPosition(Point p) {
-         synchronized (this) {
-         p.x = this.viewPortCenter_.x;
-         p.y = this.viewPortCenter_.y;
-         }
-         }
-
-         void setViewPosition(int nx, int ny) {
-         synchronized (this) {
-         int x = nx;
-         int y = ny;
-         int windowLeft =
-         (int) (nx - (this.bitmapSize_.right / (SurfaceRenderer.this.scaleFactor_ * 2)));
-         int windowTop =
-         (int) (ny - (this.bitmapSize_.bottom / (SurfaceRenderer.this.scaleFactor_ * 2)));
-         int windowRight =
-         (int) (nx + (this.bitmapSize_.right / (SurfaceRenderer.this.scaleFactor_ * 2)));
-         int windowBottom =
-         (int) (ny + (this.bitmapSize_.bottom / (SurfaceRenderer.this.scaleFactor_ * 2)));
-         if (windowLeft < 0)
-         x = (int) (this.bitmapSize_.right / (SurfaceRenderer.this.scaleFactor_ * 2));
-         if (windowTop < 0)
-         y = (int) (this.bitmapSize_.bottom / (SurfaceRenderer.this.scaleFactor_ * 2));
-         if (windowRight > SurfaceRenderer.this.backgroundSize_.x)
-         x = SurfaceRenderer.this.backgroundSize_.x
-         - (int) (this.bitmapSize_.right / (SurfaceRenderer.this.scaleFactor_ * 2));
-         if (windowBottom > SurfaceRenderer.this.backgroundSize_.y)
-         y = SurfaceRenderer.this.backgroundSize_.y
-         - (int) (this.bitmapSize_.bottom / (SurfaceRenderer.this.scaleFactor_ * 2));
-         // set windows
-         this.viewPortCenter_.set(x, y);
-         }
-         }
-
-         void moveViewPosition(int ox, int oy, int dx, int dy) {
-         synchronized (this) {
-         // set windows
-         setViewPosition(((int) (ox - (dx / SurfaceRenderer.this.scaleFactor_))),
-         ((int) (oy - (dy / SurfaceRenderer.this.scaleFactor_))));
-         }
-         }
-
-         public Rect getViewPortSize() {
-         return this.bitmapSize_;
-         }
-
-         public void getViewPortSize(Point p) {
-         synchronized (this) {
-         p.x = this.bitmapSize_.right;
-         p.y = this.bitmapSize_.bottom;
-         }
-         }
-
-         void setViewPortSize(int w, int h) {
-         synchronized (this) {
-         if (this.bitmap_ != null) {
-         this.bitmap_.recycle();
-         this.bitmap_ = null;
-         }
-         this.bitmap_ = Bitmap.createBitmap(w, h, Config.RGB_565);
-         this.bitmapSize_.set(0, 0, w, h);
-         }
-         }
-
-         public Rect getScaledViewPort() {
-         Rect ret;
-         synchronized (this) {
-         int w2 =
-         (int) (this.bitmapSize_.width() / (SurfaceRenderer.this.scaleFactor_ * 2));
-         int h2 =
-         (int) (this.bitmapSize_.height() / (SurfaceRenderer.this.scaleFactor_ * 2));
-         ret =
-         new Rect(this.viewPortCenter_.x - w2, this.viewPortCenter_.y - h2,
-         this.viewPortCenter_.x + w2, this.viewPortCenter_.y + h2);
-         }
-         return ret;
-         }
-
-         public Rect getWindow() {
-         Rect ret;
-         synchronized (this) {
-         int w2 =
-         this.bitmapSize_.width() / 2;
-         int h2 =
-         this.bitmapSize_.height() / 2;
-         ret =   new Rect(this.viewPortCenter_.x - w2, this.viewPortCenter_.y - h2,
-         this.viewPortCenter_.x + w2, this.viewPortCenter_.y + h2);
-         }
-         return ret;
-         }
-         */
-
     }
 
     public void zoom(float scaleFactor, PointF screenFocus) {

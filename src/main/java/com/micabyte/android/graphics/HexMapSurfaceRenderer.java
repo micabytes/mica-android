@@ -13,6 +13,7 @@
 package com.micabyte.android.graphics;
 
 import android.content.Context;
+import android.graphics.Point;
 
 import com.micabyte.android.map.HexMap;
 
@@ -23,7 +24,7 @@ import com.micabyte.android.map.HexMap;
  */
 public class HexMapSurfaceRenderer extends SurfaceRenderer {
     public static final String TAG = HexMapSurfaceRenderer.class.getName();
-    // The Hexmap object
+    // The HexMap object
     private HexMap GameSurfaceTileMap_ = null;
 
     public HexMapSurfaceRenderer(Context c) {
@@ -51,6 +52,19 @@ public class HexMapSurfaceRenderer extends SurfaceRenderer {
     @Override
     protected void drawFinal() {
         this.GameSurfaceTileMap_.drawFinal(this.context_, this.viewPort_);
+    }
+
+    @Override
+    public void setViewPosition(int x, int y)
+    {
+        this.viewPort_.setOrigin(x, y);
+    }
+
+    @Override
+    public void setMapPosition(int x, int y)
+    {
+        Point p = this.GameSurfaceTileMap_.getViewPortOrigin(x, y, this.viewPort_);
+        this.viewPort_.setOrigin(p.x, p.y);
     }
 
     @Override

@@ -45,11 +45,11 @@ public class ImageHandler {
     // Default Config for Bitmap Retrieval
     private static final Config DEFAULT_CONFIG = Config.ARGB_8888;
     // Application context
-    private Resources resources_;
+    private final Resources resources_;
     // Shortcut to the Display Density
     public static float density;
     // Bitmap cache
-    private SparseArray<SoftReference<Bitmap>> cachedBitmaps_ =
+    private final SparseArray<SoftReference<Bitmap>> cachedBitmaps_ =
             new SparseArray<SoftReference<Bitmap>>();
 
     private ImageHandler(Context c) {
@@ -70,7 +70,7 @@ public class ImageHandler {
     Bitmap get(int key, Config config) {
         if (key == 0)
             if (BuildConfig.DEBUG) Log.d(TAG, "Null resource sent to get()", new Exception());
-        Bitmap ret = null;
+        Bitmap ret;
         SoftReference<Bitmap> ref = this.cachedBitmaps_.get(key);
         if (ref != null) {
             ret = ref.get();
@@ -88,8 +88,7 @@ public class ImageHandler {
         opts.inPreferredConfig = bitmapConfig;
         opts.inPurgeable = true;
         opts.inInputShareable = true;
-        Bitmap ret = BitmapFactory.decodeResource(this.resources_, key, opts);
-        return ret;
+        return BitmapFactory.decodeResource(this.resources_, key, opts);
     }
 
     public Bitmap getSceneBitmap(int bkg, int left, int right) {

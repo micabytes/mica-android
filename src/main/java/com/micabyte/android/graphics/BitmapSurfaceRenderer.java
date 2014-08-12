@@ -69,7 +69,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     /**
      * Calculated rect
      */
-    private Rect calculatedCacheWindowRect = new Rect();
+    private final Rect calculatedCacheWindowRect = new Rect();
 
     private BitmapSurfaceRenderer(Context c) {
         super(c);
@@ -176,8 +176,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      * @return The bitmap representing the requested area of the background
      */
     Bitmap loadCachedBitmap(Rect rect) {
-        Bitmap ret = this.decoder_.decodeRegion(rect, this.options_);
-        return ret;
+        return this.decoder_.decodeRegion(rect, this.options_);
     }
 
     /**
@@ -398,9 +397,9 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
             }
             // Use the low resolution version if the cache is empty or scale factor is < threshold
             if (bitmap == null) //|| (BitmapSurfaceRenderer.this.scaleFactor_ < BitmapSurfaceRenderer.this.lowResThreshold_))
-                drawLowResolution(p);
+                drawLowResolution();
             else
-                drawHighResolution(bitmap, p);
+                drawHighResolution(bitmap);
         }
 
         /**
@@ -416,27 +415,27 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
         /**
          * Use the high resolution cached bitmap for drawing
          */
-        void drawHighResolution(Bitmap bitmap, ViewPort p) {
-            Rect wSize = p.window;
+        void drawHighResolution(Bitmap bitmap) {
+            Rect wSize = BitmapSurfaceRenderer.this.viewPort_.window;
             if (bitmap != null) {
-                synchronized (p) {
+                synchronized (BitmapSurfaceRenderer.this.viewPort_) {
                     int left = wSize.left - this.cacheWindow_.left;
                     int top = wSize.top - this.cacheWindow_.top;
                     int right = left + wSize.width();
                     int bottom = top + wSize.height();
-                    p.getPhysicalSize(this.dstSize_);
+                    BitmapSurfaceRenderer.this.viewPort_.getPhysicalSize(this.dstSize_);
                     this.srcRect_.set(left, top, right, bottom);
                     this.dstRect_.set(0, 0, this.dstSize_.x, this.dstSize_.y);
-                    Canvas canvas = new Canvas(p.bitmap_);
+                    Canvas canvas = new Canvas(BitmapSurfaceRenderer.this.viewPort_.bitmap_);
                     canvas.drawBitmap(bitmap, this.srcRect_, this.dstRect_, null);
                 }
             }
         }
 
-        void drawLowResolution(ViewPort p) {
+        void drawLowResolution() {
             if (getState() != CacheState.NOT_INITIALIZED) {
-                synchronized (p) {
-                    drawLowResolutionBackground(p.bitmap_, p.window);
+                synchronized (BitmapSurfaceRenderer.this.viewPort_) {
+                    drawLowResolutionBackground(BitmapSurfaceRenderer.this.viewPort_.bitmap_, BitmapSurfaceRenderer.this.viewPort_.window);
                 }
             }
         }

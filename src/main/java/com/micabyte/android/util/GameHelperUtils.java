@@ -15,7 +15,8 @@ import com.google.android.gms.games.GamesActivityResultCodes;
 import com.micabyte.android.R;
 
 /**
- * Created by btco on 2/10/14.
+ * Derived from the standard Android GameHelper classes.
+ * Created by  btco on 2/10/14.
  */
 class GameHelperUtils {
     private static final String TAG = GameHelperUtils.class.getName();

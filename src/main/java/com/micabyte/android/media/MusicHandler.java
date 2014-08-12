@@ -19,7 +19,7 @@ import android.util.Log;
 import android.util.SparseArray;
 
 /**
- * MusicHandler is a simple, dumb wrapper around the Android mediaplayer. It plays music files placed
+ * MusicHandler is a simple, dumb wrapper around the Android MediaPlayer. It plays music files placed
  * in the raw resource directory.
  * <p/>
  * General usage: Start it in the onResume of an activity, and stop the music in the onPause.
@@ -30,7 +30,7 @@ import android.util.SparseArray;
 class MusicHandler {
     private static final String TAG = MusicHandler.class.getName();
     private static final int INVALID_NUMBER = 0;
-    private static SparseArray<MediaPlayer> players_ = new SparseArray<MediaPlayer>();
+    private static final SparseArray<MediaPlayer> players_ = new SparseArray<MediaPlayer>();
     private static int nextMusic_ = INVALID_NUMBER;
     private static int currentMusic_ = INVALID_NUMBER;
 
@@ -92,7 +92,7 @@ class MusicHandler {
             mp = MediaPlayer.create(c, music);
             players_.put(music, mp);
             if (mp == null) {
-                // Log an error, but don't do anthing (we do not want to risk f/c the app)
+                // Log an error, but don't do anything (we do not want to risk f/c the app)
                 Log.e(TAG, "player was not created successfully");
             } else {
                 mp.setLooping(true);

@@ -19,10 +19,11 @@ package com.micabyte.android.math;
  * Basic polygon wrapper to handle simple point in polygon problems.
  */
 class Polygon {
-    // Polygon coodinates.
-    private int[] polyX_, polyY_;
+    // Polygon coordinates.
+    private final int[] polyX_;
+    private final int[] polyY_;
     // Number of sides in the polygon.
-    private int polyN_;
+    private final int polyN_;
 
     public Polygon(int[] px, int[] py, int ps) {
         this.polyX_ = px;

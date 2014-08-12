@@ -43,36 +43,39 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	/** The Game Renderer. This handles all of the drawing duties to the Surface view */
     private SurfaceRenderer renderer_ = null;
 	// The Touch Handlers
-	private final TouchHandler touch_;
+	private TouchHandler touch_;
 	private GestureDetector gesture_;
 	private ScaleGestureDetector scaleGesture_;
 	private long lastScaleTime_ = 0;
-    private long SCALE_MOVE_GUARD = 500; // milliseconds after scale to ignore move events
-	// Rendering Thread
+    // Rendering Thread
 	private GameSurfaceViewThread thread_ = null;
 	//private Runnable threadEvent_ = null;
 
 	public MicaSurfaceView(Context context) {
 		super(context);
+        // This ensures that we don't get errors when using it in Eclipse layout editing
+        if (isInEditMode()) return;
 		this.touch_ = new TouchHandler(context);
 		initialize(context);
 	}
 
 	public MicaSurfaceView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+        // This ensures that we don't get errors when using it in Eclipse layout editing
+        if (isInEditMode()) return;
 		this.touch_ = new TouchHandler(context);
 		initialize(context);
 	}
 
 	public MicaSurfaceView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+        // This ensures that we don't get errors when using it in Eclipse layout editing
+        if (isInEditMode()) return;
 		this.touch_ = new TouchHandler(context);
 		initialize(context);
 	}
 
 	private void initialize(Context context) {
-		// This ensures that we don't get errors when using it in Eclipse layout editing
-		if (isInEditMode()) return;
 		// Set SurfaceHolder callback
 		getHolder().addCallback(this);
 		// Initialize touch handlers
@@ -102,6 +105,8 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	public void setViewPosition(Point p) {
 		this.renderer_.setViewPosition(p.x, p.y);
 	}
+
+    public void setMapPosition(Point p) { this.renderer_.setMapPosition(p.x, p.y); }
 
 	public void centerViewPosition() {
         Point viewportSize = new Point();
@@ -291,7 +296,8 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 				this.listener_.onTouchDown(x, y);
 				return this.touch_.down(event);
 			case MotionEvent.ACTION_MOVE:
-				if (this.scaleGesture_.isInProgress() || System.currentTimeMillis()-this.lastScaleTime_<this.SCALE_MOVE_GUARD)
+                long SCALE_MOVE_GUARD = 500;
+                if (this.scaleGesture_.isInProgress() || System.currentTimeMillis()-this.lastScaleTime_< SCALE_MOVE_GUARD)
 					break;
 				return this.touch_.move(event);
 			case MotionEvent.ACTION_UP:
@@ -340,7 +346,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	 * Scale Listener Used to change the scale factor on the GameSurfaceRenderer
 	 */
 	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-        private PointF screenFocus = new PointF();
+        private final PointF screenFocus = new PointF();
 
         public ScaleListener() {
 			super();

@@ -18,7 +18,7 @@ import com.micabyte.android.R;
 public class BalloonPopup extends Popup implements OnDismissListener {
     private ImageView arrowUp_;
     private ImageView arrowDown_;
-    private LayoutInflater inflater_;
+    private final LayoutInflater inflater_;
     private TextView text_;
     private OnDismissListener mDismissListener;
 
