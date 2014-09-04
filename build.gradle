@@ -22,7 +22,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:19.+'
-    compile 'com.google.android.gms:play-services:5.0.77'
+    compile 'com.google.android.gms:play-services:5.0.89'
     compile files('libs/jackson-core-2.2.3.jar')
     compile files('libs/jackson-annotations-2.2.3.jar')
     compile files('libs/jackson-databind-2.2.3.jar')
