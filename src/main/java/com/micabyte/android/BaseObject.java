@@ -57,7 +57,7 @@ public abstract class BaseObject {
         return this.name_;
     }
 
-    protected void setName(String name) {
+    public void setName(String name) {
         this.name_ = name;
     }
 

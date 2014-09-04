@@ -79,7 +79,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
         this.lowResThreshold_ = DEFAULT_THRESHOLD;
     }
 
-    private BitmapSurfaceRenderer(Context c, Bitmap.Config config, int sampleSize, int memUsage, float threshold) {
+    protected BitmapSurfaceRenderer(Context c, Bitmap.Config config, int sampleSize, int memUsage, float threshold) {
         super(c);
         this.options_.inPreferredConfig = config;
         this.sampleSize_ = sampleSize;

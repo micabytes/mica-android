@@ -39,9 +39,9 @@ public abstract class SurfaceRenderer {
     // View Size Minimum
     private final static int MINIMUM_PIXELS_IN_VIEW = 50;
     // Context
-    final Context context_;
+    protected final Context context_;
     // The ViewPort
-    final ViewPort viewPort_ = new ViewPort();
+    protected final ViewPort viewPort_ = new ViewPort();
     // The Dimensions of the Game Area
     final Point backgroundSize_ = new Point();
     // The Current Scale Factor
