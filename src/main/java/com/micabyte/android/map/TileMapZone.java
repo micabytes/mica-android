@@ -49,7 +49,7 @@ public abstract class TileMapZone extends BaseObject {
      * Draw the base bitmap of the tile on a canvas
      */
     public void drawBase(Context c, Canvas canvas, Rect tileRect, Rect destRect, Paint paint) {
-        canvas.drawBitmap(ImageHandler.getInstance(c).get(getValue()), tileRect, destRect, paint);
+        canvas.drawBitmap(ImageHandler.getInstance(c).get(getValue(), true), tileRect, destRect, paint);
     }
 
 

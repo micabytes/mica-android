@@ -58,7 +58,7 @@ public class StringHandler {
 	 * @param variables A hash map containing variables
 	 * @return String with all of the scripting code replaced appropriately
 	 */
-	private static String format(Context c, String text, HashMap<String, Object> variables) {
+	public static String format(Context c, String text, HashMap<String, Object> variables) {
 		int start, end;
 		String ret = text;
 		// Insert Line breaks

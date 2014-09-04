@@ -60,7 +60,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     // Used to set up UI elements
     protected abstract void createFragment();
     // Used to update the UI elements
-    protected abstract void updateFragment();
+    public abstract void updateFragment();
 
 
     protected BaseActivity getBaseActivity() {
@@ -234,7 +234,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
-	private class ContentDescriptionClickListener implements OnClickListener {
+	public class ContentDescriptionClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
 			Toast.makeText(getActivity(), v.getContentDescription(), Toast.LENGTH_LONG).show();

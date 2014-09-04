@@ -12,8 +12,6 @@
  */
 package com.micabyte.android.graphics;
 
-import java.lang.ref.SoftReference;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -30,6 +28,8 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.micabyte.android.BuildConfig;
+
+import java.lang.ref.SoftReference;
 
 /**
  * ImageHandler is a singleton class that is used to manage bitmaps resources used programmatically in
@@ -49,8 +49,8 @@ public class ImageHandler {
     // Shortcut to the Display Density
     public static float density;
     // Bitmap cache
-    private final SparseArray<SoftReference<Bitmap>> cachedBitmaps_ =
-            new SparseArray<SoftReference<Bitmap>>();
+    private final SparseArray<SoftReference<Bitmap>> cachedBitmaps_ = new SparseArray<SoftReference<Bitmap>>();
+    private final SparseArray<Bitmap> persistBitmaps_ = new SparseArray<Bitmap>();
 
     private ImageHandler(Context c) {
         this.resources_ = c.getResources();
@@ -64,13 +64,25 @@ public class ImageHandler {
     }
 
     public Bitmap get(int key) {
-        return get(key, DEFAULT_CONFIG);
+        return get(key, DEFAULT_CONFIG, false);
     }
 
-    Bitmap get(int key, Config config) {
+    public Bitmap get(int key, boolean persist) {
+        return get(key, DEFAULT_CONFIG, persist);
+    }
+
+    public Bitmap get(int key, Config config) {
+        return get(key, DEFAULT_CONFIG, false);
+    }
+
+    Bitmap get(int key, Config config, boolean persist) {
         if (key == 0)
             if (BuildConfig.DEBUG) Log.d(TAG, "Null resource sent to get()", new Exception());
         Bitmap ret;
+        if (persist) {
+            ret = this.persistBitmaps_.get(key);
+            if (ret != null) return ret;
+        }
         SoftReference<Bitmap> ref = this.cachedBitmaps_.get(key);
         if (ref != null) {
             ret = ref.get();
@@ -79,7 +91,10 @@ public class ImageHandler {
             }
         }
         ret = loadBitmap(key, config);
-        this.cachedBitmaps_.put(key, new SoftReference<Bitmap>(ret));
+        if (persist)
+            this.persistBitmaps_.put(key,ret);
+        else
+            this.cachedBitmaps_.put(key, new SoftReference<Bitmap>(ret));
         return ret;
     }
 
