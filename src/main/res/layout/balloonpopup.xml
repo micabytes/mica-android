@@ -16,7 +16,10 @@
         android:background="@drawable/ui_balloonpopup_background_body"
         android:textColor="#000000"
         android:fadingEdgeLength="0dip"
-        android:paddingLeft="1dip"
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp"
+        android:paddingStart="1dp"
+        android:paddingEnd="1dp"
         android:scrollbars="none"
         android:text="@string/default_shorttext"/>
 
