@@ -124,7 +124,7 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
         mHelper.onActivityResult(request, response, data);
     }
 
-    protected GoogleApiClient getApiClient() {
+    public GoogleApiClient getApiClient() {
         return mHelper.getApiClient();
     }
 
@@ -132,11 +132,11 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
         return mHelper.isSignedIn();
     }
 
-    protected void beginUserInitiatedSignIn() {
+    public void beginUserInitiatedSignIn() {
         mHelper.beginUserInitiatedSignIn();
     }
 
-    protected void signOut() {
+    public void signOut() {
         mHelper.signOut();
     }
 

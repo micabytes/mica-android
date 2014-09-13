@@ -30,6 +30,8 @@
         android:layout_above="@id/BalloonPopupText"
         android:layout_alignLeft="@id/BalloonPopupText"
         android:layout_alignRight="@id/BalloonPopupText"
+        android:layout_alignStart="@id/BalloonPopupText"
+        android:layout_alignEnd="@id/BalloonPopupText"
         android:layout_marginBottom="-1dip"
         android:background="@drawable/ui_balloonpopup_background_top" />
 
@@ -39,6 +41,8 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/BalloonPopupText"
         android:layout_alignRight="@id/BalloonPopupText"
+        android:layout_alignStart="@id/BalloonPopupText"
+        android:layout_alignEnd="@id/BalloonPopupText"
         android:layout_below="@id/BalloonPopupText"
         android:background="@drawable/ui_balloonpopup_background_bottom" />
 

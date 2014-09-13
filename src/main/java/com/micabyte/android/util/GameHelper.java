@@ -110,8 +110,6 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
 
     // Api options to use when adding each API, null for none
     private GamesOptions mGamesApiOptions = GamesOptions.builder().build();
-    private PlusOptions mPlusApiOptions = null;
-    private NoOptions mAppStateApiOptions = null;
 
     // Google API client object we manage.
     private GoogleApiClient mGoogleApiClient = null;
@@ -247,7 +245,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
      */
     public void setAppStateApiOptions(NoOptions options) {
         doApiOptionsPreCheck();
-        mAppStateApiOptions = options;
+        NoOptions mAppStateApiOptions = options;
     }
 
     /**
@@ -256,7 +254,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks, GoogleAp
      */
     public void setPlusApiOptions(PlusOptions options) {
         doApiOptionsPreCheck();
-        mPlusApiOptions = options;
+        PlusOptions mPlusApiOptions = options;
     }
 
     /**
