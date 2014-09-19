@@ -16,6 +16,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -215,7 +216,16 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 
 		@Override
 		public void run() {
-			Canvas canvas;
+            Canvas canvas;
+            // Handle issue 58385 in Android 4.3
+            int delayMillis = 5;
+            if (Build.VERSION.SDK_INT == 18) delayMillis = 475;
+            try {
+                Thread.sleep(delayMillis);
+            }
+            catch (InterruptedException e) {
+                // NOOP
+            }
 			// This is the rendering loop; it goes until asked to quit.
 			while (this.running_) {
 				// CPU timeout - help keep things cool

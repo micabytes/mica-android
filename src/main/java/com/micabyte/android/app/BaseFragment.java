@@ -63,7 +63,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     public abstract void updateFragment();
 
 
-    protected BaseActivity getBaseActivity() {
+    public BaseActivity getBaseActivity() {
 		return (BaseActivity) getActivity();
 	}
 	

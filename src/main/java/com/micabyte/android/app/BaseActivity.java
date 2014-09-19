@@ -27,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 import com.micabyte.android.BuildConfig;
 import com.micabyte.android.util.GameHelper;
 
@@ -123,6 +124,10 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
         super.onActivityResult(request, response, data);
         mHelper.onActivityResult(request, response, data);
     }
+
+    abstract public void showSpinner();
+
+    abstract public void dismissSpinner();
 
     public GoogleApiClient getApiClient() {
         return mHelper.getApiClient();

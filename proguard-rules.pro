@@ -25,3 +25,23 @@
 -keepnames class * implements android.os.Parcelable {
     public static final ** CREATOR;
 }
+
+# Jackson
+#-libraryjars libs/jackson-annotations-2.2.3.jar
+#-libraryjars libs/jackson-core-2.2.3.jar
+#-libraryjars libs/jackson-databind-2.2.3.jar
+
+-dontskipnonpubliclibraryclassmembers
+
+-keepattributes *Annotation*,EnclosingMethod
+
+-keepnames class org.codehaus.jackson.** { *; }
+
+-dontwarn javax.xml.**
+-dontwarn javax.xml.stream.events.**
+-dontwarn com.fasterxml.jackson.databind.**
+
+-keep public class com.micabyte.android.battle.game..** {
+  public void set*(***);
+  public *** get*();
+}
