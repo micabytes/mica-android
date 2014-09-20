@@ -127,9 +127,9 @@ public abstract class HexMap extends BaseObject {
             int jMn = HexMap.mapHeight - ((this.windowBottom / (HexMap.tileRect.height() - HexMap.tileSlope)) + 2);
             if (jMn < 0) jMn = 0;
             int iMx = HexMap.mapWidth - ((this.windowLeft / HexMap.tileRect.width()) + 1);
-            if (iMx >= HexMap.mapWidth) iMx = HexMap.mapWidth;
+            if (iMx >= HexMap.mapWidth) iMx = HexMap.mapWidth - 1;
             int jMx = HexMap.mapHeight - (this.windowTop / (HexMap.tileRect.height() - HexMap.tileSlope) + 1);
-            if (jMx >= HexMap.mapHeight) jMx = HexMap.mapHeight;
+            if (jMx >= HexMap.mapHeight) jMx = HexMap.mapHeight - 1;
             // Draw Tiles
             for (int i = iMx; i >= iMn; i--) {
                 for (int j = jMx; j >= jMn; j--) {

@@ -36,10 +36,7 @@ import com.micabyte.android.BuildConfig;
  */
 public class MicaSurfaceView extends android.view.SurfaceView implements SurfaceHolder.Callback, OnGestureListener {
 	private static final String TAG = MicaSurfaceView.class.getName();
-	/**
-	 * The Game Controller. This where we send UI events other than scroll and pinch-zoom in order
-	 * to be handled
-	 */
+	/** The Game Controller. This where we send UI events other than scroll and pinch-zoom in order to be handled */
 	private SurfaceListener listener_ = null;
 	/** The Game Renderer. This handles all of the drawing duties to the Surface view */
     private SurfaceRenderer renderer_ = null;
@@ -102,6 +99,10 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		this.renderer_.getViewPosition(ret);
 		return ret;
 	}
+
+    public void setViewPort(int w, int h) {
+        this.renderer_.setViewSize(w, h);
+    }
 
 	public void setViewPosition(Point p) {
 		this.renderer_.setViewPosition(p.x, p.y);
@@ -166,14 +167,14 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-		this.renderer_.setView(w, h);
+		this.renderer_.setViewSize(w, h);
 		// Recheck scale factor and reset position to prevent out of bounds
-		//this.renderer_.setScaleFactor(this.renderer_.getScaleFactor());
+		//this.setZoom().setScaleFactor(this.renderer_.getScaleFactor());
 		//Point p = new Point();
 		//this.renderer_.getViewPosition(p);
 		//this.renderer_.setViewPosition(p.x, p.y);
 		// Debug
-		if (BuildConfig.DEBUG) Log.d(TAG, "surfaceChanged; new dimensions: w=" + w + ", h= " + h);
+		Log.d(TAG, "surfaceChanged; new dimensions: w=" + w + ", h= " + h);
 		// Required to ensure thread has focus
 		//if (this.thread_ != null)
 		//	this.thread_.onWindowFocusChanged(true);

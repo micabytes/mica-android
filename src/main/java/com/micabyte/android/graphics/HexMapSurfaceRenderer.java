@@ -60,12 +60,14 @@ public class HexMapSurfaceRenderer extends SurfaceRenderer {
         this.viewPort_.setOrigin(x, y);
     }
 
+
     @Override
     public void setMapPosition(int x, int y)
     {
         Point p = this.GameSurfaceTileMap_.getViewPortOrigin(x, y, this.viewPort_);
         this.viewPort_.setOrigin(p.x, p.y);
     }
+
 
     @Override
     public void start() {

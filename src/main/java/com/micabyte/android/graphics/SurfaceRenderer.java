@@ -22,16 +22,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
-import com.micabyte.android.BuildConfig;
-
 /**
- * SurfaceRenderer is the superclass of the renderer. The game should subclass
- * the renderer and extend the drawing methods to add game drawing.
+ * SurfaceRenderer is the superclass of the renderer. The game should subclass the renderer and extend the drawing methods to add game drawing.
  * <p/>
- * - BitmapSurfaceRenderer can be extended for apps that require background
- * images.
- * - TileMapSurfaceRenderer can be extended for apps that need to display
- * TileMaps.
+ * - BitmapSurfaceRenderer can be extended for apps that require background images
+ * - TileMapSurfaceRenderer can be extended for apps that need to display TileMaps (not currently up to date)
+ * - HexMapSurfaceRenderer can be extended for apps that need to display HexMaps
  *
  * @author micabyte
  */
@@ -44,9 +40,13 @@ public abstract class SurfaceRenderer {
     protected final ViewPort viewPort_ = new ViewPort();
     // The Dimensions of the Game Area
     final Point backgroundSize_ = new Point();
-    // The Current Scale Factor
-    //protected float scaleFactor_ = 1.0f;
 
+    /**
+     * Constructor for the surface renderer
+     *
+     * @param c We need to pass in the context, so that we have it when we create bitmaps for drawing operations later. Since the draw operations are
+     *          run in a thread, we can't pass the context through the thread (at least not easily)
+     */
     SurfaceRenderer(Context c) {
         this.context_ = c;
     }
@@ -102,6 +102,10 @@ public abstract class SurfaceRenderer {
         this.viewPort_.setOrigin(x, y);
     }
 
+    /**
+     * Set the position (center) of the view based on map coordinates. This is intended to be used with Tile/HexMaps, and needs to be implemented in
+     * the derived player Map class.
+     */
     public void setMapPosition(int x, int y) {
         this.viewPort_.setOrigin(x, y);
     }
@@ -116,7 +120,7 @@ public abstract class SurfaceRenderer {
     /**
      * Set the dimensions of the view
      */
-    public void setView(int w, int h) {
+    public void setViewSize(int w, int h) {
         this.viewPort_.setSize(w, h);
     }
 
@@ -127,51 +131,14 @@ public abstract class SurfaceRenderer {
         return this.backgroundSize_;
     }
 
-    /*
-     Set the position of the view *
-    public void moveViewPosition(int fx, int fy, int dx, int dy) {
-        this.viewPort_.moveViewPosition(fx, fy, dx, dy);
+
+    public void zoom(float scaleFactor, PointF screenFocus) {
+        this.viewPort_.zoom(scaleFactor, screenFocus);
     }
 
-    public float getScaleFactor() {
+    public float getZoom() {
         return this.viewPort_.getZoom();
     }
-
-    public void setScaleFactor(float s) {
-    	/*
-        float tempScaleFactor = s;
-        // Check bounds
-        Point viewSize = new Point();
-        Point backgroundSize = getBackgroundSize();
-        getViewSize(viewSize);
-        float min =
-                Math.max((float) viewSize.x / (float) backgroundSize.x, (float) viewSize.y
-                        / (float) backgroundSize.y);
-        tempScaleFactor = Math.max(min, Math.min(tempScaleFactor, this.maxScaleFactor_));
-        this.scaleFactor_ = tempScaleFactor;
-        *
-    }
-
-    public void changeScaleFactor(float multiplier) {
-    	/*
-        float tempScaleFactor = this.scaleFactor_ * multiplier;
-        // Check bounds
-        Point viewSize = new Point();
-        Point backgroundSize = getBackgroundSize();
-        getViewSize(viewSize);
-        float min =
-                Math.max((float) viewSize.x / (float) backgroundSize.x, (float) viewSize.y
-                        / (float) backgroundSize.y);
-        tempScaleFactor = Math.max(min, Math.min(tempScaleFactor, this.maxScaleFactor_));
-        // Calculate new origin
-        Point tempP = new Point();
-        this.getViewPosition(tempP);
-        // Set scale factor
-        this.scaleFactor_ = tempScaleFactor;
-        this.setViewPosition(tempP.x, tempP.y);
-        *
-    }
-    */
 
     /**
      * View Port. This handles the actual drawing, managing dimensions, etc.
@@ -181,7 +148,14 @@ public abstract class SurfaceRenderer {
         public Bitmap bitmap_ = null;
         // The rect defining where the viewport is within the scene
         public final Rect window = new Rect(0, 0, 0, 0);
+        // The zoom factor of the viewport
         float zoom = 1.0f;
+
+        public void getOrigin(Point p) {
+            synchronized (this) {
+                p.set(this.window.left, this.window.top);
+            }
+        }
 
         public void setOrigin(int xp, int yp) {
             synchronized (this) {
@@ -198,13 +172,8 @@ public abstract class SurfaceRenderer {
                     x = SurfaceRenderer.this.backgroundSize_.x - w;
                 if (y + h > SurfaceRenderer.this.backgroundSize_.y)
                     y = SurfaceRenderer.this.backgroundSize_.y - h;
+                // Set the Window rect
                 this.window.set(x, y, x + w, y + h);
-            }
-        }
-
-        public void getOrigin(Point p) {
-            synchronized (this) {
-                p.set(this.window.left, this.window.top);
             }
         }
 
@@ -215,12 +184,25 @@ public abstract class SurfaceRenderer {
                     this.bitmap_ = null;
                 }
                 this.bitmap_ = Bitmap.createBitmap(w, h, Config.RGB_565);
-                if (BuildConfig.DEBUG) Log.d("SF", "Created bitmap of size " + w + " " + h);
-                this.window.set(
+                Log.d("SF", "Created bitmap of size " + w + " " + h);
+                int x = this.window.left;
+                int y = this.window.top;
+                // check bounds
+                if (x < 0)
+                    x = 0;
+                if (y < 0)
+                    y = 0;
+                if (x + w > SurfaceRenderer.this.backgroundSize_.x)
+                    x = SurfaceRenderer.this.backgroundSize_.x - w;
+                if (y + h > SurfaceRenderer.this.backgroundSize_.y)
+                    y = SurfaceRenderer.this.backgroundSize_.y - h;
+                // Set the Window rect
+                this.window.set(x, y, x + w, y + h);
+                /*this.window.set(
                         this.window.left,
                         this.window.top,
                         this.window.left + w,
-                        this.window.top + h);
+                        this.window.top + h);*/
             }
         }
 
@@ -317,14 +299,6 @@ public abstract class SurfaceRenderer {
                 }
             }
         }
-    }
-
-    public void zoom(float scaleFactor, PointF screenFocus) {
-        this.viewPort_.zoom(scaleFactor, screenFocus);
-    }
-
-    public float getZoom() {
-        return this.viewPort_.getZoom();
     }
 
 }
