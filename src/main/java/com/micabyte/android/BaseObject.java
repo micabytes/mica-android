@@ -45,7 +45,7 @@ public abstract class BaseObject {
         return this.id_;
     }
 
-    protected void setId(String s) {
+    public void setId(String s) {
         this.id_ = s;
     }
 

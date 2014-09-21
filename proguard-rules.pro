@@ -27,21 +27,21 @@
 }
 
 # Jackson
-#-libraryjars libs/jackson-annotations-2.2.3.jar
-#-libraryjars libs/jackson-core-2.2.3.jar
-#-libraryjars libs/jackson-databind-2.2.3.jar
+-libraryjars ../lib_base/libs/jackson-annotations-2.4.2.jar
+-libraryjars ../lib_base/libs/jackson-core-2.4.2.jar
+-libraryjars ../lib_base/libs/jackson-databind-2.4.2.jar
 
 -dontskipnonpubliclibraryclassmembers
 
--keepattributes *Annotation*,EnclosingMethod
+-keepnames class com.fasterxml.jackson.** { *; }
 
--keepnames class org.codehaus.jackson.** { *; }
+-keepattributes *Annotation*,EnclosingMethod,Signature
 
 -dontwarn javax.xml.**
 -dontwarn javax.xml.stream.events.**
 -dontwarn com.fasterxml.jackson.databind.**
 
--keep public class com.micabyte.android.battle.game..** {
+-keep public class com.micabyte.android.** {
   public void set*(***);
   public *** get*();
 }
