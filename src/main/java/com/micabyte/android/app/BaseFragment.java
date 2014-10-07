@@ -45,9 +45,17 @@ import android.widget.ViewFlipper;
  */
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
 
+    /*
     @Override
     public void onActivityCreated(Bundle saved) {
         super.onActivityCreated(saved);
+        //createFragment();
+    }
+    */
+
+    @Override
+    public void onStart() {
+        super.onStart();
         createFragment();
     }
 

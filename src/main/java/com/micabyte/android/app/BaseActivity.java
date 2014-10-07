@@ -133,7 +133,7 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
         return mHelper.getApiClient();
     }
 
-    protected boolean isSignedIn() {
+    public boolean isSignedIn() {
         return mHelper.isSignedIn();
     }
 
