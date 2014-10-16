@@ -117,6 +117,8 @@ public abstract class BaseObject {
         switch (ValueToken.get(id)) {
             case name:
                 return getName();
+            case value:
+                return Integer.toString(getValue());
             default:
                 return StringHandler.get(c, R.string.default_error);
         }
