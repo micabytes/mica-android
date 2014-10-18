@@ -3,9 +3,6 @@
 
     <application
         android:allowBackup="true"
-        android:label="@string/lib_base"
-        android:icon="@drawable/ic_launcher">
-
-    </application>
+        android:label="@string/lib_base"/>
 
 </manifest>

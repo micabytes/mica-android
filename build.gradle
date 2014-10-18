@@ -15,13 +15,13 @@ repositories {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '20.0.0'
+    compileSdkVersion 21
+    buildToolsVersion '21.0.0'
 
     defaultConfig {
         applicationId "com.micabyte.android"
         minSdkVersion 10
-        targetSdkVersion 19
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
@@ -36,10 +36,10 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:19.+'
+    compile 'com.android.support:appcompat-v7:21.+'
     compile files('libs/jackson-core-2.4.2.jar')
     compile files('libs/jackson-annotations-2.4.2.jar')
     compile files('libs/jackson-databind-2.4.2.jar')
     compile 'com.crashlytics.android:crashlytics:1.+'
-    compile 'com.google.android.gms:play-services:6.1.11'
+    compile 'com.google.android.gms:play-services:6.1.+'
 }
