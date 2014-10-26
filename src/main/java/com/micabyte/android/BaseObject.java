@@ -108,15 +108,6 @@ public abstract class BaseObject {
         }
     }
 
-    public double getDouble(String id) {
-        switch (ValueToken.get(id)) {
-            case value:
-                return getValue();
-            default:
-                return 0.0;
-        }
-    }
-
     public String getString(Context c, String id) {
         switch (ValueToken.get(id)) {
             case name:
@@ -140,8 +131,14 @@ public abstract class BaseObject {
             return evaluateStatement(test, variables);
         boolean ret = true;
         for (String s : tokens) {
-            if (evaluateStatement(s, variables) <= 0)
+            Log.d("TAG", "Evaluate of " + s);
+            if (evaluateStatement(s, variables) <= 0) {
                 ret = false;
+                Log.d(TAG, "False");
+            }
+            else {
+                Log.d(TAG, "True");
+            }
         }
         return ret ? 1 : 0;
     }
@@ -206,7 +203,7 @@ public abstract class BaseObject {
             return 0;
         }
         // Retrieve
-        return getVariableValue(str,variables);
+        return getVariableValue(str, variables);
     }
 
     private static int getVariableValue(String key, HashMap<String, Object> variables) {
@@ -230,6 +227,12 @@ public abstract class BaseObject {
         Object obj = variables.get(tokens[0]);
         if (obj == null) {
             return 0;
+        }
+        if (obj instanceof Boolean) {
+            if (((Boolean) obj) == true)
+                return 1;
+            else
+                return 0;
         }
         if (obj instanceof Integer)
             return (Integer) obj;

@@ -152,7 +152,7 @@ public class StringHandler {
                     int nInt = BaseObject.evaluate(condition, variables);
                     if (nInt > tokens.length - 1) nInt = tokens.length - 1;
                     if (nInt < 0) nInt = 0;
-                    ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
+                    ret = ret.replace(replace, tokens[nInt]);
                 }
                 start = ret.indexOf("[");
             }
