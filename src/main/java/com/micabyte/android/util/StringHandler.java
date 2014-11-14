@@ -129,6 +129,37 @@ public class StringHandler {
 			}
 			start = ret.indexOf("[#");
 		}
+        // Markup Link Notation
+        start = ret.indexOf("[");
+        while (start != NOT_FOUND) {
+            end = ret.indexOf("]", start);
+            if (end != NOT_FOUND) {
+                String opt = ret.substring(start + 1, end);
+                String condition = null;
+                if (ret.charAt(end + 1) == '(') {
+                    int i = ret.indexOf(")", end);
+                    condition = ret.substring(end + 2, i).trim();
+                    if (i != NOT_FOUND) end = i;
+                }
+                String replace = ret.substring(start, end + 1);
+                String tokens[] = opt.split("[|]");
+                if (tokens.length == 1)
+                    ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
+                else if (condition.equals("?")) {
+                    ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
+                }
+                else {
+                    condition = condition.replace("?","");
+                    int nInt = BaseObject.evaluate(condition, variables);
+                    if (nInt > tokens.length - 1) nInt = tokens.length - 1;
+                    if (nInt < 0) nInt = 0;
+                    ret = ret.replace(replace, tokens[nInt]);
+                }
+                start = ret.indexOf("[");
+            }
+            else
+                start = NOT_FOUND;
+        }
 		// Game variable substitution
 		if (variables != null) {
 			start = ret.indexOf('$');

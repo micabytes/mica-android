@@ -12,10 +12,13 @@
  */
 package com.micabyte.android;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.micabyte.android.util.StringHandler;
 
 /**
@@ -23,8 +26,8 @@ import com.micabyte.android.util.StringHandler;
  *
  * @author micabyte
  */
-@SuppressWarnings("WeakerAccess")
 public abstract class BaseObject {
+    private static final String TAG = BaseObject.class.getName();
     // ID of Object
     private String id_ = null;
     // Name of Object
@@ -105,15 +108,6 @@ public abstract class BaseObject {
         }
     }
 
-    public double getDouble(String id) {
-        switch (ValueToken.get(id)) {
-            case value:
-                return getValue();
-            default:
-                return 0.0;
-        }
-    }
-
     public String getString(Context c, String id) {
         switch (ValueToken.get(id)) {
             case name:
@@ -131,7 +125,127 @@ public abstract class BaseObject {
                 return this;
             default:
                 return null;
+    }
+
+    public static int evaluate(String test, HashMap<String, Object> variables) {
+        String tokens[];
+        tokens = test.split("[&]");
+        if (tokens.length == 1)
+            return evaluateStatement(test, variables);
+        boolean ret = true;
+        for (String s : tokens) {
+            Log.d("TAG", "Evaluate of " + s);
+            if (evaluateStatement(s, variables) <= 0) {
+                ret = false;
+                Log.d(TAG, "False");
+            }
+            else {
+                Log.d(TAG, "True");
+            }
         }
+        return ret ? 1 : 0;
+    }
+
+    private static int evaluateStatement(String str, HashMap<String, Object> variables) {
+        String tokens[];
+        // Random Value
+        // >=
+        if (str.contains(">=")) {
+            tokens = str.split("[>=]+");
+            if (tokens.length == 2) {
+                String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                return (getVariableValue(val1,variables) >= getVariableValue(val2,variables)) ? 1 : 0;
+            }
+            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
+            return 0;
+        }
+        // >=
+        if (str.contains("<=")) {
+            tokens = str.split("[<=]+");
+            if (tokens.length == 2) {
+                String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                return (getVariableValue(val1,variables) <= getVariableValue(val2,variables)) ? 1 : 0;
+            }
+            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " +  str);
+            return 0;
+        }
+        // >
+        if (str.contains(">")) {
+            tokens = str.split("[>]+");
+            if (tokens.length == 2) {
+                String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                return (getVariableValue(val1,variables) > getVariableValue(val2,variables)) ? 1 : 0;
+            }
+            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " +  str);
+            return 0;
+        }
+        // <
+        if (str.contains("<")) {
+            tokens = str.split("[<]+");
+            if (tokens.length == 2) {
+                String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                return (getVariableValue(val1,variables) < getVariableValue(val2,variables)) ? 1 : 0;
+            }
+            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
+            return 0;
+        }
+        // Set Last, as it will otherwise take precedence over all the others.
+        // =
+        if (str.contains("=")) {
+            tokens = str.split("[=]+");
+            if (tokens.length == 2) {
+                String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                return (getVariableValue(val1,variables) == getVariableValue(val2,variables)) ? 1 : 0;
+            }
+            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " +  str);
+            return 0;
+        }
+        // Retrieve
+        return getVariableValue(str, variables);
+    }
+
+    private static int getVariableValue(String key, HashMap<String, Object> variables) {
+        String var = key.trim().toLowerCase(Locale.US);
+        if (var.isEmpty()) return 0;
+        if (var.charAt(0) != '$') {
+            try {
+                return Integer.parseInt(var);
+            } catch (NumberFormatException e) {
+                Crashlytics.log(Log.ERROR, TAG, var + " is not a valid variable");
+                return 0;
+            }
+        }
+        String tokens[] = var.split("[.]", 2);
+        if (tokens.length > 2) {
+            Crashlytics.log(Log.ERROR, TAG, "Failed to interpret object " + var);
+            return 0;
+        }
+        if (variables == null)
+            return 0;
+        Object obj = variables.get(tokens[0]);
+        if (obj == null) {
+            return 0;
+        }
+        if (obj instanceof Boolean) {
+            if (((Boolean) obj) == true)
+                return 1;
+            else
+                return 0;
+        }
+        if (obj instanceof Integer)
+            return (Integer) obj;
+        if (obj instanceof Double)
+            return ((Double) obj).intValue();
+        BaseObject gObj = (BaseObject) obj;
+        if (tokens.length == 1) {
+            return gObj.getValue();
+        }
+        return gObj.getInteger(tokens[1]);
     }
 
 }
