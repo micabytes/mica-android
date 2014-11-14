@@ -12,8 +12,6 @@
  */
 package com.micabyte.android.app;
 
-import java.text.DecimalFormat;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -27,9 +25,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.games.Games;
 import com.micabyte.android.BuildConfig;
 import com.micabyte.android.util.GameHelper;
+
+import java.text.DecimalFormat;
 
 /**
  * Base class for Game Activities.
@@ -40,36 +39,39 @@ import com.micabyte.android.util.GameHelper;
  * @author micabyte
  * @link{#onSignInFailed abstract methods.
  */
+@SuppressWarnings({"JavaDoc", "WeakerAccess"})
 public abstract class BaseActivity extends FragmentActivity implements GameHelper.GameHelperListener {
     // The game helper object. This class is mainly a wrapper around this object.
-    private GameHelper mHelper;
+    protected GameHelper mHelper;
 
     // We expose these constants here because we don't want users of this class
     // to have to know about GameHelper at all.
-    private static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
+    public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
     public static final int CLIENT_APPSTATE = GameHelper.CLIENT_APPSTATE;
     public static final int CLIENT_PLUS = GameHelper.CLIENT_PLUS;
     public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
 
     // Requested clients. By default, that's just the games client.
-    private int mRequestedClients = CLIENT_GAMES;
+    protected int mRequestedClients = CLIENT_GAMES;
 
-    private final static String TAG = "BaseActivity";
-    private boolean mDebugLog = false;
+    protected boolean mDebugLog = false;
 
     public abstract void setFragment();
 
     public abstract void openMenu();
 
-    /** Constructs a BaseGameActivity with default client (GamesClient). */
+    /**
+     * Constructs a BaseGameActivity with default client (GamesClient).
+     */
     protected BaseActivity() {
         super();
     }
 
     /**
      * Constructs a BaseGameActivity with the requested clients.
+     *
      * @param requestedClients The requested clients (a combination of CLIENT_GAMES,
-     *         CLIENT_PLUS and CLIENT_APPSTATE).
+     *                         CLIENT_PLUS and CLIENT_APPSTATE).
      */
     protected BaseActivity(int requestedClients) {
         super();
@@ -84,13 +86,14 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
      * is a no-op.
      *
      * @param requestedClients A combination of the flags CLIENT_GAMES, CLIENT_PLUS
-     *         and CLIENT_APPSTATE, or CLIENT_ALL to request all available clients.
+     *                         and CLIENT_APPSTATE, or CLIENT_ALL to request all available clients.
      */
-    void setRequestedClients(int requestedClients) {
+    protected void setRequestedClients(int requestedClients) {
         mRequestedClients = requestedClients;
     }
 
-    GameHelper getGameHelper() {
+    @SuppressWarnings("UnusedReturnValue")
+    public GameHelper getGameHelper() {
         if (mHelper == null) {
             mHelper = new GameHelper(this, mRequestedClients);
             mHelper.enableDebugLog(mDebugLog);
@@ -104,6 +107,7 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
         if (mHelper == null) {
             getGameHelper();
         }
+        assert mHelper != null;
         mHelper.setup(this);
     }
 
@@ -124,10 +128,6 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
         super.onActivityResult(request, response, data);
         mHelper.onActivityResult(request, response, data);
     }
-
-    abstract public void showSpinner();
-
-    abstract public void dismissSpinner();
 
     public GoogleApiClient getApiClient() {
         return mHelper.getApiClient();
@@ -153,18 +153,11 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
         mHelper.makeSimpleDialog(title, message).show();
     }
 
-    void enableDebugLog(boolean enabled) {
+    protected void enableDebugLog(boolean enabled) {
         mDebugLog = true;
         if (mHelper != null) {
             mHelper.enableDebugLog(enabled);
         }
-    }
-
-    @Deprecated
-    protected void enableDebugLog(boolean enabled, String tag) {
-        Log.w(TAG, "BaseGameActivity.enabledDebugLog(bool,String) is " +
-                "deprecated. Use enableDebugLog(boolean)");
-        enableDebugLog(enabled);
     }
 
     protected String getInvitationId() {
@@ -183,6 +176,10 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
         return mHelper.getSignInError();
     }
 
+    abstract public void showSpinner();
+
+    abstract public void dismissSpinner();
+
     /**
      * Removes the reference to the activity from every view in a view hierarchy (listeners, images
      * etc.) in order to limit/eliminate memory leaks. This is a "fix" for memory problems on older
@@ -194,7 +191,7 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
      *
      * @param viewID normally the id of the root layout
      */
-    protected static void unbindReferences(Activity activity, int viewID, int adViewId) {
+    protected static void unbindReferences(Activity activity, int viewID) {
         try {
             View view = activity.findViewById(viewID);
             if (view != null) {
@@ -278,10 +275,10 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
             }
             imageB.setImageDrawable(null);
         }
-        // destroy webview
+        // destroy WebView
         if (view instanceof WebView) {
             view.destroyDrawingCache();
-            ((WebView)view).destroy();
+            ((WebView) view).destroy();
         }
     }
 

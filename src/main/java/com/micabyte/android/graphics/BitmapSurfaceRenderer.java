@@ -35,12 +35,13 @@ import com.micabyte.android.BuildConfig;
  *
  * @author micabyte
  */
+@SuppressWarnings("WeakerAccess")
 public class BitmapSurfaceRenderer extends SurfaceRenderer {
     private static final String TAG = BitmapSurfaceRenderer.class.getName();
     // Default Settings
     public static final Config DEFAULT_CONFIG = Config.RGB_565;
-    private static final int DEFAULT_SAMPLESIZE = 2;
-    private static final int DEFAULT_MEMUSAGE = 20;
+    private static final int DEFAULT_SAMPLE_SIZE = 2;
+    private static final int DEFAULT_MEM_USAGE = 20;
     private static final float DEFAULT_THRESHOLD = 0.75f;
     // BitmapRegionDecoder - this is the class that does the magic
     private BitmapRegionDecoder decoder_;
@@ -53,7 +54,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      */
     private final BitmapFactory.Options options_ = new BitmapFactory.Options();
     /**
-     * What is the downsample size for the sample image? 1=1/2, 2=1/4 3=1/8, etc
+     * What is the down sample size for the sample image? 1=1/2, 2=1/4 3=1/8, etc
      */
     private final int sampleSize_;
     /**
@@ -74,8 +75,8 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     private BitmapSurfaceRenderer(Context c) {
         super(c);
         this.options_.inPreferredConfig = DEFAULT_CONFIG;
-        this.sampleSize_ = DEFAULT_SAMPLESIZE;
-        this.memUsage_ = DEFAULT_MEMUSAGE;
+        this.sampleSize_ = DEFAULT_SAMPLE_SIZE;
+        this.memUsage_ = DEFAULT_MEM_USAGE;
         this.lowResThreshold_ = DEFAULT_THRESHOLD;
     }
 
@@ -187,6 +188,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     void cacheBitmapOutOfMemoryError(OutOfMemoryError error) {
         if (this.memUsage_ > 0) this.memUsage_ -= 1;
         Log.e(TAG, "OutOfMemory caught; reducing cache size to " + this.memUsage_ + " percent.");
+        error.printStackTrace();
     }
 
     /**
@@ -241,7 +243,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
         int left = rect.left - (mw >> 1);
         int right = rect.right + (mw >> 1);
         if (left < 0) {
-            right = right - left; // Add's the overage on the left side back to the right
+            right = right - left; // Adds the overage on the left side back to the right
             left = 0;
         }
         if (right > sz.x) {
@@ -253,7 +255,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
         int top = rect.top - (mh >> 1);
         int bottom = rect.bottom + (mh >> 1);
         if (top < 0) {
-            bottom = bottom - top; // Add's the overage on the top back to the bottom
+            bottom = bottom - top; // Adds the overage on the top back to the bottom
             top = 0;
         }
         if (bottom > sz.y) {
@@ -366,7 +368,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                 switch (getState()) {
                     case NOT_INITIALIZED:
                         // Error
-                        Log.e(TAG, "Attempting to update an unitialized CacheBitmap");
+                        Log.e(TAG, "Attempting to update an uninitialized CacheBitmap");
                         return;
                     case IS_INITIALIZED:
                         // Start data caching
@@ -528,6 +530,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
             }
         }
 
+        @SuppressWarnings("SameParameterValue")
         public void setRunning(boolean b) {
             this.isRunning_ = b;
         }

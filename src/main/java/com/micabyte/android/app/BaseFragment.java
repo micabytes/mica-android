@@ -14,7 +14,6 @@ package com.micabyte.android.app;
 
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
@@ -43,15 +42,8 @@ import android.widget.ViewFlipper;
  * 
  * @author micabyte
  */
+@SuppressWarnings({"WeakerAccess"})
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
-
-    /*
-    @Override
-    public void onActivityCreated(Bundle saved) {
-        super.onActivityCreated(saved);
-        //createFragment();
-    }
-    */
 
     @Override
     public void onStart() {
@@ -74,11 +66,13 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     public BaseActivity getBaseActivity() {
 		return (BaseActivity) getActivity();
 	}
-	
+
+    @SuppressWarnings("ConstantConditions")
     protected TextView getTextView(int resId) {
         return (TextView) getView().findViewById(resId);
     }
 
+    @SuppressWarnings("ConstantConditions")
     public TextView setTextView(int resId, Typeface font) {
         TextView t = (TextView) getView().findViewById(resId);
         if (t != null) {
@@ -89,20 +83,24 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return t;
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected EditText getEditText(int resId) {
         return (EditText) getView().findViewById(resId);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected ImageView getImageView(int resId) {
         return (ImageView) getView().findViewById(resId);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected ImageView setImageView(int resId) {
         ImageView v = (ImageView) getView().findViewById(resId);
         v.setOnClickListener(this);
         return v;
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected ImageView setImageView(int resId, Bitmap img) {
         if (img == null)
             throw new IllegalArgumentException("setting image view " + resId + "with null bitmap");
@@ -111,18 +109,22 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return v;
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected CheckBox getCheckBox(int resId_) {
         return (CheckBox) getView().findViewById(resId_);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected RadioButton getRadioButton(int resId_) {
     	return (RadioButton) getView().findViewById(resId_);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected ImageButton getImageButton(int resId) {
         return (ImageButton) getView().findViewById(resId);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected ImageButton setImageButton(int resId) {
         ImageButton b = (ImageButton) getView().findViewById(resId);
         if (b != null) {
@@ -131,6 +133,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return b;
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected ImageButton setImageButton(int resId, Bitmap img) {
         if (img == null)
             throw new IllegalArgumentException("setting image button " + resId + "with null bitmap");
@@ -148,6 +151,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return b;
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected Button setButton(int resId) {
         Button b = (Button) getView().findViewById(resId);
         if (b != null) {
@@ -156,6 +160,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return b;
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected Button setButton(int resId, Typeface font) {
         Button b = (Button) getView().findViewById(resId);
         if (b != null) {
@@ -165,10 +170,12 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return b;
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected Button getButton(int resId) {
         return (Button) getView().findViewById(resId);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected ToggleButton setToggleButton(int resId) {
         ToggleButton b = (ToggleButton) getView().findViewById(resId);
         if (b != null) {
@@ -177,10 +184,12 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return b;
     }
 
+    @SuppressWarnings("ConstantConditions")
     public ToggleButton getToggleButton(int resId) {
         return (ToggleButton) getView().findViewById(resId);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected Spinner setSpinner(int resId, int arrId) {
         Spinner s = (Spinner) getView().findViewById(resId);
         ArrayAdapter<CharSequence> adapter =
@@ -191,36 +200,44 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return s;
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected Spinner getSpinner(int resId) {
         return (Spinner) getView().findViewById(resId);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected ListView getListView(int resId) {
         return (ListView) getView().findViewById(resId);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected ListView setListView(int resId, BaseAdapter adapter) {
         ListView l = (ListView) getView().findViewById(resId);
         l.setAdapter(adapter);
         return l;
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected RelativeLayout getRelativeLayout(int resId) {
         return (RelativeLayout) getView().findViewById(resId);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected LinearLayout getLinearLayout(int resId) {
         return (LinearLayout) getView().findViewById(resId);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected ProgressBar getProgressBar(int resId) {
         return (ProgressBar) getView().findViewById(resId);
     }
 
+    @SuppressWarnings("ConstantConditions")
     public SeekBar getSeekBar(int resId) {
         return (SeekBar) getView().findViewById(resId);
     }
 
+    @SuppressWarnings("ConstantConditions")
     protected ViewFlipper getViewFlipper(int resId) {
         return (ViewFlipper) getView().findViewById(resId);
     }
@@ -235,17 +252,17 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     public void toast(String message) {
-    	toast(message, Toast.LENGTH_LONG);
+    	toast(message, Toast.LENGTH_SHORT);
     }
 
-    void toast(String message, int length) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+    public void toast(String message, int length) {
+        Toast.makeText(getActivity(), message, length).show();
     }
 
-	public class ContentDescriptionClickListener implements OnClickListener {
+	protected class ContentDescriptionClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
-			Toast.makeText(getActivity(), v.getContentDescription(), Toast.LENGTH_LONG).show();
+			toast((String) v.getContentDescription(), Toast.LENGTH_LONG);
 		}
 	}
     

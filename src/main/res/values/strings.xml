@@ -20,6 +20,8 @@
     <string name="err_txt_ioexception" tools:ignore="UnusedResources">I/O error while processing the %1$s data file. Contact support@micabyte.com for help.</string>
     <string name="err_txt_jsonnotfound" tools:ignore="UnusedResources">Could not find the %1$s data file. Contact support@micabyte.com for help.</string>
     <string name="err_txt_jsonprocerror" tools:ignore="UnusedResources">Processing error while processing the %1$s data file. Contact support@micabyte.com for help.</string>
+    <!--  Game Strings -->
+    <string name="game_sign_out" tools:ignore="UnusedResources">Sign Out</string>
     <!--  GameHelper Strings -->
     <string name="gamehelper_sign_in_failed">Failed to sign in. Please check your network connection and try again.</string>
     <string name="gamehelper_app_misconfigured">The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.</string>

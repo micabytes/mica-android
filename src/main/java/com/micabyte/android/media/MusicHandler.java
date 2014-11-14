@@ -48,6 +48,7 @@ class MusicHandler {
      * @param music The resource id of the music file
      * @param force Force-start playing this file
      */
+    @SuppressWarnings("SameParameterValue")
     private static void start(Context c, int music, boolean force) {
         if ((!force) && (currentMusic_ != INVALID_NUMBER)) {
             // already playing some music and not forced to change immediately
@@ -108,10 +109,8 @@ class MusicHandler {
     private static void pause() {
         for (int i = 0; i < players_.size(); i++) {
             MediaPlayer p = players_.valueAt(i);
-            if (p != null) {
-                if (p.isPlaying()) {
-                    p.pause();
-                }
+            if (p.isPlaying()) {
+                p.pause();
             }
         }
         currentMusic_ = INVALID_NUMBER;
@@ -142,12 +141,10 @@ class MusicHandler {
     public static void release() {
         for (int i = 0; i < players_.size(); i++) {
             MediaPlayer p = players_.valueAt(i);
-            if (p != null) {
-                if (p.isPlaying()) {
-                    p.stop();
-                }
-                p.release();
+            if (p.isPlaying()) {
+                p.stop();
             }
+            p.release();
         }
         players_.clear();
         currentMusic_ = INVALID_NUMBER;

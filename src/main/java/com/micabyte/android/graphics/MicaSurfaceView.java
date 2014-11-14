@@ -17,6 +17,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -291,7 +292,7 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 
 	/** Handle Touch Events */
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
+	public boolean onTouchEvent(@NonNull MotionEvent event) {
 		boolean consumed = this.gesture_.onTouchEvent(event);
 		if (consumed) return true;
 		this.scaleGesture_.onTouchEvent(event);
@@ -428,7 +429,8 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		}
 
 		/** Handle a down event_ */
-		boolean down(MotionEvent event) {
+        @SuppressWarnings("SameReturnValue")
+        boolean down(MotionEvent event) {
 			// Cancel rendering suspension
 			MicaSurfaceView.this.renderer_.suspend(false);
 			// Get position
@@ -459,7 +461,8 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		}
 
 		/** Handle an up event_ */
-		boolean up(MotionEvent event) {
+        @SuppressWarnings({"SameReturnValue", "UnusedParameters"})
+        boolean up(MotionEvent event) {
 			if (this.state_ == TouchState.IN_TOUCH) {
 				this.state_ = TouchState.NO_TOUCH;
 			}
@@ -467,14 +470,16 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 		}
 
 		/** Handle a cancel event_ */
-		boolean cancel(MotionEvent event) {
+        @SuppressWarnings({"SameReturnValue", "UnusedParameters"})
+        boolean cancel(MotionEvent event) {
 			if (this.state_ == TouchState.IN_TOUCH) {
 				this.state_ = TouchState.NO_TOUCH;
 			}
 			return true;
 		}
 
-		boolean fling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+		@SuppressWarnings({"SameReturnValue", "UnusedParameters"})
+        boolean fling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 			MicaSurfaceView.this.renderer_.getViewPosition(this.viewCenterAtFling_);
 			MicaSurfaceView.this.renderer_.getViewSize(this.viewSizeAtFling_);
 			this.backgroundSizeAtFling_ = MicaSurfaceView.this.renderer_.getBackgroundSize();

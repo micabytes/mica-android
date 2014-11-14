@@ -72,7 +72,7 @@ public class ImageHandler {
     }
 
     public Bitmap get(int key, Config config) {
-        return get(key, DEFAULT_CONFIG, false);
+        return get(key, config, false);
     }
 
     Bitmap get(int key, Config config, boolean persist) {
@@ -98,6 +98,7 @@ public class ImageHandler {
         return ret;
     }
 
+    @SuppressWarnings("deprecation")
     private Bitmap loadBitmap(int key, Config bitmapConfig) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inPreferredConfig = bitmapConfig;

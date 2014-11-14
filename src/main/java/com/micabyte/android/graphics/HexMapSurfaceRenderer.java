@@ -23,7 +23,6 @@ import com.micabyte.android.map.HexMap;
  * extend the drawing methods to add other game elements.
  */
 public class HexMapSurfaceRenderer extends SurfaceRenderer {
-    public static final String TAG = HexMapSurfaceRenderer.class.getName();
     // The HexMap object
     private HexMap GameSurfaceTileMap_ = null;
 

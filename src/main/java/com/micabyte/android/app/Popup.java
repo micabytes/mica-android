@@ -17,6 +17,7 @@ import com.micabyte.android.graphics.ImageHandler;
 /**
  * Custom Popup Window
  */
+@SuppressWarnings("JavaDoc")
 class Popup {
     private final Context context_;
     final WindowManager windowManager_;
@@ -62,6 +63,7 @@ class Popup {
     /**
      * On show
      */
+    @SuppressWarnings("EmptyMethod")
     void onShow() {
         // NOOP
     }

@@ -23,6 +23,7 @@ import com.micabyte.android.util.StringHandler;
  *
  * @author micabyte
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class BaseObject {
     // ID of Object
     private String id_ = null;
@@ -75,7 +76,7 @@ public abstract class BaseObject {
      * different types of game objects.
      */
     private enum ValueToken {
-        error, name, value, tag;
+        error, name, value, tag, object;
 
         public static ValueToken get(String str) {
             try {
@@ -124,9 +125,13 @@ public abstract class BaseObject {
         }
     }
 
-    @SuppressWarnings("static-method")
     public BaseObject getObject(String id) {
-        return null;
+        switch (ValueToken.get(id)) {
+            case object:
+                return this;
+            default:
+                return null;
+        }
     }
 
 }

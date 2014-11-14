@@ -50,7 +50,7 @@ The current project setup uses two libraries:
   
   * google-compatibility_lib: A library project containing app compatibility
   libraries for v4 and v7. Google will create this automatically if you use
-  Kitkat to create a new library with minimum SDK 10.
+  the current API to create a new library with minimum SDK 10.
 
 
 Main Components:
