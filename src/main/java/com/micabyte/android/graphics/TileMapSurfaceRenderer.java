@@ -22,7 +22,6 @@ import com.micabyte.android.map.TileMap;
  * the drawing methods to add other game elements.
  */
 public class TileMapSurfaceRenderer extends SurfaceRenderer {
-    public static final String TAG = TileMapSurfaceRenderer.class.getName();
     // The low resolution version of the background image
     private TileMap GameSurfaceTileMap_ = null;
 

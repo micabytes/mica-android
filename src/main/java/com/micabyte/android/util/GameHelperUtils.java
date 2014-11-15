@@ -1,7 +1,20 @@
-package com.micabyte.android.util;
+/*
+ * Copyright (C) 2013 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+package com.micabyte.android.util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,12 +27,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.micabyte.android.R;
 
-/**
- * Derived from the standard Android GameHelper classes.
- * Created by  btco on 2/10/14.
- */
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+@SuppressWarnings("WeakerAccess")
 class GameHelperUtils {
-    private static final String TAG = GameHelperUtils.class.getName();
     public static final int R_UNKNOWN_ERROR = 0;
     public static final int R_SIGN_IN_FAILED = 1;
     public static final int R_APP_MISCONFIGURED = 2;
@@ -120,7 +132,7 @@ class GameHelperUtils {
         Log.w("GameHelper", "****   http://developers.google.com/games/services/android/troubleshooting");
     }
 
-    private static String getAppIdFromResource(Context ctx) {
+    static String getAppIdFromResource(Context ctx) {
         try {
             Resources res = ctx.getResources();
             String pkgName = ctx.getPackageName();
@@ -132,16 +144,16 @@ class GameHelperUtils {
         }
     }
 
-    private static String getSHA1CertFingerprint(Context ctx) {
+    static String getSHA1CertFingerprint(Context ctx) {
         try {
-            Signature[] sigs = ctx.getPackageManager().getPackageInfo(
+            Signature[] sig = ctx.getPackageManager().getPackageInfo(
                     ctx.getPackageName(), PackageManager.GET_SIGNATURES).signatures;
-            if (sigs.length == 0) {
+            if (sig.length == 0) {
                 return "ERROR: NO SIGNATURE.";
-            } else if (sigs.length > 1) {
+            } else if (sig.length > 1) {
                 return "ERROR: MULTIPLE SIGNATURES";
             }
-            byte[] digest = MessageDigest.getInstance("SHA1").digest(sigs[0].toByteArray());
+            byte[] digest = MessageDigest.getInstance("SHA1").digest(sig[0].toByteArray());
             StringBuilder hexString = new StringBuilder();
             for (int i = 0; i < digest.length; ++i) {
                 if (i > 0) {
@@ -160,7 +172,7 @@ class GameHelperUtils {
         }
     }
 
-    private static void byteToString(StringBuilder sb, byte b) {
+    static void byteToString(StringBuilder sb, byte b) {
         int unsigned_byte = b < 0 ? b + 256 : b;
         int hi = unsigned_byte / 16;
         int lo = unsigned_byte % 16;
@@ -175,7 +187,7 @@ class GameHelperUtils {
             return ctx.getString(resId);
         } catch (Exception ex) {
             ex.printStackTrace();
-            Log.w(TAG, "*** GameHelper could not found resource id #" + resId + ". " +
+            Log.w(GameHelper.TAG, "*** GameHelper could not found resource id #" + resId + ". " +
                     "This probably happened because you included it as a stand-alone JAR. " +
                     "BaseGameUtils should be compiled as a LIBRARY PROJECT, so that it can access " +
                     "its resources. Using a fallback string.");

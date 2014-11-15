@@ -18,8 +18,8 @@
         android:fadingEdgeLength="0dip"
         android:paddingLeft="1dp"
         android:paddingRight="1dp"
-        android:paddingStart="1dp"
-        android:paddingEnd="1dp"
+        android:paddingTop="1dp"
+        android:paddingBottom="1dp"
         android:scrollbars="none"
         android:text="@string/default_shorttext"/>
 

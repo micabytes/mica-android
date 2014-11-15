@@ -68,14 +68,15 @@ public class BalloonPopup extends Popup implements OnDismissListener {
         if (xPos + rootWidth > screenWidth) xPos = screenWidth - rootWidth;
         if (xPos < 0) xPos = 0;
         int yPos = anchorRect.top - rootHeight;
-        boolean onTop = true;
+        //boolean onTop = true;
         // display on bottom
         //if (rootHeight > anchor.getTop()) {
         //	yPos = anchorRect.bottom;
         //	onTop = false;
         //}
+        //showArrow(((onTop) ? R.id.arrow_down : R.id.arrow_up), anchorRect.centerX() - xPos);
         if (BuildConfig.DEBUG) Log.d("Balloon", xPos + " " + yPos + " " + location[0] + " " + location[1] + " " + rootWidth + " " + rootHeight);
-        showArrow(((onTop) ? R.id.arrow_down : R.id.arrow_up), anchorRect.centerX() - xPos);
+        showArrow((R.id.arrow_down), anchorRect.centerX() - xPos);
         //setAnimationStyle(screenWidth, anchorRect.centerX(), onTop);
         this.window_.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
         //if (this.mAnimateTrack) this.text_.startAnimation(this.trackAnim_);
@@ -99,8 +100,8 @@ public class BalloonPopup extends Popup implements OnDismissListener {
     }
 
     /**
-     * Set listener for window dismissed. This listener will only be fired if the quicakction dialog
-     * is dismissed by clicking outside the dialog or clicking on sticky item.
+     * Set listener for window dismissed. This listener will only be fired if the quick action
+     * dialog is dismissed by clicking outside the dialog or clicking on sticky item.
      */
     public void setOnDismissListener(BalloonPopup.OnDismissListener listener) {
         setOnDismissListener(this);

@@ -31,6 +31,7 @@ import android.util.Log;
  *
  * @author micabyte
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class SurfaceRenderer {
     // View Size Minimum
     private final static int MINIMUM_PIXELS_IN_VIEW = 50;
