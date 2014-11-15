@@ -277,7 +277,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         Toast.makeText(getActivity(), message, length).show();
     }
 
-	protected class ContentDescriptionClickListener implements OnClickListener {
+	public class ContentDescriptionClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
 			toast((String) v.getContentDescription(), Toast.LENGTH_LONG);
