@@ -116,6 +116,7 @@ public abstract class BaseObject {
                 return this;
             default:
                 return null;
+        }
     }
 
     public static int evaluate(String test, HashMap<String, Object> variables) {
