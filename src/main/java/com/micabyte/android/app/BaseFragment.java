@@ -191,6 +191,21 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         return s;
     }
 
+    protected Spinner setSpinner(int resId, int arrId, int sp_it, int sp_dd) {
+        Spinner s = (Spinner) getView().findViewById(resId);
+        ArrayAdapter<CharSequence> adapter =
+                ArrayAdapter.createFromResource(getActivity().getApplicationContext(), arrId, sp_it);
+        adapter.setDropDownViewResource(sp_dd);
+        s.setAdapter(adapter);
+        return s;
+    }
+
+    protected Spinner setSpinner(int resId, int arrId, ArrayAdapter adapter) {
+        Spinner s = (Spinner) getView().findViewById(resId);
+        s.setAdapter(adapter);
+        return s;
+    }
+
     protected Spinner getSpinner(int resId) {
         return (Spinner) getView().findViewById(resId);
     }
