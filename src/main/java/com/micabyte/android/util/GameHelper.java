@@ -284,12 +284,15 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
             throw new IllegalStateException(error);
         }
 
+        Log.d(TAG, "CLIENT_BUILDER");
+
         GoogleApiClient.Builder builder = new GoogleApiClient.Builder(
                 mActivity, this, this);
 
         if (0 != (mRequestedClients & CLIENT_GAMES)) {
             builder.addApi(Games.API, mGamesApiOptions);
             builder.addScope(Games.SCOPE_GAMES);
+            Log.d(TAG, "CLIENT_GAMES");
         }
 
         if (0 != (mRequestedClients & CLIENT_PLUS)) {
@@ -305,6 +308,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
         if (0 != (mRequestedClients & CLIENT_SNAPSHOT)) {
             builder.addScope(Drive.SCOPE_APPFOLDER);
             builder.addApi(Drive.API);
+            Log.d(TAG, "CLIENT_SNAPSHOT");
         }
 
         mGoogleApiClientBuilder = builder;

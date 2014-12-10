@@ -49,6 +49,7 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
     public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
     public static final int CLIENT_APPSTATE = GameHelper.CLIENT_APPSTATE;
     public static final int CLIENT_PLUS = GameHelper.CLIENT_PLUS;
+    public static final int CLIENT_SAVES = GameHelper.CLIENT_SNAPSHOT;
     public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
 
     // Requested clients. By default, that's just the games client.

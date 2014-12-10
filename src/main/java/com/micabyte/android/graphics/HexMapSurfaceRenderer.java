@@ -14,6 +14,7 @@ package com.micabyte.android.graphics;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.util.Log;
 
 import com.micabyte.android.map.HexMap;
 
@@ -66,7 +67,6 @@ public class HexMapSurfaceRenderer extends SurfaceRenderer {
         Point p = this.GameSurfaceTileMap_.getViewPortOrigin(x, y, this.viewPort_);
         this.viewPort_.setOrigin(p.x, p.y);
     }
-
 
     @Override
     public void start() {

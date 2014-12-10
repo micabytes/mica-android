@@ -170,15 +170,18 @@ public class MicaSurfaceView extends android.view.SurfaceView implements Surface
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
 		this.renderer_.setViewSize(w, h);
 		// Recheck scale factor and reset position to prevent out of bounds
-		//this.setZoom().setScaleFactor(this.renderer_.getScaleFactor());
+        Point p = new Point();
+        this.renderer_.getViewPosition(p);
+        this.setZoom(getZoom(), new PointF(p.x, p.y));
 		//Point p = new Point();
 		//this.renderer_.getViewPosition(p);
-		//this.renderer_.setViewPosition(p.x, p.y);
+		this.renderer_.setViewPosition(p.x, p.y);
 		// Debug
 		Log.d(TAG, "surfaceChanged; new dimensions: w=" + w + ", h= " + h);
 		// Required to ensure thread has focus
 		//if (this.thread_ != null)
 		//	this.thread_.onWindowFocusChanged(true);
+
 	}
 	
 	@Override
