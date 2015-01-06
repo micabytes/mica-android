@@ -25,10 +25,11 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.games.GamesActivityResultCodes;
-import com.micabyte.android.R;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import com.micabyte.android.R;
 
 @SuppressWarnings("WeakerAccess")
 class GameHelperUtils {
@@ -134,9 +135,9 @@ class GameHelperUtils {
 
     static String getAppIdFromResource(Context ctx) {
         try {
-            Resources res = ctx.getResources();
-            String pkgName = ctx.getPackageName();
-            int res_id = res.getIdentifier("app_id", "string", pkgName);
+            final Resources res = ctx.getResources();
+            final String pkgName = ctx.getPackageName();
+            final int res_id = res.getIdentifier("app_id", "string", pkgName);
             return res.getString(res_id);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -146,15 +147,15 @@ class GameHelperUtils {
 
     static String getSHA1CertFingerprint(Context ctx) {
         try {
-            Signature[] sig = ctx.getPackageManager().getPackageInfo(
+            final Signature[] sig = ctx.getPackageManager().getPackageInfo(
                     ctx.getPackageName(), PackageManager.GET_SIGNATURES).signatures;
             if (sig.length == 0) {
                 return "ERROR: NO SIGNATURE.";
             } else if (sig.length > 1) {
                 return "ERROR: MULTIPLE SIGNATURES";
             }
-            byte[] digest = MessageDigest.getInstance("SHA1").digest(sig[0].toByteArray());
-            StringBuilder hexString = new StringBuilder();
+            final byte[] digest = MessageDigest.getInstance("SHA1").digest(sig[0].toByteArray());
+            final StringBuilder hexString = new StringBuilder();
             for (int i = 0; i < digest.length; ++i) {
                 if (i > 0) {
                     hexString.append(":");
@@ -172,17 +173,18 @@ class GameHelperUtils {
         }
     }
 
+    @SuppressWarnings("MagicNumber")
     static void byteToString(StringBuilder sb, byte b) {
-        int unsigned_byte = b < 0 ? b + 256 : b;
-        int hi = unsigned_byte / 16;
-        int lo = unsigned_byte % 16;
+        final int unsigned_byte = b < 0 ? b + 256 : b;
+        final int hi = unsigned_byte / 16;
+        final int lo = unsigned_byte % 16;
         sb.append("0123456789ABCDEF".substring(hi, hi + 1));
         sb.append("0123456789ABCDEF".substring(lo, lo + 1));
     }
 
     static String getString(Context ctx, int whichString) {
         whichString = whichString >= 0 && whichString < RES_IDS.length ? whichString : 0;
-        int resId = RES_IDS[whichString];
+        final int resId = RES_IDS[whichString];
         try {
             return ctx.getString(resId);
         } catch (Exception ex) {

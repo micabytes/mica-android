@@ -19,7 +19,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 
 import com.micabyte.android.BaseObject;
-import com.micabyte.android.graphics.SurfaceRenderer.ViewPort;
+import com.micabyte.android.graphics.SurfaceRenderer;
 
 /**
  * TileMap superclass
@@ -39,68 +39,68 @@ public abstract class TileMap extends BaseObject {
     }
 
     public void setTileMap(Context c, TileMapZone[][] map) {
-        this.zones_ = map;
-        TileMap.mapHeight = map[0].length;
-        TileMap.mapWidth = map.length;
-        this.tileRect_ = new Rect(0, 0, map[0][0].getWidth(c), map[0][0].getHeight(c));
+        zones_ = map;
+        mapHeight = map[0].length;
+        mapWidth = map.length;
+        tileRect_ = new Rect(0, 0, map[0][0].getWidth(c), map[0][0].getHeight(c));
     }
 
     public int getRenderHeight() {
-        return (TileMap.mapHeight * this.tileRect_.height());
+        return (mapHeight * tileRect_.height());
     }
 
     public int getRenderWidth() {
-        return (TileMap.mapWidth * this.tileRect_.width());
+        return (mapWidth * tileRect_.width());
     }
 
     public int getTileHeight() {
-        return this.tileRect_.height();
+        return tileRect_.height();
     }
 
     public int getTileWidth() {
-        return this.tileRect_.width();
+        return tileRect_.width();
     }
 
-    public void drawBase(Context c, ViewPort p) {
-        Canvas canvas = new Canvas(p.bitmap_);
-        Paint paint = new Paint();
+    public void drawBase(Context c, SurfaceRenderer.ViewPort p) {
+        final Canvas canvas = new Canvas(p.bitmap_);
+        final Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setFilterBitmap(true);
         paint.setDither(true);
-        float scaleFactor = p.getZoom();
-        int tileSize = this.tileRect_.width();
-        p.getOrigin(this.viewPortOrigin_);
-        p.getSize(this.viewPortSize_);
-        int windowLeft = this.viewPortOrigin_.x;
-        int windowTop = this.viewPortOrigin_.y;
-        int windowRight = this.viewPortOrigin_.x + this.viewPortSize_.x;
-        int windowBottom = this.viewPortOrigin_.y + this.viewPortSize_.y;
-        Rect destRect = new Rect();
+        final float scaleFactor = p.getZoom();
+        final int tileSize = tileRect_.width();
+        p.getOrigin(viewPortOrigin_);
+        p.getSize(viewPortSize_);
+        final int windowLeft = viewPortOrigin_.x;
+        final int windowTop = viewPortOrigin_.y;
+        final int windowRight = viewPortOrigin_.x + viewPortSize_.x;
+        final int windowBottom = viewPortOrigin_.y + viewPortSize_.y;
+        final Rect destRect = new Rect();
         // Clip tiles not in view
         int iMn = windowLeft / tileSize;
         if (iMn < 0) iMn = 0;
         int jMn = windowTop / tileSize;
         if (jMn < 0) jMn = 0;
         int iMx = (windowRight / tileSize) + 1;
-        if (iMx >= TileMap.mapWidth) iMx = TileMap.mapWidth;
+        if (iMx >= mapWidth) iMx = mapWidth;
         int jMx = (windowBottom / tileSize) + 1;
-        if (jMx >= TileMap.mapHeight) jMx = TileMap.mapHeight;
+        if (jMx >= mapHeight) jMx = mapHeight;
         // Draw Tiles
         for (int i = iMn; i < iMx; i++) {
             for (int j = jMn; j < jMx; j++) {
-                if (this.zones_[i][j] != null) {
+                if (zones_[i][j] != null) {
                     destRect.left = (int) (((i * tileSize) - windowLeft) / scaleFactor);
                     destRect.top = (int) (((j * tileSize) - windowTop) / scaleFactor);
                     destRect.right = (int) (((i * tileSize) + tileSize - windowLeft) / scaleFactor);
                     destRect.bottom = (int) (((j * tileSize) + tileSize - windowTop) / scaleFactor);
-                    this.zones_[i][j].drawBase(c, canvas, this.tileRect_, destRect, paint);
+                    zones_[i][j].drawBase(c, canvas, tileRect_, destRect, paint);
                 }
             }
         }
     }
 
-    public abstract void drawLayer(Context c, ViewPort p);
+    public abstract void drawLayer(Context c, SurfaceRenderer.ViewPort p);
 
-    public abstract void drawFinal(Context c, ViewPort p);
+    public abstract void drawFinal(Context c, SurfaceRenderer.ViewPort p);
 
 }

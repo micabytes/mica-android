@@ -14,7 +14,6 @@ package com.micabyte.android.graphics;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -162,17 +161,17 @@ public abstract class SurfaceRenderer {
             synchronized (this) {
                 int x = xp;
                 int y = yp;
-                int w = window.width();
-                int h = window.height();
+                final int w = window.width();
+                final int h = window.height();
                 // check bounds
                 if (x < 0)
                     x = 0;
                 if (y < 0)
                     y = 0;
-                if (x + w > SurfaceRenderer.this.backgroundSize_.x)
-                    x = SurfaceRenderer.this.backgroundSize_.x - w;
-                if (y + h > SurfaceRenderer.this.backgroundSize_.y)
-                    y = SurfaceRenderer.this.backgroundSize_.y - h;
+                if (x + w > backgroundSize_.x)
+                    x = backgroundSize_.x - w;
+                if (y + h > backgroundSize_.y)
+                    y = backgroundSize_.y - h;
                 // Set the Window rect
                 window.set(x, y, x + w, y + h);
             }
@@ -184,7 +183,7 @@ public abstract class SurfaceRenderer {
                     bitmap_.recycle();
                     bitmap_ = null;
                 }
-                bitmap_ = Bitmap.createBitmap(w, h, Config.RGB_565);
+                bitmap_ = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
                 Log.d("SF", "Created bitmap of size " + w + " " + h);
                 int x = window.left;
                 int y = window.top;
@@ -193,10 +192,10 @@ public abstract class SurfaceRenderer {
                     x = 0;
                 if (y < 0)
                     y = 0;
-                if (x + w > SurfaceRenderer.this.backgroundSize_.x)
-                    x = SurfaceRenderer.this.backgroundSize_.x - w;
-                if (y + h > SurfaceRenderer.this.backgroundSize_.y)
-                    y = SurfaceRenderer.this.backgroundSize_.y - h;
+                if (x + w > backgroundSize_.x)
+                    x = backgroundSize_.x - w;
+                if (y + h > backgroundSize_.y)
+                    y = backgroundSize_.y - h;
                 // Set the Window rect
                 window.set(x, y, x + w, y + h);
                 /*window.set(
@@ -236,15 +235,15 @@ public abstract class SurfaceRenderer {
         public void zoom(float factor, PointF screenFocus) {
             if (bitmap_ == null) return;
             if (factor != 1.0) {
-                PointF screenSize = new PointF(bitmap_.getWidth(), bitmap_.getHeight());
-                PointF sceneSize = new PointF(getBackgroundSize());
-                float screenWidthToHeight = screenSize.x / screenSize.y;
-                float screenHeightToWidth = screenSize.y / screenSize.x;
+                final PointF screenSize = new PointF(bitmap_.getWidth(), bitmap_.getHeight());
+                final PointF sceneSize = new PointF(getBackgroundSize());
+                final float screenWidthToHeight = screenSize.x / screenSize.y;
+                final float screenHeightToWidth = screenSize.y / screenSize.x;
                 synchronized (this) {
                     float newZoom = zoom * factor;
-                    RectF w1 = new RectF(window);
-                    RectF w2 = new RectF();
-                    PointF sceneFocus = new PointF(
+                    final RectF w1 = new RectF(window);
+                    final RectF w2 = new RectF();
+                    final PointF sceneFocus = new PointF(
                             w1.left + (screenFocus.x / screenSize.x) * w1.width(),
                             w1.top + (screenFocus.y / screenSize.y) * w1.height()
                     );
@@ -287,7 +286,7 @@ public abstract class SurfaceRenderer {
                     window.set((int) w2.left, (int) w2.top, (int) w2.right, (int) w2.bottom);
                     zoom = newZoom;
                     Log.d("Debug",String.format(
-                            "f=%.2f, z=%.2f, scrf(%.0f,%.0f), scnf(%.0f,%.0f) w1s(%.0f,%.0f) w2s(%.0f,%.0f) w1(%.0f,%.0f,%.0f,%.0f) w2(%.0f,%.0f,%.0f,%.0f)",
+                            "f=%.2f, z=%.2f, screen focus (%.0f,%.0f), scene focus (%.0f,%.0f) w1s(%.0f,%.0f) w2s(%.0f,%.0f) w1(%.0f,%.0f,%.0f,%.0f) w2(%.0f,%.0f,%.0f,%.0f)",
                             factor,
                             zoom,
                             screenFocus.x,

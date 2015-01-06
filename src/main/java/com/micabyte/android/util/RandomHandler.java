@@ -58,7 +58,7 @@ public class RandomHandler {
         int ret = 0;
         int roll;
         for (int i = 0; i < nDice; i++) {
-            roll = RandomHandler.random(dSize) + 1;
+            roll = random(dSize) + 1;
             if (roll >= toHit) {
                 ret++;
             }
@@ -77,10 +77,10 @@ public class RandomHandler {
         int ret = 0;
         int roll;
         for (int i = 0; i < nDice; i++) {
-            roll = RandomHandler.random(dSize) + 1;
+            roll = random(dSize) + 1;
             while (roll == dSize) { // Wild Dice
                 ret++;
-                roll = RandomHandler.random(dSize) + 1;
+                roll = random(dSize) + 1;
             }
             if (roll >= toHit) {
                 ret++;

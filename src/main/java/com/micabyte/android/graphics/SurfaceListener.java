@@ -18,7 +18,7 @@ package com.micabyte.android.graphics;
  * @author micabyte
  */
 public interface SurfaceListener {
-    public abstract void onTouchDown(int x, int y);
+    void onTouchDown(int x, int y);
 
-    public abstract void onTouchUp(int x, int y);
+    void onTouchUp(int x, int y);
 }

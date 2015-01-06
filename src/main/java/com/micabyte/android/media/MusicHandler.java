@@ -14,7 +14,6 @@ package com.micabyte.android.media;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -59,12 +58,12 @@ class MusicHandler {
                     mp = MediaPlayer.create(c, music);
                     players_.put(music, mp);
                 }
-                MediaPlayer cp = players_.get(currentMusic_);
+                final MediaPlayer cp = players_.get(currentMusic_);
                 if (cp != null) {
-                    cp.setOnCompletionListener(new OnCompletionListener() {
+                    cp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
                         public void onCompletion(MediaPlayer p) {
-                            MusicHandler.next();
+                            next();
                         }
                     });
                     cp.setLooping(false);
@@ -108,7 +107,7 @@ class MusicHandler {
      */
     private static void pause() {
         for (int i = 0; i < players_.size(); i++) {
-            MediaPlayer p = players_.valueAt(i);
+            final MediaPlayer p = players_.valueAt(i);
             if (p.isPlaying()) {
                 p.pause();
             }
@@ -125,7 +124,7 @@ class MusicHandler {
         }
         currentMusic_ = nextMusic_;
         nextMusic_ = INVALID_NUMBER;
-        MediaPlayer p = players_.get(currentMusic_);
+        final MediaPlayer p = players_.get(currentMusic_);
         if (p != null) {
             if (!p.isPlaying()) {
                 p.setLooping(true);
@@ -140,7 +139,7 @@ class MusicHandler {
      */
     public static void release() {
         for (int i = 0; i < players_.size(); i++) {
-            MediaPlayer p = players_.valueAt(i);
+            final MediaPlayer p = players_.valueAt(i);
             if (p.isPlaying()) {
                 p.stop();
             }

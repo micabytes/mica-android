@@ -27,8 +27,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.GamesActivityResultCodes;
 
-import com.micabyte.android.R;
-
 @SuppressWarnings("WeakerAccess")
 public class GameUtils {
 
@@ -71,8 +69,8 @@ public class GameUtils {
             }
         } else {
             // not resolvable... so show an error message
-            int errorCode = result.getErrorCode();
-            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
+            final int errorCode = result.getErrorCode();
+            final Dialog dialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
                     activity, requestCode);
             if (dialog != null) {
                 dialog.show();

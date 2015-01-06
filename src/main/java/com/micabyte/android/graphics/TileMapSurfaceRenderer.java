@@ -33,23 +33,23 @@ public class TileMapSurfaceRenderer extends SurfaceRenderer {
      * Set the TileMap
      */
     public void setTileMap(TileMap map) {
-        this.GameSurfaceTileMap_ = map;
-        this.backgroundSize_.set(this.GameSurfaceTileMap_.getRenderWidth(), this.GameSurfaceTileMap_.getRenderHeight());
+        GameSurfaceTileMap_ = map;
+        backgroundSize_.set(GameSurfaceTileMap_.getRenderWidth(), GameSurfaceTileMap_.getRenderHeight());
     }
 
     @Override
     public void drawBase() {
-        this.GameSurfaceTileMap_.drawBase(this.context_, this.viewPort_);
+        GameSurfaceTileMap_.drawBase(context_, viewPort_);
     }
 
     @Override
     protected void drawLayer() {
-        this.GameSurfaceTileMap_.drawLayer(this.context_, this.viewPort_);
+        GameSurfaceTileMap_.drawLayer(context_, viewPort_);
     }
 
     @Override
     protected void drawFinal() {
-        this.GameSurfaceTileMap_.drawFinal(this.context_, this.viewPort_);
+        GameSurfaceTileMap_.drawFinal(context_, viewPort_);
     }
 
     @Override

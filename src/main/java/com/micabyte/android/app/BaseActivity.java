@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.appcompat.BuildConfig;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.micabyte.android.BuildConfig;
 import com.micabyte.android.util.GameHelper;
 
 import java.text.DecimalFormat;
@@ -65,7 +65,6 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
      * Constructs a BaseGameActivity with default client (GamesClient).
      */
     protected BaseActivity() {
-        super();
     }
 
     /**
@@ -75,7 +74,6 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
      *                         CLIENT_PLUS and CLIENT_APPSTATE).
      */
     protected BaseActivity(int requestedClients) {
-        super();
         setRequestedClients(requestedClients);
     }
 
@@ -194,7 +192,7 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
      */
     protected static void unbindReferences(Activity activity, int viewID) {
         try {
-            View view = activity.findViewById(viewID);
+            final View view = activity.findViewById(viewID);
             if (view != null) {
                 unbindViewReferences(view);
                 if (view instanceof ViewGroup) unbindViewGroupReferences((ViewGroup) view);
@@ -208,9 +206,9 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
     }
 
     private static void unbindViewGroupReferences(ViewGroup viewGroup) {
-        int nrOfChildren = viewGroup.getChildCount();
+        final int nrOfChildren = viewGroup.getChildCount();
         for (int i = 0; i < nrOfChildren; i++) {
-            View view = viewGroup.getChildAt(i);
+            final View view = viewGroup.getChildAt(i);
             unbindViewReferences(view);
             if (view instanceof ViewGroup) unbindViewGroupReferences((ViewGroup) view);
         }
@@ -260,7 +258,7 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
             d.setCallback(null);
         }
         if (view instanceof ImageView) {
-            ImageView imageView = (ImageView) view;
+            final ImageView imageView = (ImageView) view;
             d = imageView.getDrawable();
             if (d != null) {
                 d.setCallback(null);
@@ -269,7 +267,7 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
             imageView.setImageBitmap(null);
         }
         if (view instanceof ImageButton) {
-            ImageButton imageB = (ImageButton) view;
+            final ImageButton imageB = (ImageButton) view;
             d = imageB.getDrawable();
             if (d != null) {
                 d.setCallback(null);
@@ -286,9 +284,9 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
     /*
      * Show Heap
      */
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "MagicNumber"})
     public static void logHeap(Class clazz) {
-        DecimalFormat df = new DecimalFormat();
+        final DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2);
         df.setMinimumFractionDigits(2);
         if (BuildConfig.DEBUG) Log.d(clazz.getName(),

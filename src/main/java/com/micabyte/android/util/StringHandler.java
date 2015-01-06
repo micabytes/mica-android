@@ -23,7 +23,6 @@ import java.util.Vector;
 import android.content.Context;
 
 import com.micabyte.android.BaseObject;
-import com.micabyte.android.R;
 
 /**
  * StringHandler is a wrapper around the standard Android getString functionality. It is primarily
@@ -58,20 +57,21 @@ public class StringHandler {
 	 * @param variables A hash map containing variables
 	 * @return String with all of the scripting code replaced appropriately
 	 */
-	@SuppressWarnings("WeakerAccess")
+	@SuppressWarnings({"WeakerAccess", "InstanceofInterfaces"})
     public static String format(Context c, String text, HashMap<String, Object> variables) {
 		int start, end;
 		String ret = text;
 		// Insert Line breaks
-		ret = ret.replace("\\n", System.getProperty("line.separator"));
+        //noinspection AccessOfSystemProperties
+        ret = ret.replace("\\n", System.getProperty("line.separator"));
 		// Handle random choice
 		start = ret.indexOf("[/");
 		while (start != NOT_FOUND) {
 			end = ret.indexOf("/]", start);
 			if (end != NOT_FOUND) {
-				String replace = ret.substring(start, end + 2);
-				String sub = ret.substring(start + 2, end);
-				String tokens[] = sub.split("[/]");
+				final String replace = ret.substring(start, end + 2);
+				final String sub = ret.substring(start + 2, end);
+				final String[] tokens = sub.split("[/]");
 				ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
 				start = ret.indexOf("[/");
 			}
@@ -83,19 +83,19 @@ public class StringHandler {
 		while (start != NOT_FOUND) {
 			end = ret.indexOf("#]", start);
 			if (end == NOT_FOUND) end = ret.length();
-			String replace = ret.substring(start, end + 2);
-			String sub = ret.substring(start + 2, end);
-			String tokens[] = sub.split("[/]");
+			final String replace = ret.substring(start, end + 2);
+			final String sub = ret.substring(start + 2, end);
+			final String[] tokens = sub.split("[/]");
 			if (tokens.length == 4) {
-				String nStr = tokens[0];
+				final String nStr = tokens[0];
 				int nInt = 0;
 				try {
 					nInt = Integer.parseInt(nStr.trim());
 				}
 				catch (NumberFormatException e) {
 					if (variables != null) {
-						String vars[] = nStr.split("[.]");
-						Object obj = variables.get(vars[0].trim().toLowerCase(Locale.US));
+						final String[] vars = nStr.split("[.]");
+						final Object obj = variables.get(vars[0].trim().toLowerCase(Locale.US));
 						if (obj != null) {
 							if (vars.length == 1) {
 								if (obj instanceof Integer) {
@@ -134,15 +134,15 @@ public class StringHandler {
         while (start != NOT_FOUND) {
             end = ret.indexOf("]", start);
             if (end != NOT_FOUND) {
-                String opt = ret.substring(start + 1, end);
+                final String opt = ret.substring(start + 1, end);
                 String condition = null;
                 if (ret.charAt(end + 1) == '(') {
-                    int i = ret.indexOf(")", end);
+                    final int i = ret.indexOf(")", end);
                     condition = ret.substring(end + 2, i).trim();
                     if (i != NOT_FOUND) end = i;
                 }
-                String replace = ret.substring(start, end + 1);
-                String tokens[] = opt.split("[|]");
+                final String replace = ret.substring(start, end + 1);
+                final String[] tokens = opt.split("[|]");
                 if (tokens.length == 1)
                     ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
                 else if (condition.equals("?")) {
@@ -169,10 +169,10 @@ public class StringHandler {
 				if (end == NOT_FOUND) end = ret.length();
 				while (punctuation.indexOf(ret.charAt(end - 1)) != NOT_FOUND)
 					end--;
-				String variable = ret.substring(start, end);
-				String tokens[] = variable.split("[.]");
+				final String variable = ret.substring(start, end);
+				final String[] tokens = variable.split("[.]");
 				if (tokens.length == 1) {
-					Object obj = variables.get(tokens[0].trim().toLowerCase(Locale.US));
+					final Object obj = variables.get(tokens[0].trim().toLowerCase(Locale.US));
 					if (obj != null) {
 						if (obj instanceof Integer) {
 							ret = ret.replace(variable, obj.toString());
@@ -195,7 +195,7 @@ public class StringHandler {
 					}
 				}
 				else {
-					Object obj = variables.get(tokens[0].trim().toLowerCase(Locale.US));
+					final Object obj = variables.get(tokens[0].trim().toLowerCase(Locale.US));
 					if (obj != null) {
 						if (obj instanceof BaseObject) {
 							ret = ret.replace(variable, ((BaseObject) obj).getString(c, tokens[1].trim()));
@@ -216,7 +216,7 @@ public class StringHandler {
 
 	public static String randomSplit(String str, String divisor) {
 		if (str.contains(divisor)) {
-			String tokens[];
+			final String[] tokens;
 			tokens = str.split("[/]");
 			if (tokens.length > 0) {
 				return tokens[RandomHandler.random(tokens.length)];
@@ -233,7 +233,7 @@ public class StringHandler {
 			return ret;
 		}
 		if (list.size() == 2) {
-			ret = list.get(0).getName() + " " + c.getString(R.string.stringhandler_and1) + " " + list.get(1).getName();
+			ret = list.get(0).getName() + " " + c.gectString(R.string.stringhandler_and1) + " " + list.get(1).getName();
 			return ret;
 		}
 		for (int i = 0; i < list.size() - 1; i++) {
@@ -291,8 +291,8 @@ public class StringHandler {
 	}
 
 	public static String getString(InputStream is) {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		StringBuilder sb = new StringBuilder();
+		final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		final StringBuilder sb = new StringBuilder();
 
 		String line;
 		try {

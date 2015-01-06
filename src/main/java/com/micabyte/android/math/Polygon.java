@@ -26,9 +26,9 @@ class Polygon {
     private final int polyN_;
 
     public Polygon(int[] px, int[] py, int ps) {
-        this.polyX_ = px;
-        this.polyY_ = py;
-        this.polyN_ = ps;
+        polyX_ = px;
+        polyY_ = py;
+        polyN_ = ps;
     }
 
     /**
@@ -36,9 +36,9 @@ class Polygon {
      */
     public boolean contains(int x, int y) {
         boolean oddTransitions = false;
-        for (int i = 0, j = this.polyN_ - 1; i < this.polyN_; j = i++) {
-            if ((this.polyY_[i] < y && this.polyY_[j] >= y) || (this.polyY_[j] < y && this.polyY_[i] >= y)) {
-                if (this.polyX_[i] + (y - this.polyY_[i]) / (this.polyY_[j] - this.polyY_[i]) * (this.polyX_[j] - this.polyX_[i]) < x) {
+        for (int i = 0, j = polyN_ - 1; i < polyN_; j = i++) {
+            if ((polyY_[i] < y && polyY_[j] >= y) || (polyY_[j] < y && polyY_[i] >= y)) {
+                if (polyX_[i] + (y - polyY_[i]) / (polyY_[j] - polyY_[i]) * (polyX_[j] - polyX_[i]) < x) {
                     oddTransitions = !oddTransitions;
                 }
             }

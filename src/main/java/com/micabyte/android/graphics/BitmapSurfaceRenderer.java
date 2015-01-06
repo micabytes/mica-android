@@ -22,10 +22,10 @@ import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.Bitmap.Config;
+import android.support.v7.appcompat.BuildConfig;
 import android.util.Log;
 
-import com.micabyte.android.BuildConfig;
+import com.micabyte.android.graphics.SurfaceRenderer.ViewPort;
 
 /**
  * GameSurfaceRendererBitmap is a renderer that handles the rendering of a background bitmap to the
@@ -39,7 +39,7 @@ import com.micabyte.android.BuildConfig;
 public class BitmapSurfaceRenderer extends SurfaceRenderer {
     private static final String TAG = BitmapSurfaceRenderer.class.getName();
     // Default Settings
-    public static final Config DEFAULT_CONFIG = Config.RGB_565;
+    public static final Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.RGB_565;
     private static final int DEFAULT_SAMPLE_SIZE = 2;
     private static final int DEFAULT_MEM_USAGE = 20;
     private static final float DEFAULT_THRESHOLD = 0.75f;
@@ -74,18 +74,18 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
 
     private BitmapSurfaceRenderer(Context c) {
         super(c);
-        this.options_.inPreferredConfig = DEFAULT_CONFIG;
-        this.sampleSize_ = DEFAULT_SAMPLE_SIZE;
-        this.memUsage_ = DEFAULT_MEM_USAGE;
-        this.lowResThreshold_ = DEFAULT_THRESHOLD;
+        options_.inPreferredConfig = DEFAULT_CONFIG;
+        sampleSize_ = DEFAULT_SAMPLE_SIZE;
+        memUsage_ = DEFAULT_MEM_USAGE;
+        lowResThreshold_ = DEFAULT_THRESHOLD;
     }
 
     protected BitmapSurfaceRenderer(Context c, Bitmap.Config config, int sampleSize, int memUsage, float threshold) {
         super(c);
-        this.options_.inPreferredConfig = config;
-        this.sampleSize_ = sampleSize;
-        this.memUsage_ = memUsage;
-        this.lowResThreshold_ = threshold;
+        options_.inPreferredConfig = config;
+        sampleSize_ = sampleSize;
+        memUsage_ = memUsage;
+        lowResThreshold_ = threshold;
     }
 
     /**
@@ -95,8 +95,8 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      * @throws IOException
      */
     public void setBitmap(InputStream inputStream) throws IOException {
-        BitmapFactory.Options opt = new BitmapFactory.Options();
-        this.decoder_ = BitmapRegionDecoder.newInstance(inputStream, false);
+        final BitmapFactory.Options opt = new BitmapFactory.Options();
+        decoder_ = BitmapRegionDecoder.newInstance(inputStream, false);
         inputStream.reset();
         // Grab the bounds of the background bitmap
         opt.inPreferredConfig = DEFAULT_CONFIG;
@@ -104,26 +104,26 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
         if (BuildConfig.DEBUG) Log.d(TAG, "Decode inputStream for Background Bitmap");
         BitmapFactory.decodeStream(inputStream, null, opt);
         inputStream.reset();
-        this.backgroundSize_.set(opt.outWidth, opt.outHeight);
+        backgroundSize_.set(opt.outWidth, opt.outHeight);
         if (BuildConfig.DEBUG)
             Log.i(TAG, "Background Image: w=" + opt.outWidth + " h=" + opt.outHeight);
         // Create the low resolution background
         opt.inJustDecodeBounds = false;
-        opt.inSampleSize = (1 << this.sampleSize_);
-        this.lowResBitmap_ = BitmapFactory.decodeStream(inputStream, null, opt);
+        opt.inSampleSize = (1 << sampleSize_);
+        lowResBitmap_ = BitmapFactory.decodeStream(inputStream, null, opt);
         if (BuildConfig.DEBUG)
-            Log.i(TAG, "Low Res Image: w=" + this.lowResBitmap_.getWidth() + " h=" + this.lowResBitmap_.getHeight());
+            Log.i(TAG, "Low Res Image: w=" + lowResBitmap_.getWidth() + " h=" + lowResBitmap_.getHeight());
         // Initialize cache
-        if (this.cachedBitmap_.getState() == CacheState.NOT_INITIALIZED) {
-            synchronized (this.cachedBitmap_) {
-                this.cachedBitmap_.setState(CacheState.IS_INITIALIZED);
+        if (cachedBitmap_.getState() == CacheState.NOT_INITIALIZED) {
+            synchronized (cachedBitmap_) {
+                cachedBitmap_.setState(CacheState.IS_INITIALIZED);
             }
         }
     }
 
     @Override
     protected void drawBase() {
-        this.cachedBitmap_.draw(this.viewPort_);
+        cachedBitmap_.draw(viewPort_);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      */
     @Override
     public void start() {
-        this.cachedBitmap_.start();
+        cachedBitmap_.start();
     }
 
     /**
@@ -149,7 +149,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      */
     @Override
     public void stop() {
-        this.cachedBitmap_.stop();
+        cachedBitmap_.stop();
     }
 
     /**
@@ -157,14 +157,14 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      */
     @Override
     public void suspend(boolean suspend) {
-        this.cachedBitmap_.suspend(suspend);
+        cachedBitmap_.suspend(suspend);
     }
 
     /**
      * Invalidate the cache.
      */
     public void invalidate() {
-        this.cachedBitmap_.invalidate();
+        cachedBitmap_.invalidate();
     }
 
 
@@ -177,7 +177,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      * @return The bitmap representing the requested area of the background
      */
     Bitmap loadCachedBitmap(Rect rect) {
-        return this.decoder_.decodeRegion(rect, this.options_);
+        return decoder_.decodeRegion(rect, options_);
     }
 
     /**
@@ -186,8 +186,8 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      * @param error The OutOfMemoryError exception data
      */
     void cacheBitmapOutOfMemoryError(OutOfMemoryError error) {
-        if (this.memUsage_ > 0) this.memUsage_ -= 1;
-        Log.e(TAG, "OutOfMemory caught; reducing cache size to " + this.memUsage_ + " percent.");
+        if (memUsage_ > 0) memUsage_ -= 1;
+        Log.e(TAG, "OutOfMemory caught; reducing cache size to " + memUsage_ + " percent.");
         error.printStackTrace();
     }
 
@@ -198,15 +198,15 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      * speed of this function.
      */
     void drawLowResolutionBackground(Bitmap bitmap, Rect rect) {
-        int left = (rect.left >> this.sampleSize_);
-        int top = (rect.top >> this.sampleSize_);
-        int right = (rect.right >> this.sampleSize_);
-        int bottom = (rect.bottom >> this.sampleSize_);
-        Rect srcRect = new Rect(left, top, right, bottom);
-        Rect dstRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final int left = (rect.left >> sampleSize_);
+        final int top = (rect.top >> sampleSize_);
+        final int right = (rect.right >> sampleSize_);
+        final int bottom = (rect.bottom >> sampleSize_);
+        final Rect srcRect = new Rect(left, top, right, bottom);
+        final Rect dstRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         // Draw to Canvas
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawBitmap(this.lowResBitmap_, srcRect, dstRect, null);
+        final Canvas canvas = new Canvas(bitmap);
+        canvas.drawBitmap(lowResBitmap_, srcRect, dstRect, null);
     }
 
     /**
@@ -220,10 +220,10 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      */
     Rect calculateCacheDimensions(Rect rect) {
         final int BYTES_PER_PIXEL = 4;
-        long bytesToUse = Runtime.getRuntime().maxMemory() * this.memUsage_ / 100;
-        Point sz = getBackgroundSize();
-        int vw = rect.width();
-        int vh = rect.height();
+        final long bytesToUse = Runtime.getRuntime().maxMemory() * memUsage_ / 100;
+        final Point sz = getBackgroundSize();
+        final int vw = rect.width();
+        final int vh = rect.height();
         if (BuildConfig.DEBUG) Log.d(TAG, "old cache.originRect = " + rect.toShortString());
         // Calculate the margins within the memory budget
         int tw = 0;
@@ -263,10 +263,10 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
             bottom = sz.y;
         }
         // Set the origin based on our new calculated values.
-        this.calculatedCacheWindowRect.set(left, top, right, bottom);
+        calculatedCacheWindowRect.set(left, top, right, bottom);
         if (BuildConfig.DEBUG)
-            if (BuildConfig.DEBUG) Log.d(TAG, "new cache.originRect = " + this.calculatedCacheWindowRect.toShortString() + " size=" + sz.toString());
-        return this.calculatedCacheWindowRect;
+            if (BuildConfig.DEBUG) Log.d(TAG, "new cache.originRect = " + calculatedCacheWindowRect.toShortString() + " size=" + sz.toString());
+        return calculatedCacheWindowRect;
     }
 
 
@@ -300,47 +300,46 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
         private CacheThread cacheThread_;
 
         public CacheBitmap() {
-            super();
         }
 
         CacheState getState() {
-            return this.state_;
+            return state_;
         }
 
         void setState(CacheState newState) {
-            this.state_ = newState;
+            state_ = newState;
         }
 
         void start() {
-            if (this.cacheThread_ != null) {
-                this.cacheThread_.setRunning(false);
-                this.cacheThread_.interrupt();
-                this.cacheThread_ = null;
+            if (cacheThread_ != null) {
+                cacheThread_.setRunning(false);
+                cacheThread_.interrupt();
+                cacheThread_ = null;
             }
-            this.cacheThread_ = new CacheThread(this);
-            this.cacheThread_.setName("cacheThread");
-            this.cacheThread_.start();
+            cacheThread_ = new CacheThread(this);
+            cacheThread_.setName("cacheThread");
+            cacheThread_.start();
         }
 
         void stop() {
-            this.cacheThread_.setRunning(false);
-            this.cacheThread_.interrupt();
+            cacheThread_.setRunning(false);
+            cacheThread_.interrupt();
             boolean retry = true;
             while (retry) {
                 try {
-                    this.cacheThread_.join();
+                    cacheThread_.join();
                     retry = false;
                 } catch (InterruptedException e) {
                     // Wait until thread is dead
                 }
             }
-            this.cacheThread_ = null;
+            cacheThread_ = null;
         }
 
         void invalidate() {
             synchronized (this) {
                 setState(CacheState.IS_INITIALIZED);
-                this.cacheThread_.interrupt();
+                cacheThread_.interrupt();
             }
         }
 
@@ -373,7 +372,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                     case IS_INITIALIZED:
                         // Start data caching
                         setState(CacheState.BEGIN_UPDATE);
-                        this.cacheThread_.interrupt();
+                        cacheThread_.interrupt();
                         break;
                     case BEGIN_UPDATE:
                     case IS_UPDATING:
@@ -383,16 +382,16 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                         // Use of high resolution version disabled
                         break;
                     case READY:
-                        if (this.bitmap_ == null) {
+                        if (bitmap_ == null) {
                             // No data loaded
                             setState(CacheState.BEGIN_UPDATE);
-                            this.cacheThread_.interrupt();
-                        } else if (!this.cacheWindow_.contains(p.window)) {
+                            cacheThread_.interrupt();
+                        } else if (!cacheWindow_.contains(p.window)) {
                             // No cached data available
                             setState(CacheState.BEGIN_UPDATE);
-                            this.cacheThread_.interrupt();
+                            cacheThread_.interrupt();
                         } else {
-                            bitmap = this.bitmap_;
+                            bitmap = bitmap_;
                         }
                         break;
                 }
@@ -418,26 +417,26 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
          * Use the high resolution cached bitmap for drawing
          */
         void drawHighResolution(Bitmap bitmap) {
-            Rect wSize = BitmapSurfaceRenderer.this.viewPort_.window;
+            final Rect wSize = viewPort_.window;
             if (bitmap != null) {
-                synchronized (BitmapSurfaceRenderer.this.viewPort_) {
-                    int left = wSize.left - this.cacheWindow_.left;
-                    int top = wSize.top - this.cacheWindow_.top;
-                    int right = left + wSize.width();
-                    int bottom = top + wSize.height();
-                    BitmapSurfaceRenderer.this.viewPort_.getPhysicalSize(this.dstSize_);
-                    this.srcRect_.set(left, top, right, bottom);
-                    this.dstRect_.set(0, 0, this.dstSize_.x, this.dstSize_.y);
-                    Canvas canvas = new Canvas(BitmapSurfaceRenderer.this.viewPort_.bitmap_);
-                    canvas.drawBitmap(bitmap, this.srcRect_, this.dstRect_, null);
+                synchronized (viewPort_) {
+                    final int left = wSize.left - cacheWindow_.left;
+                    final int top = wSize.top - cacheWindow_.top;
+                    final int right = left + wSize.width();
+                    final int bottom = top + wSize.height();
+                    viewPort_.getPhysicalSize(dstSize_);
+                    srcRect_.set(left, top, right, bottom);
+                    dstRect_.set(0, 0, dstSize_.x, dstSize_.y);
+                    final Canvas canvas = new Canvas(viewPort_.bitmap_);
+                    canvas.drawBitmap(bitmap, srcRect_, dstRect_, null);
                 }
             }
         }
 
         void drawLowResolution() {
             if (getState() != CacheState.NOT_INITIALIZED) {
-                synchronized (BitmapSurfaceRenderer.this.viewPort_) {
-                    drawLowResolutionBackground(BitmapSurfaceRenderer.this.viewPort_.bitmap_, BitmapSurfaceRenderer.this.viewPort_.window);
+                synchronized (viewPort_) {
+                    drawLowResolutionBackground(viewPort_.bitmap_, viewPort_.window);
                 }
             }
         }
@@ -460,68 +459,68 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
 
         CacheThread(CacheBitmap cache) {
             setName("CacheThread");
-            this.cache_ = cache;
+            cache_ = cache;
         }
 
         @Override
         public void run() {
-            this.isRunning_ = true;
-            Rect viewportRect = new Rect(0, 0, 0, 0);
-            while (this.isRunning_) {
+            isRunning_ = true;
+            final Rect viewportRect = new Rect(0, 0, 0, 0);
+            while (isRunning_) {
                 // Wait until we are ready to go
-                while (this.isRunning_ && this.cache_.getState() != CacheState.BEGIN_UPDATE) {
+                while (isRunning_ && cache_.getState() != CacheState.BEGIN_UPDATE) {
                     try {
                         Thread.sleep(Integer.MAX_VALUE);
                     } catch (InterruptedException e) {
                         // NOOP
                     }
                 }
-                if (!this.isRunning_) return;
+                if (!isRunning_) return;
                 // Start Loading Timer
-                long startTime = System.currentTimeMillis();
+                final long startTime = System.currentTimeMillis();
                 // Load Data
                 boolean continueLoading = false;
-                synchronized (this.cache_) {
-                    if (this.cache_.getState() == CacheState.BEGIN_UPDATE) {
-                        this.cache_.setState(CacheState.IS_UPDATING);
-                        this.cache_.bitmap_ = null;
+                synchronized (cache_) {
+                    if (cache_.getState() == CacheState.BEGIN_UPDATE) {
+                        cache_.setState(CacheState.IS_UPDATING);
+                        cache_.bitmap_ = null;
                         continueLoading = true;
                     }
                 }
                 if (continueLoading) {
-                    synchronized (BitmapSurfaceRenderer.this.viewPort_) {
-                        viewportRect.set(BitmapSurfaceRenderer.this.viewPort_.window);
+                    synchronized (viewPort_) {
+                        viewportRect.set(viewPort_.window);
                     }
-                    synchronized (this.cache_) {
-                        if (this.cache_.getState() == CacheState.IS_UPDATING)
-                            this.cache_.cacheWindow_.set(calculateCacheDimensions(viewportRect));
+                    synchronized (cache_) {
+                        if (cache_.getState() == CacheState.IS_UPDATING)
+                            cache_.cacheWindow_.set(calculateCacheDimensions(viewportRect));
                         else
                             continueLoading = false;
                     }
                     if (continueLoading) {
                         try {
-                            Bitmap bitmap = loadCachedBitmap(this.cache_.cacheWindow_);
+                            final Bitmap bitmap = loadCachedBitmap(cache_.cacheWindow_);
                             if (bitmap != null) {
-                                synchronized (this.cache_) {
-                                    if (this.cache_.getState() == CacheState.IS_UPDATING) {
-                                        this.cache_.bitmap_ = bitmap;
-                                        this.cache_.setState(CacheState.READY);
+                                synchronized (cache_) {
+                                    if (cache_.getState() == CacheState.IS_UPDATING) {
+                                        cache_.bitmap_ = bitmap;
+                                        cache_.setState(CacheState.READY);
                                     } else {
                                         Log.w(TAG, "Loading of background image cache aborted");
                                     }
                                 }
                             }
                             // End Loading Timer
-                            long endTime = System.currentTimeMillis();
+                            final long endTime = System.currentTimeMillis();
                             if (BuildConfig.DEBUG)
                                 if (BuildConfig.DEBUG) Log.d(TAG, "Loaded background image in " + (endTime - startTime) + "ms");
                         } catch (OutOfMemoryError e) {
                             if (BuildConfig.DEBUG) Log.d(TAG, "CacheThread out of memory");
                             // Out of memory error detected. Lower the memory allocation
-                            synchronized (this.cache_) {
+                            synchronized (cache_) {
                                 cacheBitmapOutOfMemoryError(e);
-                                if (this.cache_.getState() == CacheState.IS_UPDATING) {
-                                    this.cache_.setState(CacheState.BEGIN_UPDATE);
+                                if (cache_.getState() == CacheState.IS_UPDATING) {
+                                    cache_.setState(CacheState.BEGIN_UPDATE);
                                 }
                             }
                         }
@@ -532,7 +531,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
 
         @SuppressWarnings("SameParameterValue")
         public void setRunning(boolean b) {
-            this.isRunning_ = b;
+            isRunning_ = b;
         }
 
     }

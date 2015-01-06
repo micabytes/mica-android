@@ -12,6 +12,7 @@
  */
 package com.micabyte.android;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -29,48 +30,48 @@ import com.micabyte.android.util.StringHandler;
 public abstract class BaseObject {
     private static final String TAG = BaseObject.class.getName();
     // ID of Object
-    private String id_ = null;
+    private String id = null;
     // Name of Object
-    private String name_ = null;
+    private String name = null;
     // Value of Object
-    private int value_ = 0;
+    private int value = 0;
 
     protected BaseObject() {
         // NOOP
     }
 
-    protected BaseObject(String id, String name, int v) {
-        this.id_ = id;
-        this.name_ = name;
-        this.value_ = v;
+    protected BaseObject(String id0, String name0, int v) {
+        id = id0;
+        name = name0;
+        value = v;
     }
 
     public String getId() {
-        return this.id_;
+        return id;
     }
 
     public void setId(String s) {
-        this.id_ = s;
+        id = s;
     }
 
-    public boolean equalsId(String id) {
-        return this.id_.equalsIgnoreCase(id);
+    public boolean equalsId(String s) {
+        return id.equalsIgnoreCase(s);
     }
 
     public String getName() {
-        return this.name_;
+        return name;
     }
 
-    public void setName(String name) {
-        this.name_ = name;
+    public void setName(String n) {
+        name = n;
     }
 
     public int getValue() {
-        return this.value_;
+        return value;
     }
 
     public void setValue(int v) {
-        this.value_ = v;
+        value = v;
     }
 
     /*
@@ -78,7 +79,8 @@ public abstract class BaseObject {
      * text replacement in strings (see StringHandler) where it is useful to retrieve data from many
      * different types of game objects.
      */
-    private enum ValueToken {
+        @SuppressWarnings("InnerClassFieldHidesOuterClassField")
+        private enum ValueToken {
         error, name, value, tag, object;
 
         public static ValueToken get(String str) {
@@ -90,8 +92,8 @@ public abstract class BaseObject {
         }
     }
 
-    public int getInteger(String id) {
-        switch (ValueToken.get(id)) {
+    public int getInteger(String id0) {
+        switch (ValueToken.get(id0)) {
             case value:
                 return getValue();
             default:
@@ -99,8 +101,8 @@ public abstract class BaseObject {
         }
     }
 
-    public String getString(Context c, String id) {
-        switch (ValueToken.get(id)) {
+    public String getString(Context c, String id0) {
+        switch (ValueToken.get(id0)) {
             case name:
                 return getName();
             case value:
@@ -110,8 +112,8 @@ public abstract class BaseObject {
         }
     }
 
-    public BaseObject getObject(String id) {
-        switch (ValueToken.get(id)) {
+    public BaseObject getObject(String id0) {
+        switch (ValueToken.get(id0)) {
             case object:
                 return this;
             default:
@@ -120,7 +122,7 @@ public abstract class BaseObject {
     }
 
     public static int evaluate(String test, HashMap<String, Object> variables) {
-        String tokens[];
+        final String[] tokens;
         tokens = test.split("[&]");
         if (tokens.length == 1)
             return evaluateStatement(test, variables);
@@ -138,16 +140,16 @@ public abstract class BaseObject {
         return ret ? 1 : 0;
     }
 
-    private static int evaluateStatement(String str, HashMap<String, Object> variables) {
-        String tokens[];
+    private static int evaluateStatement(String str, AbstractMap<String, Object> variables) {
+        final String[] tokens;
         // Random Value
         // >=
         if (str.contains(">=")) {
             tokens = str.split("[>=]+");
             if (tokens.length == 2) {
-                String val1 = tokens[0].trim().toLowerCase(Locale.US);
-                String val2 = tokens[1].trim().toLowerCase(Locale.US);
-                return (getVariableValue(val1,variables) >= getVariableValue(val2,variables)) ? 1 : 0;
+                final String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                final String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                return (getVariableValue(val1, variables) >= getVariableValue(val2, variables)) ? 1 : 0;
             }
             Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
             return 0;
@@ -156,9 +158,9 @@ public abstract class BaseObject {
         if (str.contains("<=")) {
             tokens = str.split("[<=]+");
             if (tokens.length == 2) {
-                String val1 = tokens[0].trim().toLowerCase(Locale.US);
-                String val2 = tokens[1].trim().toLowerCase(Locale.US);
-                return (getVariableValue(val1,variables) <= getVariableValue(val2,variables)) ? 1 : 0;
+                final String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                final String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                return (getVariableValue(val1, variables) <= getVariableValue(val2, variables)) ? 1 : 0;
             }
             Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " +  str);
             return 0;
@@ -167,9 +169,9 @@ public abstract class BaseObject {
         if (str.contains(">")) {
             tokens = str.split("[>]+");
             if (tokens.length == 2) {
-                String val1 = tokens[0].trim().toLowerCase(Locale.US);
-                String val2 = tokens[1].trim().toLowerCase(Locale.US);
-                return (getVariableValue(val1,variables) > getVariableValue(val2,variables)) ? 1 : 0;
+                final String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                final String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                return (getVariableValue(val1, variables) > getVariableValue(val2, variables)) ? 1 : 0;
             }
             Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " +  str);
             return 0;
@@ -178,9 +180,9 @@ public abstract class BaseObject {
         if (str.contains("<")) {
             tokens = str.split("[<]+");
             if (tokens.length == 2) {
-                String val1 = tokens[0].trim().toLowerCase(Locale.US);
-                String val2 = tokens[1].trim().toLowerCase(Locale.US);
-                return (getVariableValue(val1,variables) < getVariableValue(val2,variables)) ? 1 : 0;
+                final String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                final String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                return (getVariableValue(val1, variables) < getVariableValue(val2, variables)) ? 1 : 0;
             }
             Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
             return 0;
@@ -190,9 +192,9 @@ public abstract class BaseObject {
         if (str.contains("=")) {
             tokens = str.split("[=]+");
             if (tokens.length == 2) {
-                String val1 = tokens[0].trim().toLowerCase(Locale.US);
-                String val2 = tokens[1].trim().toLowerCase(Locale.US);
-                return (getVariableValue(val1,variables) == getVariableValue(val2,variables)) ? 1 : 0;
+                final String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                final String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                return (getVariableValue(val1, variables) == getVariableValue(val2, variables)) ? 1 : 0;
             }
             Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " +  str);
             return 0;
@@ -201,8 +203,8 @@ public abstract class BaseObject {
         return getVariableValue(str, variables);
     }
 
-    private static int getVariableValue(String key, HashMap<String, Object> variables) {
-        String var = key.trim().toLowerCase(Locale.US);
+    private static int getVariableValue(String key, AbstractMap<String, Object> variables) {
+        final String var = key.trim().toLowerCase(Locale.US);
         if (var.isEmpty()) return 0;
         if (var.charAt(0) != '$') {
             try {
@@ -212,19 +214,19 @@ public abstract class BaseObject {
                 return 0;
             }
         }
-        String tokens[] = var.split("[.]", 2);
+        final String[] tokens = var.split("[.]", 2);
         if (tokens.length > 2) {
             Crashlytics.log(Log.ERROR, TAG, "Failed to interpret object " + var);
             return 0;
         }
         if (variables == null)
             return 0;
-        Object obj = variables.get(tokens[0]);
+        final Object obj = variables.get(tokens[0]);
         if (obj == null) {
             return 0;
         }
         if (obj instanceof Boolean) {
-            if (((Boolean) obj) == true)
+            if (((Boolean) obj))
                 return 1;
             else
                 return 0;
@@ -233,7 +235,7 @@ public abstract class BaseObject {
             return (Integer) obj;
         if (obj instanceof Double)
             return ((Double) obj).intValue();
-        BaseObject gObj = (BaseObject) obj;
+        @SuppressWarnings("LocalVariableOfConcreteClass") final BaseObject gObj = (BaseObject) obj;
         if (tokens.length == 1) {
             return gObj.getValue();
         }

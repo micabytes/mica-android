@@ -21,7 +21,7 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import com.micabyte.android.BaseObject;
-import com.micabyte.android.graphics.SurfaceRenderer.ViewPort;
+import com.micabyte.android.graphics.SurfaceRenderer;
 
 /**
  * HexMap superclass
@@ -53,10 +53,10 @@ public abstract class HexMap extends BaseObject {
 
     protected HexMap(String id, String name) {
         super(id, name, 0);
-        this.tilePaint.setAntiAlias(true);
-        this.tilePaint.setFilterBitmap(true);
-        this.tilePaint.setDither(true);
-        Paint select = new Paint();
+        tilePaint.setAntiAlias(true);
+        tilePaint.setFilterBitmap(true);
+        tilePaint.setDither(true);
+        final Paint select = new Paint();
         select.setStyle(Paint.Style.STROKE);
         select.setColor(Color.RED);
         select.setStrokeWidth(2);
@@ -64,95 +64,95 @@ public abstract class HexMap extends BaseObject {
     }
 
     protected void setHexMap(Context c, TileMapZone[][] map) {
-        this.zones_ = map;
-        HexMap.mapHeight = map[0].length;
-        HexMap.mapWidth = map.length;
-        HexMap.tileRect = new Rect(0, 0, map[0][0].getWidth(c), map[0][0].getHeight(c));
-        HexMap.tileSlope = HexMap.tileRect.height() / 4;
+        zones_ = map;
+        mapHeight = map[0].length;
+        mapWidth = map.length;
+        tileRect = new Rect(0, 0, map[0][0].getWidth(c), map[0][0].getHeight(c));
+        tileSlope = tileRect.height() / 4;
     }
 
     public static int getRenderHeight() {
-        return ((HexMap.mapHeight - 2) * (HexMap.tileRect.height() - HexMap.tileSlope)) + (HexMap.tileSlope);
+        return ((mapHeight - 2) * (tileRect.height() - tileSlope)) + (tileSlope);
     }
 
     public static int getRenderWidth() {
-        return ((HexMap.mapWidth) * HexMap.tileRect.width()) - (HexMap.tileRect.width() / 2);
+        return ((mapWidth) * tileRect.width()) - (tileRect.width() / 2);
     }
 
-    public void drawBase(Context c, ViewPort p) {
+    public void drawBase(Context c, SurfaceRenderer.ViewPort p) {
         if (p.bitmap_ == null) {
             Log.e("HM", "Viewport bitmap is null");
             return;
         }
         canvas.setBitmap(p.bitmap_);
-        this.scaleFactor = p.getZoom();
-        int yOffset = (HexMap.tileRect.height() - HexMap.tileSlope);
+        scaleFactor = p.getZoom();
+        final int yOffset = (tileRect.height() - tileSlope);
         int xOffset;
-        p.getOrigin(this.viewPortOrigin_);
-        p.getSize(this.viewPortSize_);
-        this.windowLeft = this.viewPortOrigin_.x;
-        this.windowTop = this.viewPortOrigin_.y;
-        this.windowRight = this.viewPortOrigin_.x + this.viewPortSize_.x;
-        this.windowBottom = this.viewPortOrigin_.y + this.viewPortSize_.y;
+        p.getOrigin(viewPortOrigin_);
+        p.getSize(viewPortSize_);
+        windowLeft = viewPortOrigin_.x;
+        windowTop = viewPortOrigin_.y;
+        windowRight = viewPortOrigin_.x + viewPortSize_.x;
+        windowBottom = viewPortOrigin_.y + viewPortSize_.y;
         if (standardOrientation) {
             // Clip tiles not in view
-            int iMn = (this.windowLeft / HexMap.tileRect.width()) - 1;
+            int iMn = (windowLeft / tileRect.width()) - 1;
             if (iMn < 0) iMn = 0;
-            int jMn = (this.windowTop / (HexMap.tileRect.height() - HexMap.tileSlope)) - 1;
+            int jMn = (windowTop / (tileRect.height() - tileSlope)) - 1;
             if (jMn < 0) jMn = 0;
-            int iMx = (this.windowRight / HexMap.tileRect.width()) + 2;
-            if (iMx >= HexMap.mapWidth) iMx = HexMap.mapWidth;
-            int jMx = (this.windowBottom / (HexMap.tileRect.height() - HexMap.tileSlope)) + 2;
-            if (jMx >= HexMap.mapHeight) jMx = HexMap.mapHeight;
+            int iMx = (windowRight / tileRect.width()) + 2;
+            if (iMx >= mapWidth) iMx = mapWidth;
+            int jMx = (windowBottom / (tileRect.height() - tileSlope)) + 2;
+            if (jMx >= mapHeight) jMx = mapHeight;
             // Draw Tiles
             for (int i = iMn; i < iMx; i++) {
                 for (int j = jMn; j < jMx; j++) {
-                    if (this.zones_[i][j] != null) {
+                    if (zones_[i][j] != null) {
                         if (j % 2 == 0)
-                            xOffset = HexMap.tileRect.width() / 2;
+                            xOffset = tileRect.width() / 2;
                         else
                             xOffset = 0;
-                        this.destRect.left = (int) (((i * HexMap.tileRect.width()) - this.windowLeft - xOffset) / this.scaleFactor);
-                        this.destRect.top = (int) (((j * (HexMap.tileRect.height() - HexMap.tileSlope)) - this.windowTop - yOffset) / this.scaleFactor);
-                        this.destRect.right = (int) (((i * HexMap.tileRect.width()) + HexMap.tileRect.width() - this.windowLeft - xOffset) / this.scaleFactor);
-                        this.destRect.bottom = (int) (((j * (HexMap.tileRect.height() - HexMap.tileSlope)) + HexMap.tileRect.height() - this.windowTop - yOffset) / this.scaleFactor);
-                        this.zones_[i][j].drawBase(c, canvas, HexMap.tileRect, this.destRect, this.tilePaint);
+                        destRect.left = (int) (((i * tileRect.width()) - windowLeft - xOffset) / scaleFactor);
+                        destRect.top = (int) (((j * (tileRect.height() - tileSlope)) - windowTop - yOffset) / scaleFactor);
+                        destRect.right = (int) (((i * tileRect.width()) + tileRect.width() - windowLeft - xOffset) / scaleFactor);
+                        destRect.bottom = (int) (((j * (tileRect.height() - tileSlope)) + tileRect.height() - windowTop - yOffset) / scaleFactor);
+                        zones_[i][j].drawBase(c, canvas, tileRect, destRect, tilePaint);
                     }
                 }
             }
         } else {
             // Clip tiles not in view
-            int iMn = HexMap.mapWidth - (this.windowRight / HexMap.tileRect.width()) - 2;
+            int iMn = mapWidth - (windowRight / tileRect.width()) - 2;
             if (iMn < 0) iMn = 0;
-            int jMn = HexMap.mapHeight - ((this.windowBottom / (HexMap.tileRect.height() - HexMap.tileSlope)) + 2);
+            int jMn = mapHeight - ((windowBottom / (tileRect.height() - tileSlope)) + 2);
             if (jMn < 0) jMn = 0;
-            int iMx = HexMap.mapWidth - ((this.windowLeft / HexMap.tileRect.width()) + 1);
-            if (iMx >= HexMap.mapWidth) iMx = HexMap.mapWidth - 1;
-            int jMx = HexMap.mapHeight - (this.windowTop / (HexMap.tileRect.height() - HexMap.tileSlope) + 1);
-            if (jMx >= HexMap.mapHeight) jMx = HexMap.mapHeight - 1;
+            int iMx = mapWidth - ((windowLeft / tileRect.width()) + 1);
+            if (iMx >= mapWidth) iMx = mapWidth - 1;
+            int jMx = mapHeight - (windowTop / (tileRect.height() - tileSlope) + 1);
+            if (jMx >= mapHeight) jMx = mapHeight - 1;
             // Draw Tiles
             for (int i = iMx; i >= iMn; i--) {
                 for (int j = jMx; j >= jMn; j--) {
-                    if (this.zones_[i][j] != null) {
+                    if (zones_[i][j] != null) {
                         if (j % 2 == 1)
-                            xOffset = HexMap.tileRect.width() / 2;
+                            xOffset = tileRect.width() / 2;
                         else
                             xOffset = 0;
-                        this.destRect.left = (int) ((((HexMap.mapWidth - i - 1) * HexMap.tileRect.width()) - this.windowLeft - xOffset) / this.scaleFactor);
-                        this.destRect.top = (int) ((((HexMap.mapHeight - j - 1) * (HexMap.tileRect.height() - HexMap.tileSlope)) - this.windowTop - yOffset) / this.scaleFactor);
-                        this.destRect.right = (int) ((((HexMap.mapWidth - i - 1) * HexMap.tileRect.width()) + HexMap.tileRect.width() - this.windowLeft - xOffset) / this.scaleFactor);
-                        this.destRect.bottom = (int) ((((HexMap.mapHeight - j - 1) * (HexMap.tileRect.height() - HexMap.tileSlope)) + HexMap.tileRect.height() - this.windowTop - yOffset) / this.scaleFactor);
-                        this.zones_[i][j].drawBase(c, canvas, HexMap.tileRect, this.destRect, this.tilePaint);
+                        destRect.left = (int) ((((mapWidth - i - 1) * tileRect.width()) - windowLeft - xOffset) / scaleFactor);
+                        destRect.top = (int) ((((mapHeight - j - 1) * (tileRect.height() - tileSlope)) - windowTop - yOffset) / scaleFactor);
+                        destRect.right = (int) ((((mapWidth - i - 1) * tileRect.width()) + tileRect.width() - windowLeft - xOffset) / scaleFactor);
+                        destRect.bottom = (int) ((((mapHeight - j - 1) * (tileRect.height() - tileSlope)) + tileRect.height() - windowTop - yOffset) / scaleFactor);
+                        zones_[i][j].drawBase(c, canvas, tileRect, destRect, tilePaint);
                     }
                 }
             }
         }
     }
 
-    public abstract void drawLayer(Context c, ViewPort p);
+    public abstract void drawLayer(Context c, SurfaceRenderer.ViewPort p);
 
-    public abstract void drawFinal(Context c, ViewPort p);
+    public abstract void drawFinal(Context c, SurfaceRenderer.ViewPort p);
 
-    public abstract Point getViewPortOrigin(int x, int y, ViewPort p);
+    public abstract Point getViewPortOrigin(int x, int y, SurfaceRenderer.ViewPort p);
 
 }

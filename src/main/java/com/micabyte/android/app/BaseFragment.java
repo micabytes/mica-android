@@ -14,11 +14,9 @@ package com.micabyte.android.app;
 
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -40,10 +38,10 @@ import android.widget.ViewFlipper;
 
 /**
  * Convenience class to replace Fragment
- * 
+ *
  * @author micabyte
  */
-@SuppressWarnings({"WeakerAccess"})
+@SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
 
     @Override
@@ -60,13 +58,14 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     // Used to set up UI elements
     protected abstract void createFragment();
+
     // Used to update the UI elements
     public abstract void updateFragment();
 
 
     public BaseActivity getBaseActivity() {
-		return (BaseActivity) getActivity();
-	}
+        return (BaseActivity) getActivity();
+    }
 
     @SuppressWarnings("ConstantConditions")
     protected TextView getTextView(int resId) {
@@ -75,10 +74,10 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     @SuppressWarnings("ConstantConditions")
     public TextView setTextView(int resId, Typeface font) {
-        TextView t = (TextView) getView().findViewById(resId);
+        final TextView t = (TextView) getView().findViewById(resId);
         if (t != null) {
-        	if (font != null)
-        		t.setTypeface(font);
+            if (font != null)
+                t.setTypeface(font);
             t.setOnClickListener(this);
         }
         return t;
@@ -96,7 +95,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     @SuppressWarnings("ConstantConditions")
     protected ImageView setImageView(int resId) {
-        ImageView v = (ImageView) getView().findViewById(resId);
+        final ImageView v = (ImageView) getView().findViewById(resId);
         v.setOnClickListener(this);
         return v;
     }
@@ -105,7 +104,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     protected ImageView setImageView(int resId, Bitmap img) {
         if (img == null)
             throw new IllegalArgumentException("setting image view " + resId + "with null bitmap");
-        ImageView v = (ImageView) getView().findViewById(resId);
+        final ImageView v = (ImageView) getView().findViewById(resId);
         v.setImageBitmap(img);
         return v;
     }
@@ -117,7 +116,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     @SuppressWarnings("ConstantConditions")
     protected RadioButton getRadioButton(int resId_) {
-    	return (RadioButton) getView().findViewById(resId_);
+        return (RadioButton) getView().findViewById(resId_);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -127,7 +126,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     @SuppressWarnings("ConstantConditions")
     protected ImageButton setImageButton(int resId) {
-        ImageButton b = (ImageButton) getView().findViewById(resId);
+        final ImageButton b = (ImageButton) getView().findViewById(resId);
         if (b != null) {
             b.setOnClickListener(this);
         }
@@ -138,14 +137,14 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     protected ImageButton setImageButton(int resId, Bitmap img) {
         if (img == null)
             throw new IllegalArgumentException("setting image button " + resId + "with null bitmap");
-        ImageButton b = (ImageButton) getView().findViewById(resId);
+        final ImageButton b = (ImageButton) getView().findViewById(resId);
         b.setOnClickListener(this);
         b.setImageBitmap(img);
         return b;
     }
 
     protected Button setButton(View v, int resId) {
-        Button b = (Button) v.findViewById(resId);
+        final Button b = (Button) v.findViewById(resId);
         if (b != null) {
             b.setOnClickListener(this);
         }
@@ -154,7 +153,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     @SuppressWarnings("ConstantConditions")
     protected Button setButton(int resId) {
-        Button b = (Button) getView().findViewById(resId);
+        final Button b = (Button) getView().findViewById(resId);
         if (b != null) {
             b.setOnClickListener(this);
         }
@@ -163,7 +162,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     @SuppressWarnings("ConstantConditions")
     protected Button setButton(int resId, Typeface font) {
-        Button b = (Button) getView().findViewById(resId);
+        final Button b = (Button) getView().findViewById(resId);
         if (b != null) {
             if (font != null) b.setTypeface(font);
             b.setOnClickListener(this);
@@ -178,7 +177,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     @SuppressWarnings("ConstantConditions")
     protected ToggleButton setToggleButton(int resId) {
-        ToggleButton b = (ToggleButton) getView().findViewById(resId);
+        final ToggleButton b = (ToggleButton) getView().findViewById(resId);
         if (b != null) {
             b.setOnClickListener(this);
         }
@@ -192,8 +191,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     @SuppressWarnings("ConstantConditions")
     protected Spinner setSpinner(int resId, int arrId) {
-        Spinner s = (Spinner) getView().findViewById(resId);
-        ArrayAdapter<CharSequence> adapter =
+        final Spinner s = (Spinner) getView().findViewById(resId);
+        final ArrayAdapter<CharSequence> adapter =
                 ArrayAdapter.createFromResource(getActivity().getApplicationContext(), arrId,
                         android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -202,18 +201,18 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     @SuppressWarnings("ConstantConditions")
-    protected Spinner setSpinner(int resId, int arrId, int sp_it, int sp_dd) {
-        Spinner s = (Spinner) getView().findViewById(resId);
-        ArrayAdapter<CharSequence> adapter =
-                ArrayAdapter.createFromResource(getActivity().getApplicationContext(), arrId, sp_it);
-        adapter.setDropDownViewResource(sp_dd);
+    protected Spinner setSpinner(int resId, ArrayAdapter adapter) {
+        final Spinner s = (Spinner) getView().findViewById(resId);
         s.setAdapter(adapter);
         return s;
     }
 
     @SuppressWarnings("ConstantConditions")
-    protected Spinner setSpinner(int resId, int arrId, ArrayAdapter adapter) {
-        Spinner s = (Spinner) getView().findViewById(resId);
+    protected Spinner setSpinner(int resId, int arrId, int sp_it, int sp_dd) {
+        final Spinner s = (Spinner) getView().findViewById(resId);
+        final ArrayAdapter<CharSequence> adapter =
+                ArrayAdapter.createFromResource(getActivity().getApplicationContext(), arrId, sp_it);
+        adapter.setDropDownViewResource(sp_dd);
         s.setAdapter(adapter);
         return s;
     }
@@ -230,7 +229,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     @SuppressWarnings("ConstantConditions")
     protected ListView setListView(int resId, BaseAdapter adapter) {
-        ListView l = (ListView) getView().findViewById(resId);
+        final ListView l = (ListView) getView().findViewById(resId);
         l.setAdapter(adapter);
         return l;
     }
@@ -270,19 +269,19 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     public void toast(String message) {
-    	toast(message, Toast.LENGTH_SHORT);
+        toast(message, Toast.LENGTH_SHORT);
     }
 
     public void toast(String message, int length) {
         Toast.makeText(getActivity(), message, length).show();
     }
 
-	public class ContentDescriptionClickListener implements OnClickListener {
-		@Override
-		public void onClick(View v) {
-			toast((String) v.getContentDescription(), Toast.LENGTH_LONG);
-		}
-	}
-    
+    public class ContentDescriptionClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            toast((String) v.getContentDescription(), Toast.LENGTH_LONG);
+        }
+    }
+
 }
 

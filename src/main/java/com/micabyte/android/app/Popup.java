@@ -6,12 +6,10 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup.LayoutParams;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
-import com.micabyte.android.R;
 import com.micabyte.android.graphics.ImageHandler;
 
 /**
@@ -31,19 +29,19 @@ class Popup {
      * @param context Context
      */
     Popup(Context context) {
-        this.context_ = context;
-        this.window_ = new PopupWindow(context);
-        this.window_.setTouchInterceptor(new OnTouchListener() {
+        context_ = context;
+        window_ = new PopupWindow(context);
+        window_.setTouchInterceptor(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
-                    Popup.this.window_.dismiss();
+                    window_.dismiss();
                     return true;
                 }
                 return false;
             }
         });
-        this.windowManager_ = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        windowManager_ = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
     }
 
     /**
@@ -57,7 +55,7 @@ class Popup {
      * Dismiss the popup window.
      */
     public void dismiss() {
-        this.window_.dismiss();
+        window_.dismiss();
     }
 
     /**
@@ -72,19 +70,19 @@ class Popup {
      * On pre show
      */
     void preShow() {
-        if (this.rootView_ == null)
+        if (rootView_ == null)
             throw new IllegalStateException("setContentView was not called with a view to display.");
         onShow();
-        if (this.background_ == null)
-            this.window_.setBackgroundDrawable(new BitmapDrawable(this.context_.getResources(), ImageHandler.getInstance(this.context_).get(R.drawable.ic_blank)));
+        if (background_ == null)
+            window_.setBackgroundDrawable(new BitmapDrawable(context_.getResources(), ImageHandler.getInstance(context_).get(R.drawable.ic_blank)));
         else
-            this.window_.setBackgroundDrawable(this.background_);
-        this.window_.setWidth(LayoutParams.WRAP_CONTENT);
-        this.window_.setHeight(LayoutParams.WRAP_CONTENT);
-        this.window_.setTouchable(true);
-        this.window_.setFocusable(true);
-        this.window_.setOutsideTouchable(true);
-        this.window_.setContentView(this.rootView_);
+            window_.setBackgroundDrawable(background_);
+        window_.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        window_.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+        window_.setTouchable(true);
+        window_.setFocusable(true);
+        window_.setOutsideTouchable(true);
+        window_.setContentView(rootView_);
     }
 
     /**
@@ -93,7 +91,7 @@ class Popup {
      * @param background Background drawable
      */
     public void setBackgroundDrawable(Drawable background) {
-        this.background_ = background;
+        background_ = background;
     }
 
     /**
@@ -102,8 +100,8 @@ class Popup {
      * @param root Root view
      */
     void setContentView(View root) {
-        this.rootView_ = root;
-        this.window_.setContentView(root);
+        rootView_ = root;
+        window_.setContentView(root);
     }
 
     /**
@@ -112,7 +110,7 @@ class Popup {
      * @param layoutResID Resource id
      */
     public void setContentView(int layoutResID) {
-        LayoutInflater inflater = (LayoutInflater) this.context_.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final LayoutInflater inflater = (LayoutInflater) context_.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         setContentView(inflater.inflate(layoutResID, null));
     }
 
@@ -122,7 +120,7 @@ class Popup {
      * @param listener
      */
     void setOnDismissListener(PopupWindow.OnDismissListener listener) {
-        this.window_.setOnDismissListener(listener);
+        window_.setOnDismissListener(listener);
     }
 
 }
