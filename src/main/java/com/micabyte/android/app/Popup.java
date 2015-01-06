@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
+import com.micabyte.android.R;
 import com.micabyte.android.graphics.ImageHandler;
 
 /**

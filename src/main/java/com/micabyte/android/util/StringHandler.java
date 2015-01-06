@@ -22,6 +22,7 @@ import java.util.Vector;
 
 import android.content.Context;
 
+import com.micabyte.android.R;
 import com.micabyte.android.BaseObject;
 
 /**
@@ -233,7 +234,7 @@ public class StringHandler {
 			return ret;
 		}
 		if (list.size() == 2) {
-			ret = list.get(0).getName() + " " + c.gectString(R.string.stringhandler_and1) + " " + list.get(1).getName();
+			ret = list.get(0).getName() + " " + c.getString(R.string.stringhandler_and1) + " " + list.get(1).getName();
 			return ret;
 		}
 		for (int i = 0; i < list.size() - 1; i++) {

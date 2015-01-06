@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.micabyte.android.R;
+
 public class BalloonPopup extends Popup implements PopupWindow.OnDismissListener {
     private ImageView arrowUp;
     private ImageView arrowDown;

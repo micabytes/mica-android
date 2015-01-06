@@ -27,6 +27,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.GamesActivityResultCodes;
 
+import com.micabyte.android.R;
+
 @SuppressWarnings("WeakerAccess")
 public class GameUtils {
 

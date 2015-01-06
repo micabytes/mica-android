@@ -26,6 +26,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.micabyte.android.BuildConfig;
+
 import java.lang.ref.SoftReference;
 
 /**
