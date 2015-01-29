@@ -18,7 +18,7 @@ public class BalloonPopup extends Popup implements PopupWindow.OnDismissListener
     private ImageView arrowUp;
     private ImageView arrowDown;
     private final LayoutInflater inflater;
-    private TextView text_;
+    private TextView text;
     private OnDismissListener dismissListener;
 
     /**
@@ -33,7 +33,7 @@ public class BalloonPopup extends Popup implements PopupWindow.OnDismissListener
     }
 
     public void setText(String txt) {
-        text_.setText(txt);
+        text.setText(txt);
     }
 
     /**
@@ -42,29 +42,29 @@ public class BalloonPopup extends Popup implements PopupWindow.OnDismissListener
      * @param id Layout resource id
      */
     void setRootViewId(int id) {
-        rootView_ = inflater.inflate(id, null);
-        text_ = (TextView) rootView_.findViewById(R.id.BalloonPopupText);
-        arrowDown = (ImageView) rootView_.findViewById(R.id.arrow_down);
-        arrowUp = (ImageView) rootView_.findViewById(R.id.arrow_up);
-        rootView_.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        setContentView(rootView_);
+        rootView = inflater.inflate(id, null);
+        text = (TextView) rootView.findViewById(R.id.BalloonPopupText);
+        arrowDown = (ImageView) rootView.findViewById(R.id.arrow_down);
+        arrowUp = (ImageView) rootView.findViewById(R.id.arrow_up);
+        rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        setContentView(rootView);
     }
 
     /**
-     * Show popup window_
+     * Show popup window
      */
     public void show(View anchor) {
         preShow();
         final int[] location = new int[2];
         anchor.getLocationOnScreen(location);
         final Rect anchorRect = new Rect(location[0], location[1], location[0] + anchor.getWidth(), location[1] + anchor.getHeight());
-        rootView_.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int rootWidth = rootView_.getMeasuredWidth();
-        final int rootHeight = rootView_.getMeasuredHeight();
+        rootView.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final int rootWidth = rootView.getMeasuredWidth();
+        final int rootHeight = rootView.getMeasuredHeight();
         @SuppressWarnings("deprecation") final
-        int screenWidth = windowManager_.getDefaultDisplay().getWidth();
+        int screenWidth = windowManager.getDefaultDisplay().getWidth();
         int xPos = anchorRect.centerX() - (rootWidth / 2);
-        if (xPos + rootWidth > screenWidth) xPos = screenWidth - rootWidth;
+        if ((xPos + rootWidth) > screenWidth) xPos = screenWidth - rootWidth;
         if (xPos < 0) xPos = 0;
         final int yPos = anchorRect.top - rootHeight;
         //boolean onTop = true;
@@ -77,8 +77,8 @@ public class BalloonPopup extends Popup implements PopupWindow.OnDismissListener
         if (BuildConfig.DEBUG) Log.d("Balloon", xPos + " " + yPos + " " + location[0] + " " + location[1] + " " + rootWidth + " " + rootHeight);
         showArrow((R.id.arrow_down), anchorRect.centerX() - xPos);
         //setAnimationStyle(screenWidth, anchorRect.centerX(), onTop);
-        window_.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
-        //if (this.mAnimateTrack) this.text_.startAnimation(this.trackAnim_);
+        window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
+        //if (this.mAnimateTrack) this.text.startAnimation(this.trackAnim);
     }
 
 

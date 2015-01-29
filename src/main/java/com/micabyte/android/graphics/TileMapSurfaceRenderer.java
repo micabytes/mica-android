@@ -23,7 +23,7 @@ import com.micabyte.android.map.TileMap;
  */
 public class TileMapSurfaceRenderer extends SurfaceRenderer {
     // The low resolution version of the background image
-    private TileMap GameSurfaceTileMap_ = null;
+    private TileMap GameSurfaceTileMap = null;
 
     private TileMapSurfaceRenderer(Context c) {
         super(c);
@@ -33,23 +33,23 @@ public class TileMapSurfaceRenderer extends SurfaceRenderer {
      * Set the TileMap
      */
     public void setTileMap(TileMap map) {
-        GameSurfaceTileMap_ = map;
-        backgroundSize_.set(GameSurfaceTileMap_.getRenderWidth(), GameSurfaceTileMap_.getRenderHeight());
+        GameSurfaceTileMap = map;
+        backgroundSize.set(GameSurfaceTileMap.getRenderWidth(), GameSurfaceTileMap.getRenderHeight());
     }
 
     @Override
     public void drawBase() {
-        GameSurfaceTileMap_.drawBase(context_, viewPort_);
+        GameSurfaceTileMap.drawBase(context, viewPort);
     }
 
     @Override
     protected void drawLayer() {
-        GameSurfaceTileMap_.drawLayer(context_, viewPort_);
+        GameSurfaceTileMap.drawLayer(context, viewPort);
     }
 
     @Override
     protected void drawFinal() {
-        GameSurfaceTileMap_.drawFinal(context_, viewPort_);
+        GameSurfaceTileMap.drawFinal(context, viewPort);
     }
 
     @Override

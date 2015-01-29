@@ -29,52 +29,52 @@ import com.micabyte.android.graphics.SurfaceRenderer;
 public abstract class TileMap extends BaseObject {
     private static int mapWidth;
     private static int mapHeight;
-    private TileMapZone[][] zones_;
-    private Rect tileRect_;
-    private final Point viewPortOrigin_ = new Point();
-    private final Point viewPortSize_ = new Point();
+    private TileMapZone[][] zones;
+    private Rect tileRect;
+    private final Point viewPortOrigin = new Point();
+    private final Point viewPortSize = new Point();
 
     protected TileMap(String id, String name) {
         super(id, name, 0);
     }
 
     public void setTileMap(Context c, TileMapZone[][] map) {
-        zones_ = map;
+        zones = map;
         mapHeight = map[0].length;
         mapWidth = map.length;
-        tileRect_ = new Rect(0, 0, map[0][0].getWidth(c), map[0][0].getHeight(c));
+        tileRect = new Rect(0, 0, map[0][0].getWidth(c), map[0][0].getHeight(c));
     }
 
     public int getRenderHeight() {
-        return (mapHeight * tileRect_.height());
+        return (mapHeight * tileRect.height());
     }
 
     public int getRenderWidth() {
-        return (mapWidth * tileRect_.width());
+        return (mapWidth * tileRect.width());
     }
 
     public int getTileHeight() {
-        return tileRect_.height();
+        return tileRect.height();
     }
 
     public int getTileWidth() {
-        return tileRect_.width();
+        return tileRect.width();
     }
 
     public void drawBase(Context c, SurfaceRenderer.ViewPort p) {
-        final Canvas canvas = new Canvas(p.bitmap_);
+        final Canvas canvas = new Canvas(p.bitmap);
         final Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setFilterBitmap(true);
         paint.setDither(true);
         final float scaleFactor = p.getZoom();
-        final int tileSize = tileRect_.width();
-        p.getOrigin(viewPortOrigin_);
-        p.getSize(viewPortSize_);
-        final int windowLeft = viewPortOrigin_.x;
-        final int windowTop = viewPortOrigin_.y;
-        final int windowRight = viewPortOrigin_.x + viewPortSize_.x;
-        final int windowBottom = viewPortOrigin_.y + viewPortSize_.y;
+        final int tileSize = tileRect.width();
+        p.getOrigin(viewPortOrigin);
+        p.getSize(viewPortSize);
+        final int windowLeft = viewPortOrigin.x;
+        final int windowTop = viewPortOrigin.y;
+        final int windowRight = viewPortOrigin.x + viewPortSize.x;
+        final int windowBottom = viewPortOrigin.y + viewPortSize.y;
         final Rect destRect = new Rect();
         // Clip tiles not in view
         int iMn = windowLeft / tileSize;
@@ -88,12 +88,12 @@ public abstract class TileMap extends BaseObject {
         // Draw Tiles
         for (int i = iMn; i < iMx; i++) {
             for (int j = jMn; j < jMx; j++) {
-                if (zones_[i][j] != null) {
+                if (zones[i][j] != null) {
                     destRect.left = (int) (((i * tileSize) - windowLeft) / scaleFactor);
                     destRect.top = (int) (((j * tileSize) - windowTop) / scaleFactor);
-                    destRect.right = (int) (((i * tileSize) + tileSize - windowLeft) / scaleFactor);
-                    destRect.bottom = (int) (((j * tileSize) + tileSize - windowTop) / scaleFactor);
-                    zones_[i][j].drawBase(c, canvas, tileRect_, destRect, paint);
+                    destRect.right = (int) ((((i * tileSize) + tileSize) - windowLeft) / scaleFactor);
+                    destRect.bottom = (int) ((((j * tileSize) + tileSize) - windowTop) / scaleFactor);
+                    zones[i][j].drawBase(c, canvas, tileRect, destRect, paint);
                 }
             }
         }

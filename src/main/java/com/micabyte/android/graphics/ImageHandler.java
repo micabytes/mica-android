@@ -44,21 +44,21 @@ public class ImageHandler {
     // Default Config for Bitmap Retrieval
     private static final Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.ARGB_8888;
     // Application context
-    private final Resources resources_;
+    private final Resources resources;
     // Shortcut to the Display Density
     public static float density;
     // Bitmap cache
-    private final SparseArray<SoftReference<Bitmap>> cachedBitmaps_ = new SparseArray<SoftReference<Bitmap>>();
-    private final SparseArray<Bitmap> persistBitmaps_ = new SparseArray<Bitmap>();
+    private final SparseArray<SoftReference<Bitmap>> cachedBitmaps = new SparseArray<SoftReference<Bitmap>>();
+    private final SparseArray<Bitmap> persistBitmaps = new SparseArray<Bitmap>();
 
     private ImageHandler(Context c) {
-        resources_ = c.getResources();
-        final DisplayMetrics metrics = resources_.getDisplayMetrics();
+        resources = c.getResources();
+        final DisplayMetrics metrics = resources.getDisplayMetrics();
         density = metrics.density;
     }
 
     public void release() {
-        cachedBitmaps_.clear();
+        cachedBitmaps.clear();
         System.gc();
     }
 
@@ -79,10 +79,10 @@ public class ImageHandler {
             if (BuildConfig.DEBUG) Log.d(TAG, "Null resource sent to get()", new Exception());
         Bitmap ret;
         if (persist) {
-            ret = persistBitmaps_.get(key);
+            ret = persistBitmaps.get(key);
             if (ret != null) return ret;
         }
-        final SoftReference<Bitmap> ref = cachedBitmaps_.get(key);
+        final SoftReference<Bitmap> ref = cachedBitmaps.get(key);
         if (ref != null) {
             ret = ref.get();
             if (ret != null) {
@@ -91,9 +91,9 @@ public class ImageHandler {
         }
         ret = loadBitmap(key, config);
         if (persist)
-            persistBitmaps_.put(key, ret);
+            persistBitmaps.put(key, ret);
         else
-            cachedBitmaps_.put(key, new SoftReference<Bitmap>(ret));
+            cachedBitmaps.put(key, new SoftReference<Bitmap>(ret));
         return ret;
     }
 
@@ -103,7 +103,7 @@ public class ImageHandler {
         opts.inPreferredConfig = bitmapConfig;
         opts.inPurgeable = true;
         opts.inInputShareable = true;
-        return BitmapFactory.decodeResource(resources_, key, opts);
+        return BitmapFactory.decodeResource(resources, key, opts);
     }
 
     public Bitmap getSceneBitmap(int bkg, int left, int right) {
@@ -137,20 +137,20 @@ public class ImageHandler {
         final BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inPreferredConfig = BitmapSurfaceRenderer.DEFAULT_CONFIG;
         opt.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(resources_, key, opt);
+        BitmapFactory.decodeResource(resources, key, opt);
         return opt;
     }
 
     // Instance Code
-    private static ImageHandler instance_ = null;
+    private static ImageHandler instance = null;
 
     public static ImageHandler getInstance(Context c) {
         checkInstance(c);
-        return instance_;
+        return instance;
     }
 
     private static void checkInstance(Context c) {
-        if (instance_ == null) instance_ = new ImageHandler(c);
+        if (instance == null) instance = new ImageHandler(c);
     }
 
 }

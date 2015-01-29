@@ -35,11 +35,11 @@ public abstract class SurfaceRenderer {
     // View Size Minimum
     private final static int MINIMUM_PIXELS_IN_VIEW = 50;
     // Context
-    protected final Context context_;
+    protected final Context context;
     // The ViewPort
-    protected final ViewPort viewPort_ = new ViewPort();
+    protected final ViewPort viewPort = new ViewPort();
     // The Dimensions of the Game Area
-    final Point backgroundSize_ = new Point();
+    final Point backgroundSize = new Point();
 
     /**
      * Constructor for the surface renderer
@@ -48,7 +48,7 @@ public abstract class SurfaceRenderer {
      *          run in a thread, we can't pass the context through the thread (at least not easily)
      */
     SurfaceRenderer(Context c) {
-        context_ = c;
+        context = c;
     }
 
     /**
@@ -70,7 +70,7 @@ public abstract class SurfaceRenderer {
      * Draw to the canvas
      */
     public void draw(Canvas c) {
-        viewPort_.draw(c);
+        viewPort.draw(c);
     }
 
     /**
@@ -92,14 +92,14 @@ public abstract class SurfaceRenderer {
      * Get the position (center) of the view
      */
     public void getViewPosition(Point p) {
-        viewPort_.getOrigin(p);
+        viewPort.getOrigin(p);
     }
 
     /**
      * Set the position (center) of the view
      */
     public void setViewPosition(int x, int y) {
-        viewPort_.setOrigin(x, y);
+        viewPort.setOrigin(x, y);
     }
 
     /**
@@ -107,37 +107,37 @@ public abstract class SurfaceRenderer {
      * the derived player Map class.
      */
     public void setMapPosition(int x, int y) {
-        viewPort_.setOrigin(x, y);
+        viewPort.setOrigin(x, y);
     }
 
     /**
      * Get the dimensions of the view
      */
     public void getViewSize(Point p) {
-        viewPort_.getSize(p);
+        viewPort.getSize(p);
     }
 
     /**
      * Set the dimensions of the view
      */
     public void setViewSize(int w, int h) {
-        viewPort_.setSize(w, h);
+        viewPort.setSize(w, h);
     }
 
     /**
      * Returns a Point representing the size of the scene. Don't modify the returned Point!
      */
     public Point getBackgroundSize() {
-        return backgroundSize_;
+        return backgroundSize;
     }
 
 
     public void zoom(float scaleFactor, PointF screenFocus) {
-        viewPort_.zoom(scaleFactor, screenFocus);
+        viewPort.zoom(scaleFactor, screenFocus);
     }
 
     public float getZoom() {
-        return viewPort_.getZoom();
+        return viewPort.getZoom();
     }
 
     /**
@@ -145,7 +145,7 @@ public abstract class SurfaceRenderer {
      */
     public class ViewPort {
         // The Bitmap of the current ViewPort
-        public Bitmap bitmap_ = null;
+        public Bitmap bitmap = null;
         // The rect defining where the viewport is within the scene
         public final Rect window = new Rect(0, 0, 0, 0);
         // The zoom factor of the viewport
@@ -168,10 +168,10 @@ public abstract class SurfaceRenderer {
                     x = 0;
                 if (y < 0)
                     y = 0;
-                if (x + w > backgroundSize_.x)
-                    x = backgroundSize_.x - w;
-                if (y + h > backgroundSize_.y)
-                    y = backgroundSize_.y - h;
+                if ((x + w) > backgroundSize.x)
+                    x = backgroundSize.x - w;
+                if ((y + h) > backgroundSize.y)
+                    y = backgroundSize.y - h;
                 // Set the Window rect
                 window.set(x, y, x + w, y + h);
             }
@@ -179,11 +179,11 @@ public abstract class SurfaceRenderer {
 
         public void setSize(int w, int h) {
             synchronized (this) {
-                if (bitmap_ != null) {
-                    bitmap_.recycle();
-                    bitmap_ = null;
+                if (bitmap != null) {
+                    bitmap.recycle();
+                    bitmap = null;
                 }
-                bitmap_ = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
+                bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
                 Log.d("SF", "Created bitmap of size " + w + " " + h);
                 int x = window.left;
                 int y = window.top;
@@ -192,10 +192,10 @@ public abstract class SurfaceRenderer {
                     x = 0;
                 if (y < 0)
                     y = 0;
-                if (x + w > backgroundSize_.x)
-                    x = backgroundSize_.x - w;
-                if (y + h > backgroundSize_.y)
-                    y = backgroundSize_.y - h;
+                if ((x + w) > backgroundSize.x)
+                    x = backgroundSize.x - w;
+                if ((y + h) > backgroundSize.y)
+                    y = backgroundSize.y - h;
                 // Set the Window rect
                 window.set(x, y, x + w, y + h);
                 /*window.set(
@@ -221,11 +221,11 @@ public abstract class SurfaceRenderer {
         }
 
         public int getPhysicalWidth() {
-            return bitmap_.getWidth();
+            return bitmap.getWidth();
         }
 
         public int getPhysicalHeight() {
-            return bitmap_.getHeight();
+            return bitmap.getHeight();
         }
 
         public float getZoom() {
@@ -233,9 +233,9 @@ public abstract class SurfaceRenderer {
         }
 
         public void zoom(float factor, PointF screenFocus) {
-            if (bitmap_ == null) return;
+            if (bitmap == null) return;
             if (factor != 1.0) {
-                final PointF screenSize = new PointF(bitmap_.getWidth(), bitmap_.getHeight());
+                final PointF screenSize = new PointF(bitmap.getWidth(), bitmap.getHeight());
                 final PointF sceneSize = new PointF(getBackgroundSize());
                 final float screenWidthToHeight = screenSize.x / screenSize.y;
                 final float screenHeightToWidth = screenSize.y / screenSize.x;
@@ -244,8 +244,8 @@ public abstract class SurfaceRenderer {
                     final RectF w1 = new RectF(window);
                     final RectF w2 = new RectF();
                     final PointF sceneFocus = new PointF(
-                            w1.left + (screenFocus.x / screenSize.x) * w1.width(),
-                            w1.top + (screenFocus.y / screenSize.y) * w1.height()
+                            w1.left + ((screenFocus.x / screenSize.x) * w1.width()),
+                            w1.top + ((screenFocus.y / screenSize.y) * w1.height())
                     );
                     float w2Width = getPhysicalWidth() * newZoom;
                     if (w2Width > sceneSize.x) {
@@ -307,8 +307,8 @@ public abstract class SurfaceRenderer {
             drawLayer();
             drawFinal();
             synchronized (this) {
-                if (c != null && bitmap_ != null) {
-                    c.drawBitmap(bitmap_, 0F, 0F, null);
+                if ((c != null) && (bitmap != null)) {
+                    c.drawBitmap(bitmap, 0F, 0F, null);
                 }
             }
         }

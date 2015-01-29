@@ -20,15 +20,15 @@ package com.micabyte.android.math;
  */
 class Polygon {
     // Polygon coordinates.
-    private final int[] polyX_;
-    private final int[] polyY_;
+    private final int[] polyX;
+    private final int[] polyY;
     // Number of sides in the polygon.
-    private final int polyN_;
+    private final int polyN;
 
     public Polygon(int[] px, int[] py, int ps) {
-        polyX_ = px;
-        polyY_ = py;
-        polyN_ = ps;
+        polyX = px;
+        polyY = py;
+        polyN = ps;
     }
 
     /**
@@ -36,9 +36,9 @@ class Polygon {
      */
     public boolean contains(int x, int y) {
         boolean oddTransitions = false;
-        for (int i = 0, j = polyN_ - 1; i < polyN_; j = i++) {
-            if ((polyY_[i] < y && polyY_[j] >= y) || (polyY_[j] < y && polyY_[i] >= y)) {
-                if (polyX_[i] + (y - polyY_[i]) / (polyY_[j] - polyY_[i]) * (polyX_[j] - polyX_[i]) < x) {
+        for (int i = 0, j = polyN - 1; i < polyN; j = i++) {
+            if (((polyY[i] < y) && (polyY[j] >= y)) || ((polyY[j] < y) && (polyY[i] >= y))) {
+                if ((polyX[i] + (((y - polyY[i]) / (polyY[j] - polyY[i])) * (polyX[j] - polyX[i]))) < x) {
                     oddTransitions = !oddTransitions;
                 }
             }

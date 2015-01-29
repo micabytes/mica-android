@@ -24,7 +24,7 @@ import com.micabyte.android.map.HexMap;
  */
 public class HexMapSurfaceRenderer extends SurfaceRenderer {
     // The HexMap object
-    private HexMap GameSurfaceTileMap_ = null;
+    private HexMap GameSurfaceTileMap = null;
 
     public HexMapSurfaceRenderer(Context c) {
         super(c);
@@ -34,37 +34,37 @@ public class HexMapSurfaceRenderer extends SurfaceRenderer {
      * Set the TileMap
      */
     public void setTileMap(HexMap map) {
-        GameSurfaceTileMap_ = map;
-        backgroundSize_.set(HexMap.getRenderWidth(), HexMap.getRenderHeight());
+        GameSurfaceTileMap = map;
+        backgroundSize.set(HexMap.getRenderWidth(), HexMap.getRenderHeight());
     }
 
     @Override
     public void drawBase() {
-        GameSurfaceTileMap_.drawBase(context_, viewPort_);
+        GameSurfaceTileMap.drawBase(context, viewPort);
     }
 
     @Override
     protected void drawLayer() {
-        GameSurfaceTileMap_.drawLayer(context_, viewPort_);
+        GameSurfaceTileMap.drawLayer(context, viewPort);
     }
 
     @Override
     protected void drawFinal() {
-        GameSurfaceTileMap_.drawFinal(context_, viewPort_);
+        GameSurfaceTileMap.drawFinal(context, viewPort);
     }
 
     @Override
     public void setViewPosition(int x, int y)
     {
-        viewPort_.setOrigin(x, y);
+        viewPort.setOrigin(x, y);
     }
 
 
     @Override
     public void setMapPosition(int x, int y)
     {
-        final Point p = GameSurfaceTileMap_.getViewPortOrigin(x, y, viewPort_);
-        viewPort_.setOrigin(p.x, p.y);
+        final Point p = GameSurfaceTileMap.getViewPortOrigin(x, y, viewPort);
+        viewPort.setOrigin(p.x, p.y);
     }
 
     @Override

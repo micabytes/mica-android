@@ -36,6 +36,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
+import com.micabyte.android.util.StringHandler;
+
 /**
  * Convenience class to replace Fragment
  *
@@ -110,13 +112,13 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     @SuppressWarnings("ConstantConditions")
-    protected CheckBox getCheckBox(int resId_) {
-        return (CheckBox) getView().findViewById(resId_);
+    protected CheckBox getCheckBox(int resId) {
+        return (CheckBox) getView().findViewById(resId);
     }
 
     @SuppressWarnings("ConstantConditions")
-    protected RadioButton getRadioButton(int resId_) {
-        return (RadioButton) getView().findViewById(resId_);
+    protected RadioButton getRadioButton(int resId) {
+        return (RadioButton) getView().findViewById(resId);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -281,6 +283,14 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         public void onClick(View v) {
             toast((String) v.getContentDescription(), Toast.LENGTH_LONG);
         }
+    }
+
+    public String text(int id) {
+        return StringHandler.get(getActivity(), id);
+    }
+
+    public String text(int id, Object... args) {
+        return StringHandler.get(getActivity(), id, args);
     }
 
 }

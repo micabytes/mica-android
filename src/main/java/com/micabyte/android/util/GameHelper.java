@@ -198,7 +198,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
      * After constructing this object, call @link{setup} from the onCreate()
      * method of your Activity.
      *
-     * @param clientsToUse the API clients to use (a combination of the CLIENT_* flags,
+     * @param clientsToUse the API clients to use (a combination of the CLIENT* flags,
      *                     or CLIENT_ALL to mean all clients).
      */
     public GameHelper(Activity activity, int clientsToUse) {
@@ -358,7 +358,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
      * Returns whether or not the user is signed in.
      */
     public boolean isSignedIn() {
-        return mGoogleApiClient != null && mGoogleApiClient.isConnected();
+        return (mGoogleApiClient != null) && mGoogleApiClient.isConnected();
     }
 
     /**
@@ -454,7 +454,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
                     "Warning: getInvitationId() should only be called when signed in, "
                             + "that is, after getting onSignInSucceeded()");
         }
-        return mInvitation == null ? null : mInvitation.getInvitationId();
+        return (mInvitation == null) ? null : mInvitation.getInvitationId();
     }
 
     /**
@@ -584,7 +584,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
     public void onActivityResult(int requestCode, int responseCode,
                                  Intent intent) {
         debugLog("onActivityResult: req="
-                + (requestCode == RC_RESOLVE ? "RC_RESOLVE" : String
+                + ((requestCode == RC_RESOLVE) ? "RC_RESOLVE" : String
                 .valueOf(requestCode)) + ", resp="
                 + GameHelperUtils.activityResponseCodeToString(responseCode));
         if (requestCode != RC_RESOLVE) {
@@ -640,9 +640,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
 
     void notifyListener(boolean success) {
         debugLog("Notifying LISTENER of sign-in "
-                + (success ? "SUCCESS"
-                : mSignInFailureReason != null ? "FAILURE (error)"
-                : "FAILURE (no error)"));
+                + (success ? "SUCCESS" : ((mSignInFailureReason != null) ? "FAILURE (error)" : "FAILURE (no error)")));
         if (mListener != null) {
             if (success) {
                 mListener.onSignInSucceeded();
@@ -739,7 +737,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
             debugLog("onConnected: connection hint provided. Checking for invite.");
             final Invitation inv = connectionHint
                     .getParcelable(Multiplayer.EXTRA_INVITATION);
-            if (inv != null && inv.getInvitationId() != null) {
+            if ((inv != null) && (inv.getInvitationId() != null)) {
                 // retrieve and cache the invitation ID
                 debugLog("onConnected: connection hint has a room invite!");
                 mInvitation = inv;

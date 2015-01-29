@@ -175,7 +175,7 @@ class GameHelperUtils {
 
     @SuppressWarnings("MagicNumber")
     static void byteToString(StringBuilder sb, byte b) {
-        final int unsigned_byte = b < 0 ? b + 256 : b;
+        final int unsigned_byte = (b < 0) ? (b + 256) : b;
         final int hi = unsigned_byte / 16;
         final int lo = unsigned_byte % 16;
         sb.append("0123456789ABCDEF".substring(hi, hi + 1));
