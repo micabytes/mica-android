@@ -36,6 +36,7 @@ import android.util.Log;
 public class BitmapSurfaceRenderer extends SurfaceRenderer {
     private static final String TAG = BitmapSurfaceRenderer.class.getName();
     // Default Settings
+    private static final String CACHE_THREAD = "cacheThread";
     public static final Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.RGB_565;
     private static final int DEFAULT_SAMPLE_SIZE = 2;
     private static final int DEFAULT_MEM_USAGE = 20;
@@ -288,7 +289,6 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      * object is locked, the background is updated using the low resolution background image instead
      */
     private class CacheBitmap {
-        private static final String CACHE_THREAD = "cacheThread";
         /**
          * The current position and dimensions of the cache within the background image
          */
@@ -314,7 +314,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
             state = newState;
         }
 
-        void start() {
+        synchronized void start() {
             if (cacheThread != null) {
                 cacheThread.setRunning(false);
                 cacheThread.interrupt();
@@ -325,7 +325,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
             cacheThread.start();
         }
 
-        void stop() {
+        synchronized void stop() {
             cacheThread.setRunning(false);
             cacheThread.interrupt();
             boolean retry = true;
@@ -381,7 +381,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                         // Use of high resolution version disabled
                         break;
                     case READY:
-                        if (bitmap == null || (!cacheWindow.contains(p.getWindow()))) {
+                        if ((bitmap == null) || (!cacheWindow.contains(p.getWindow()))) {
                             // No data loaded OR No cached data available
                             setState(CacheState.BEGIN_UPDATE);
                             cacheThread.interrupt();
@@ -392,7 +392,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                 }
             }
             // Use the low resolution version if the cache is empty or scale factor is < threshold
-            if (bmp == null) //|| (BitmapSurfaceRenderer.this.scaleFactor < BitmapSurfaceRenderer.this.lowResThreshold))
+            if ((bmp == null) || (getZoom() < lowResThreshold))
                 drawLowResolution();
             else
                 drawHighResolution(bmp);
@@ -453,10 +453,11 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
         private final CacheBitmap cache;
 
         CacheThread(CacheBitmap cached) {
-            setName("CacheThread");
+            setName(CACHE_THREAD);
             cache = cached;
         }
 
+        @SuppressWarnings({"MethodWithMultipleLoops", "OverlyComplexMethod", "OverlyNestedMethod", "WhileLoopSpinsOnField", "RefusedBequest"})
         @Override
         public void run() {
             isRunning = true;
@@ -465,8 +466,9 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                 // Wait until we are ready to go
                 while (isRunning && (cache.getState() != CacheState.BEGIN_UPDATE)) {
                     try {
+                        //noinspection BusyWait
                         Thread.sleep(Integer.MAX_VALUE);
-                    } catch (InterruptedException e) {
+                    } catch (InterruptedException ignored) {
                         // NOOP
                     }
                 }
@@ -474,25 +476,27 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                 // Start Loading Timer
                 long startTime = System.currentTimeMillis();
                 // Load Data
-                boolean continueLoading = false;
+                boolean startLoading = false;
                 synchronized (cache) {
                     if (cache.getState() == CacheState.BEGIN_UPDATE) {
                         cache.setState(CacheState.IS_UPDATING);
                         cache.bitmap = null;
-                        continueLoading = true;
+                        startLoading = true;
                     }
                 }
-                if (continueLoading) {
+                if (startLoading) {
                     synchronized (viewPort) {
                         viewportRect.set(viewPort.getWindow());
                     }
+                    boolean continueLoading = false;
                     synchronized (cache) {
-                        if (cache.getState() == CacheState.IS_UPDATING)
+                        if (cache.getState() == CacheState.IS_UPDATING) {
                             cache.cacheWindow.set(calculateCacheDimensions(viewportRect));
-                        else
-                            continueLoading = false;
+                            continueLoading = true;
+                        }
                     }
                     if (continueLoading) {
+                        //noinspection ErrorNotRethrown
                         try {
                             Bitmap bitmap = loadCachedBitmap(cache.cacheWindow);
                             if (bitmap != null) {
@@ -508,8 +512,8 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                             // End Loading Timer
                             long endTime = System.currentTimeMillis();
                             if (BuildConfig.DEBUG)
-                                if (BuildConfig.DEBUG) Log.d(TAG, "Loaded background image in " + (endTime - startTime) + "ms");
-                        } catch (OutOfMemoryError e) {
+                                if (BuildConfig.DEBUG) Log.d(TAG, "Loaded background image in " + (endTime - startTime) + " ms");
+                        } catch (OutOfMemoryError ignored) {
                             if (BuildConfig.DEBUG) Log.d(TAG, "CacheThread out of memory");
                             // Out of memory error detected. Lower the memory allocation
                             synchronized (cache) {
@@ -524,9 +528,8 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
             }
         }
 
-        @SuppressWarnings("SameParameterValue")
-        public void setRunning(boolean b) {
-            isRunning = b;
+        public void setRunning(boolean running) {
+            isRunning = running;
         }
 
     }
