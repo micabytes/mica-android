@@ -16,13 +16,12 @@ import com.micabyte.android.graphics.ImageHandler;
 /**
  * Custom Popup Window
  */
-@SuppressWarnings("JavaDoc")
 class Popup {
     private final Context context;
-    final WindowManager windowManager;
+    protected View rootView;
     final PopupWindow window;
-    View rootView = null;
-    private Drawable background = null;
+    final WindowManager windowManager;
+    private Drawable background;
 
     /**
      * Constructor.
@@ -31,6 +30,7 @@ class Popup {
      */
     Popup(Context con) {
         context = con;
+        rootView = null;
         window = new PopupWindow(context);
         window.setTouchInterceptor(new View.OnTouchListener() {
             @Override
@@ -43,6 +43,11 @@ class Popup {
             }
         });
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        background = null;
+    }
+
+    protected void setRootView(View r) {
+        rootView = r;
     }
 
     /**
@@ -91,8 +96,8 @@ class Popup {
      *
      * @param background Background drawable
      */
-    public void setBackgroundDrawable(Drawable background) {
-        background = background;
+    public void setBackgroundDrawable(Drawable bkg) {
+        background = bkg;
     }
 
     /**
@@ -111,7 +116,7 @@ class Popup {
      * @param layoutResID Resource id
      */
     public void setContentView(int layoutResID) {
-        final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         setContentView(inflater.inflate(layoutResID, null));
     }
 

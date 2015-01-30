@@ -19,6 +19,5 @@ package com.micabyte.android.graphics;
  */
 public interface SurfaceListener {
     void onTouchDown(int x, int y);
-
     void onTouchUp(int x, int y);
 }

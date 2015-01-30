@@ -14,6 +14,7 @@ package com.micabyte.android.util;
 
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
 import com.micabyte.android.BaseObject;
 import com.micabyte.android.R;
 
@@ -32,8 +33,8 @@ import java.util.ArrayList;
  * @author micabyte
  */
 public class StringHandler {
-    private final static int NOT_FOUND = -1;
-    private final static String punctuation = "(),;.!?\"";
+    private static final int NOT_FOUND = -1;
+    private static final String punctuation = "(),;.!?\"";
 
     /**
      * This is the workhorse function of the class. It takes a string and strips out the formatting
@@ -58,9 +59,10 @@ public class StringHandler {
      * @param variables A hash map containing variables
      * @return String with all of the scripting code replaced appropriately
      */
-    @SuppressWarnings({"WeakerAccess", "InstanceofInterfaces"})
+    @SuppressWarnings({"WeakerAccess", "InstanceofInterfaces", "ChainOfInstanceofChecks"})
     public static String format(Context c, String text, HashMap<String, Object> variables) {
-        int start, end;
+        int start;
+        int end;
         String ret = text;
         // Insert Line breaks
         //noinspection AccessOfSystemProperties
@@ -70,9 +72,9 @@ public class StringHandler {
         while (start != NOT_FOUND) {
             end = ret.indexOf("/]", start);
             if (end != NOT_FOUND) {
-                final String replace = ret.substring(start, end + 2);
-                final String sub = ret.substring(start + 2, end);
-                final String[] tokens = sub.split("[/]");
+                String replace = ret.substring(start, end + 2);
+                String sub = ret.substring(start + 2, end);
+                String[] tokens = sub.split("[/]");
                 ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
                 start = ret.indexOf("[/");
             } else
@@ -83,18 +85,18 @@ public class StringHandler {
         while (start != NOT_FOUND) {
             end = ret.indexOf("#]", start);
             if (end == NOT_FOUND) end = ret.length();
-            final String replace = ret.substring(start, end + 2);
-            final String sub = ret.substring(start + 2, end);
-            final String[] tokens = sub.split("[/]");
+            String replace = ret.substring(start, end + 2);
+            String sub = ret.substring(start + 2, end);
+            String[] tokens = sub.split("[/]");
             if (tokens.length == 4) {
-                final String nStr = tokens[0];
+                String nStr = tokens[0];
                 int nInt = 0;
                 try {
                     nInt = Integer.parseInt(nStr.trim());
                 } catch (NumberFormatException e) {
                     if (variables != null) {
-                        final String[] vars = nStr.split("[.]");
-                        final Object obj = variables.get(vars[0].trim().toLowerCase(Locale.US));
+                        String[] vars = nStr.split("[.]");
+                        Object obj = variables.get(vars[0].trim().toLowerCase(Locale.US));
                         if (obj != null) {
                             if (vars.length == 1) {
                                 if (obj instanceof Integer) {
@@ -112,11 +114,8 @@ public class StringHandler {
                 }
                 if (nInt == 0) {
                     ret = ret.replace(replace, tokens[1]);
-                } else if (nInt == 1) {
-                    ret = ret.replace(replace, tokens[2]);
-                } else {
-                    ret = ret.replace(replace, tokens[3]);
-                }
+                } else
+                    ret = nInt == 1 ? ret.replace(replace, tokens[2]) : ret.replace(replace, tokens[3]);
             } else {
                 ret = ret.replace(replace, "VariablePluralError:" + sub);
             }
@@ -127,18 +126,18 @@ public class StringHandler {
         while (start != NOT_FOUND) {
             end = ret.indexOf("]", start);
             if (end != NOT_FOUND) {
-                final String opt = ret.substring(start + 1, end);
+                String opt = ret.substring(start + 1, end);
                 String condition = null;
                 if (ret.charAt(end + 1) == '(') {
-                    final int i = ret.indexOf(")", end);
+                    int i = ret.indexOf(")", end);
                     condition = ret.substring(end + 2, i).trim();
                     if (i != NOT_FOUND) end = i;
                 }
-                final String replace = ret.substring(start, end + 1);
-                final String[] tokens = opt.split("[|]");
+                String replace = ret.substring(start, end + 1);
+                String[] tokens = opt.split("[|]");
                 if (tokens.length == 1)
                     ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
-                else if (condition.equals("?")) {
+                else if ("?".equals(condition)) {
                     ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
                 } else {
                     condition = condition.replace("?", "");
@@ -160,10 +159,10 @@ public class StringHandler {
                 if (end == NOT_FOUND) end = ret.length();
                 while (punctuation.indexOf(ret.charAt(end - 1)) != NOT_FOUND)
                     end--;
-                final String variable = ret.substring(start, end);
-                final String[] tokens = variable.split("[.]");
+                String variable = ret.substring(start, end);
+                String[] tokens = variable.split("[.]");
                 if (tokens.length == 1) {
-                    final Object obj = variables.get(tokens[0].trim().toLowerCase(Locale.US));
+                    Object obj = variables.get(tokens[0].trim().toLowerCase(Locale.US));
                     if (obj != null) {
                         if (obj instanceof Integer) {
                             ret = ret.replace(variable, obj.toString());
@@ -171,22 +170,15 @@ public class StringHandler {
                             ret = ret.replace(variable, obj.toString());
                         } else if (obj instanceof String) {
                             ret = ret.replace(variable, ((String) obj));
-                        } else if (obj instanceof BaseObject) {
-                            ret = ret.replace(variable, ((BaseObject) obj).getName());
-                        } else {
-                            ret = ret.replace(variable, "VariableTypeError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
-                        }
+                        } else
+                            ret = obj instanceof BaseObject ? ret.replace(variable, ((BaseObject) obj).getName()) : ret.replace(variable, "VariableTypeError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
                     } else {
                         ret = ret.replace(variable, "VariableMissingError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
                     }
                 } else {
-                    final Object obj = variables.get(tokens[0].trim().toLowerCase(Locale.US));
+                    Object obj = variables.get(tokens[0].trim().toLowerCase(Locale.US));
                     if (obj != null) {
-                        if (obj instanceof BaseObject) {
-                            ret = ret.replace(variable, ((BaseObject) obj).getString(c, tokens[1].trim()));
-                        } else {
-                            ret = ret.replace(variable, "VariableTypeError:" + variable);
-                        }
+                        ret = obj instanceof BaseObject ? ret.replace(variable, ((BaseObject) obj).getString(c, tokens[1].trim())) : ret.replace(variable, "VariableTypeError:" + variable);
                     } else {
                         ret = ret.replace(variable, "VariableMissingError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
                     }
@@ -197,9 +189,10 @@ public class StringHandler {
         return ret;
     }
 
+    @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
     public static String randomSplit(String str, String divisor) {
         if (str.contains(divisor)) {
-            final String[] tokens;
+            String[] tokens;
             tokens = str.split("[/]");
             if (tokens.length > 0) {
                 return tokens[RandomHandler.random(tokens.length)];
@@ -210,7 +203,7 @@ public class StringHandler {
 
     public static String list(Context c, ArrayList<BaseObject> list) {
         String ret = "";
-        if (list.size() == 0) return ret;
+        if (list.isEmpty()) return ret;
         if (list.size() == 1) {
             ret = list.get(0).getName();
             return ret;
@@ -235,7 +228,7 @@ public class StringHandler {
 
     public static String listString(Context c, ArrayList<String> list) {
         String ret = "";
-        if (list.size() == 0) return ret;
+        if (list.isEmpty()) return ret;
         if (list.size() == 1) {
             ret = list.get(0);
             return ret;
@@ -246,10 +239,7 @@ public class StringHandler {
         }
         for (int i = 0; i < (list.size() - 1); i++) {
             ret += list.get(i);
-            if (i < (list.size() - 2))
-                ret += c.getString(R.string.stringhandler_comma);
-            else
-                ret += c.getString(R.string.stringhandler_and2);
+            ret += i < (list.size() - 2) ? c.getString(R.string.stringhandler_comma) : c.getString(R.string.stringhandler_and2);
         }
         ret += list.get(list.size() - 1);
         return ret;
@@ -273,8 +263,8 @@ public class StringHandler {
     }
 
     public static String getString(InputStream is) {
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        final StringBuilder sb = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
 
         String line;
         try {
@@ -282,12 +272,12 @@ public class StringHandler {
                 sb.append(line).append("\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Crashlytics.logException(e);
         } finally {
             try {
                 is.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Crashlytics.logException(e);
             }
         }
         return sb.toString();

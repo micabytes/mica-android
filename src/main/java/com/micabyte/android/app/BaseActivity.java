@@ -26,26 +26,26 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.micabyte.android.R;
 import com.micabyte.android.util.GameHelper;
 
 import java.text.DecimalFormat;
 
 /**
  * Base class for Game Activities.
- * <p/>
+ *
  * This implementation now also implements the GamesClient object from Google Play Games services
  * and manages its lifecycle. Subclasses should override the @link{#onSignInSucceeded} and
  *
  * @author micabyte
- * @link{#onSignInFailed abstract methods.
+ * @link{#onSignInFailed abstract methods.}
  */
-@SuppressWarnings({"JavaDoc", "WeakerAccess"})
-public abstract class BaseActivity extends FragmentActivity implements GameHelper.GameHelperListener {
+public class BaseActivity extends FragmentActivity implements GameHelper.GameHelperListener {
     // The game helper object. This class is mainly a wrapper around this object.
-    protected GameHelper mHelper;
+    private final GameHelper gameHelper;
 
     // We expose these constants here because we don't want users of this class
-    // to have to know about GameHelper at all.
+    // to have to know about gameHelper at all.
     public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
     public static final int CLIENT_APPSTATE = GameHelper.CLIENT_APPSTATE;
     public static final int CLIENT_PLUS = GameHelper.CLIENT_PLUS;
@@ -53,28 +53,27 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
     public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
 
     // Requested clients. By default, that's just the games client.
-    protected int mRequestedClients = CLIENT_GAMES;
+    private int requestedClients = CLIENT_GAMES;
 
-    protected boolean mDebugLog = false;
-
-    public abstract void setFragment();
-
-    public abstract void openMenu();
+    private boolean debugLog;
 
     /**
      * Constructs a BaseGameActivity with default client (GamesClient).
      */
     protected BaseActivity() {
+        gameHelper = new GameHelper(this, requestedClients);
+        gameHelper.enableDebugLog(debugLog);
     }
 
     /**
      * Constructs a BaseGameActivity with the requested clients.
      *
-     * @param requestedClients The requested clients (a combination of CLIENT_GAMES,
-     *                         CLIENT_PLUS and CLIENT_APPSTATE).
+     * @param requestClients The requested clients (a combination of CLIENT_GAMES, CLIENT_PLUS and CLIENT_APPSTATE).
      */
-    protected BaseActivity(int requestedClients) {
-        setRequestedClients(requestedClients);
+    protected BaseActivity(int requestClients) {
+        requestedClients = requestClients;
+        gameHelper = new GameHelper(this, requestClients);
+        gameHelper.enableDebugLog(debugLog);
     }
 
     /**
@@ -84,100 +83,94 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
      * in order to have any effect. If called after onCreate()/getGameHelper(), this method
      * is a no-op.
      *
-     * @param requestedClients A combination of the flags CLIENT_GAMES, CLIENT_PLUS
+     * @param requestClients A combination of the flags CLIENT_GAMES, CLIENT_PLUS
      *                         and CLIENT_APPSTATE, or CLIENT_ALL to request all available clients.
      */
-    protected void setRequestedClients(int requestedClients) {
-        mRequestedClients = requestedClients;
+    protected void setRequestedClients(int requestClients) {
+        requestedClients = requestClients;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     public GameHelper getGameHelper() {
-        if (mHelper == null) {
-            mHelper = new GameHelper(this, mRequestedClients);
-            mHelper.enableDebugLog(mDebugLog);
-        }
-        return mHelper;
+        return gameHelper;
     }
 
     @Override
-    protected void onCreate(Bundle b) {
-        super.onCreate(b);
-        if (mHelper == null) {
-            getGameHelper();
-        }
-        assert mHelper != null;
-        mHelper.setup(this);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        gameHelper.setup(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mHelper.onStart(this);
+        gameHelper.onStart(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mHelper.onStop();
+        gameHelper.onStop();
     }
 
     @Override
-    protected void onActivityResult(int request, int response, Intent data) {
-        super.onActivityResult(request, response, data);
-        mHelper.onActivityResult(request, response, data);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        gameHelper.onActivityResult(requestCode, resultCode, data);
     }
 
     public GoogleApiClient getApiClient() {
-        return mHelper.getApiClient();
+        return gameHelper.getApiClient();
     }
 
     public boolean isSignedIn() {
-        return mHelper.isSignedIn();
+        return gameHelper.isSignedIn();
     }
 
     public void beginUserInitiatedSignIn() {
-        mHelper.beginUserInitiatedSignIn();
+        gameHelper.beginUserInitiatedSignIn();
     }
 
     public void signOut() {
-        mHelper.signOut();
+        gameHelper.signOut();
     }
 
     protected void showAlert(String message) {
-        mHelper.makeSimpleDialog(message).show();
+        gameHelper.makeSimpleDialog(message).show();
     }
 
     protected void showAlert(String title, String message) {
-        mHelper.makeSimpleDialog(title, message).show();
+        gameHelper.makeSimpleDialog(title, message).show();
     }
 
     protected void enableDebugLog(boolean enabled) {
-        mDebugLog = true;
-        if (mHelper != null) {
-            mHelper.enableDebugLog(enabled);
-        }
+        debugLog = true;
+        gameHelper.enableDebugLog(enabled);
     }
 
     protected String getInvitationId() {
-        return mHelper.getInvitationId();
+        return gameHelper.getInvitationId();
     }
 
     protected void reconnectClient() {
-        mHelper.reconnectClient();
+        gameHelper.reconnectClient();
     }
 
     protected boolean hasSignInError() {
-        return mHelper.hasSignInError();
+        return gameHelper.hasSignInError();
     }
 
     protected GameHelper.SignInFailureReason getSignInError() {
-        return mHelper.getSignInError();
+        return gameHelper.getSignInError();
     }
 
-    abstract public void showSpinner();
+    public void showSpinner() {
+        findViewById(R.id.ProgressLayout).setVisibility(View.VISIBLE);
+    }
 
-    abstract public void dismissSpinner();
+    public void dismissSpinner() {
+        findViewById(R.id.ProgressLayout).setVisibility(View.GONE);
+    }
+
 
     /**
      * Removes the reference to the activity from every view in a view hierarchy (listeners, images
@@ -190,14 +183,15 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
      *
      * @param viewID normally the id of the root layout
      */
+    @SuppressWarnings("CallToSystemGC")
     protected static void unbindReferences(Activity activity, int viewID) {
         try {
-            final View view = activity.findViewById(viewID);
+            View view = activity.findViewById(viewID);
             if (view != null) {
                 unbindViewReferences(view);
                 if (view instanceof ViewGroup) unbindViewGroupReferences((ViewGroup) view);
             }
-        } catch (Throwable e) {
+        } catch (Throwable ignored) {
             // whatever exception is thrown just ignore it because a crash is
             // likely to be worse than this method not doing what it's supposed to do
             // e.printStackTrace();
@@ -206,73 +200,74 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
     }
 
     private static void unbindViewGroupReferences(ViewGroup viewGroup) {
-        final int nrOfChildren = viewGroup.getChildCount();
+        int nrOfChildren = viewGroup.getChildCount();
         for (int i = 0; i < nrOfChildren; i++) {
-            final View view = viewGroup.getChildAt(i);
+            View view = viewGroup.getChildAt(i);
             unbindViewReferences(view);
             if (view instanceof ViewGroup) unbindViewGroupReferences((ViewGroup) view);
         }
         try {
             viewGroup.removeAllViews();
-        } catch (Throwable mayHappen) {
+        } catch (Throwable ignored) {
             // AdapterViews, ListViews and potentially other ViewGroups don't
             // support the removeAllViews operation
         }
     }
 
+    @SuppressWarnings("ChainOfInstanceofChecks")
     private static void unbindViewReferences(View view) {
         // set all listeners to null
         try {
             view.setOnClickListener(null);
-        } catch (Throwable mayHappen) {
+        } catch (Throwable ignored) {
             // NOOP - not supported by all views/versions
         }
         try {
             view.setOnCreateContextMenuListener(null);
-        } catch (Throwable mayHappen) {
+        } catch (Throwable ignored) {
             // NOOP - not supported by all views/versions
         }
         try {
             view.setOnFocusChangeListener(null);
-        } catch (Throwable mayHappen) {
+        } catch (Throwable ignored) {
             // NOOP - not supported by all views/versions
         }
         try {
             view.setOnKeyListener(null);
-        } catch (Throwable mayHappen) {
+        } catch (Throwable ignored) {
             // NOOP - not supported by all views/versions
         }
         try {
             view.setOnLongClickListener(null);
-        } catch (Throwable mayHappen) {
+        } catch (Throwable ignored) {
             // NOOP - not supported by all views/versions
         }
         try {
             view.setOnClickListener(null);
-        } catch (Throwable mayHappen) {
+        } catch (Throwable ignored) {
             // NOOP - not supported by all views/versions
         }
         // set background to null
-        Drawable d = view.getBackground();
-        if (d != null) {
-            d.setCallback(null);
+        Drawable background = view.getBackground();
+        if (background != null) {
+            background.setCallback(null);
         }
         if (view instanceof ImageView) {
-            final ImageView imageView = (ImageView) view;
-            d = imageView.getDrawable();
-            if (d != null) {
-                d.setCallback(null);
+            ImageView imageView = (ImageView) view;
+            Drawable imageViewDrawable = imageView.getDrawable();
+            if (imageViewDrawable != null) {
+                imageViewDrawable.setCallback(null);
             }
             imageView.setImageDrawable(null);
             imageView.setImageBitmap(null);
         }
         if (view instanceof ImageButton) {
-            final ImageButton imageB = (ImageButton) view;
-            d = imageB.getDrawable();
-            if (d != null) {
-                d.setCallback(null);
+            ImageButton imageButton = (ImageButton) view;
+            Drawable imageButtonDrawable = imageButton.getDrawable();
+            if (imageButtonDrawable != null) {
+                imageButtonDrawable.setCallback(null);
             }
-            imageB.setImageDrawable(null);
+            imageButton.setImageDrawable(null);
         }
         // destroy WebView
         if (view instanceof WebView) {
@@ -284,18 +279,47 @@ public abstract class BaseActivity extends FragmentActivity implements GameHelpe
     /*
      * Show Heap
      */
-    @SuppressWarnings({"rawtypes", "MagicNumber"})
+    @SuppressWarnings({"rawtypes", "MagicNumber", "CallToSystemGC"})
     public static void logHeap(Class clazz) {
-        final DecimalFormat df = new DecimalFormat();
+        DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2);
         df.setMinimumFractionDigits(2);
         if (BuildConfig.DEBUG) Log.d(clazz.getName(),
-                "DEBUG_MEMORY allocated " + df.format((double) (Runtime.getRuntime().totalMemory() / 1048576)) + "/"
-                        + df.format((double) (Runtime.getRuntime().maxMemory() / 1048576)) + "MB ("
-                        + df.format((double) (Runtime.getRuntime().freeMemory() / 1048576)) + "MB free)"
+                "DEBUG_MEMORY allocated " + df.format((double) (Runtime.getRuntime().totalMemory() / 1048576)) + '/'
+                        + df.format((double) (Runtime.getRuntime().maxMemory() / 1048576)) + " MB ("
+                        + df.format((double) (Runtime.getRuntime().freeMemory() / 1048576)) + " MB free)"
         );
         System.gc();
         System.gc();
     }
 
+    @Override
+    public void onSignInFailed() {
+        // NOOP
+    }
+
+    @Override
+    public void onSignInSucceeded() {
+        // NOOP
+    }
+
+    public void setFragment() {
+        // NOOP
+    }
+
+    public void openMenu() {
+        // NOOP
+    }
+
+    protected int getRequestedClients() {
+        return requestedClients;
+    }
+
+    public boolean isDebugLog() {
+        return debugLog;
+    }
+
+    public void setDebugLog(boolean log) {
+        debugLog = log;
+    }
 }

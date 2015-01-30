@@ -33,19 +33,19 @@ import com.micabyte.android.graphics.SurfaceRenderer;
  */
 public abstract class HexMap extends BaseObject {
     public static boolean standardOrientation = true;
-    public static int mapWidth = 0;
-    public static int mapHeight = 0;
-    public static int tileSlope = 0;
+    public static int mapWidth;
+    public static int mapHeight;
+    public static int tileSlope;
     public static Rect tileRect = new Rect();
     protected TileMapZone[][] zones;
-    protected float scaleFactor = 0;
+    protected float scaleFactor;
     protected final Point viewPortOrigin = new Point();
     protected final Point viewPortSize = new Point();
     protected final Rect destRect = new Rect();
-    protected int windowLeft = 0;
-    protected int windowTop = 0;
-    protected int windowRight = 0;
-    protected int windowBottom = 0;
+    protected int windowLeft;
+    protected int windowTop;
+    protected int windowRight;
+    protected int windowBottom;
     private final Paint tilePaint = new Paint();
     protected final Paint tileText = new Paint();
     // Draw
@@ -56,7 +56,7 @@ public abstract class HexMap extends BaseObject {
         tilePaint.setAntiAlias(true);
         tilePaint.setFilterBitmap(true);
         tilePaint.setDither(true);
-        final Paint select = new Paint();
+        Paint select = new Paint();
         select.setStyle(Paint.Style.STROKE);
         select.setColor(Color.RED);
         select.setStrokeWidth(2);
@@ -71,22 +71,14 @@ public abstract class HexMap extends BaseObject {
         tileSlope = tileRect.height() / 4;
     }
 
-    public static int getRenderHeight() {
-        return ((mapHeight - 2) * (tileRect.height() - tileSlope)) + (tileSlope);
-    }
-
-    public static int getRenderWidth() {
-        return ((mapWidth) * tileRect.width()) - (tileRect.width() / 2);
-    }
-
     public void drawBase(Context c, SurfaceRenderer.ViewPort p) {
-        if (p.bitmap == null) {
+        if (p.getBitmap() == null) {
             Log.e("HM", "Viewport bitmap is null");
             return;
         }
-        canvas.setBitmap(p.bitmap);
+        canvas.setBitmap(p.getBitmap());
         scaleFactor = p.getZoom();
-        final int yOffset = (tileRect.height() - tileSlope);
+        int yOffset = (tileRect.height() - tileSlope);
         int xOffset;
         p.getOrigin(viewPortOrigin);
         p.getSize(viewPortSize);
@@ -108,10 +100,7 @@ public abstract class HexMap extends BaseObject {
             for (int i = iMn; i < iMx; i++) {
                 for (int j = jMn; j < jMx; j++) {
                     if (zones[i][j] != null) {
-                        if ((j % 2) == 0)
-                            xOffset = tileRect.width() / 2;
-                        else
-                            xOffset = 0;
+                        xOffset = (j % 2) == 0 ? tileRect.width() / 2 : 0;
                         destRect.left = (int) (((i * tileRect.width()) - windowLeft - xOffset) / scaleFactor);
                         destRect.top = (int) (((j * (tileRect.height() - tileSlope)) - windowTop - yOffset) / scaleFactor);
                         destRect.right = (int) ((((i * tileRect.width()) + tileRect.width()) - windowLeft - xOffset) / scaleFactor);
@@ -134,10 +123,7 @@ public abstract class HexMap extends BaseObject {
             for (int i = iMx; i >= iMn; i--) {
                 for (int j = jMx; j >= jMn; j--) {
                     if (zones[i][j] != null) {
-                        if ((j % 2) == 1)
-                            xOffset = tileRect.width() / 2;
-                        else
-                            xOffset = 0;
+                        xOffset = (j % 2) == 1 ? tileRect.width() / 2 : 0;
                         destRect.left = (int) ((((mapWidth - i - 1) * tileRect.width()) - windowLeft - xOffset) / scaleFactor);
                         destRect.top = (int) ((((mapHeight - j - 1) * (tileRect.height() - tileSlope)) - windowTop - yOffset) / scaleFactor);
                         destRect.right = (int) (((((mapWidth - i - 1) * tileRect.width()) + tileRect.width()) - windowLeft - xOffset) / scaleFactor);

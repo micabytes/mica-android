@@ -24,10 +24,18 @@ import com.micabyte.android.map.HexMap;
  */
 public class HexMapSurfaceRenderer extends SurfaceRenderer {
     // The HexMap object
-    private HexMap GameSurfaceTileMap = null;
+    private HexMap GameSurfaceTileMap;
 
     public HexMapSurfaceRenderer(Context c) {
         super(c);
+    }
+
+    private static int getRenderWidth() {
+        return ((HexMap.mapWidth) * HexMap.tileRect.width()) - (HexMap.tileRect.width() / 2);
+    }
+
+    private static int getRenderHeight() {
+        return ((HexMap.mapHeight - 2) * (HexMap.tileRect.height() - HexMap.tileSlope)) + (HexMap.tileSlope);
     }
 
     /**
@@ -35,7 +43,7 @@ public class HexMapSurfaceRenderer extends SurfaceRenderer {
      */
     public void setTileMap(HexMap map) {
         GameSurfaceTileMap = map;
-        backgroundSize.set(HexMap.getRenderWidth(), HexMap.getRenderHeight());
+        backgroundSize.set(getRenderWidth(), getRenderHeight());
     }
 
     @Override
@@ -63,7 +71,7 @@ public class HexMapSurfaceRenderer extends SurfaceRenderer {
     @Override
     public void setMapPosition(int x, int y)
     {
-        final Point p = GameSurfaceTileMap.getViewPortOrigin(x, y, viewPort);
+        Point p = GameSurfaceTileMap.getViewPortOrigin(x, y, viewPort);
         viewPort.setOrigin(p.x, p.y);
     }
 
@@ -78,7 +86,7 @@ public class HexMapSurfaceRenderer extends SurfaceRenderer {
     }
 
     @Override
-    public void suspend(boolean suspend) {
+    public void suspend(boolean b) {
         // NOOP
     }
 

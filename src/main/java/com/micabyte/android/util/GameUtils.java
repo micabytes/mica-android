@@ -71,8 +71,8 @@ public class GameUtils {
             }
         } else {
             // not resolvable... so show an error message
-            final int errorCode = result.getErrorCode();
-            final Dialog dialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
+            int errorCode = result.getErrorCode();
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
                     activity, requestCode);
             if (dialog != null) {
                 dialog.show();

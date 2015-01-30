@@ -29,9 +29,9 @@ import android.util.SparseArray;
 class MusicHandler {
     private static final String TAG = MusicHandler.class.getName();
     private static final int INVALID_NUMBER = 0;
-    private static final SparseArray<MediaPlayer> players = new SparseArray<MediaPlayer>();
-    private static int nextMusic = INVALID_NUMBER;
-    private static int currentMusic = INVALID_NUMBER;
+    private static final SparseArray<MediaPlayer> players = new SparseArray<>();
+    private static int nextMusic;
+    private static int currentMusic;
 
     /**
      * Start playing a music resource

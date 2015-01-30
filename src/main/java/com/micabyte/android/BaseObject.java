@@ -15,6 +15,7 @@ package com.micabyte.android;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.util.Log;
@@ -22,56 +23,69 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.micabyte.android.util.StringHandler;
 
+import org.jetbrains.annotations.NonNls;
+import android.support.annotation.NonNull;
+
 /**
  * BaseObject is a generic Object that contains a number of frequently used attributes.
  *
  * @author micabyte
  */
-public abstract class BaseObject {
+@SuppressWarnings("HardCodedStringLiteral")
+public class BaseObject {
     private static final String TAG = BaseObject.class.getName();
+    private static final char VAR_CHAR = '$';
+    private static final Pattern AND_SPLITTER = Pattern.compile("[&]");
+    private static final Pattern GEQ_SPLITTER = Pattern.compile("[>=]+");
+    private static final Pattern LEQ_SPLITTER = Pattern.compile("[<=]+");
+    private static final Pattern GT_SPLITTER = Pattern.compile("[>]+");
+    private static final Pattern LT_SPLITTER = Pattern.compile("[<]+");
+    private static final Pattern EQ_SPLITTER = Pattern.compile("[=]+");
+    private static final Pattern DOT_SPLITTER = Pattern.compile("[.]");
     // ID of Object
-    private String id = null;
+    @NonNls
+    private String id = "";
     // Name of Object
-    private String name = null;
+    private String name = "";
     // Value of Object
-    private int value = 0;
+    private int value;
 
     protected BaseObject() {
         // NOOP
     }
 
-    protected BaseObject(String id0, String name0, int v) {
-        id = id0;
-        name = name0;
-        value = v;
+    protected BaseObject(String oid, String nam, int val) {
+        id = oid;
+        name = nam;
+        value = val;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String s) {
-        id = s;
+    public void setId(String oid) {
+        id = oid;
     }
 
-    public boolean equalsId(String s) {
-        return id.equalsIgnoreCase(s);
+    public boolean equalsId(String oid) {
+        return id.equalsIgnoreCase(oid);
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String n) {
-        name = n;
+    public void setName(String nam) {
+        name = nam;
     }
 
     public int getValue() {
         return value;
     }
 
-    public void setValue(int v) {
-        value = v;
+    public void setValue(int val) {
+        value = val;
     }
 
     /*
@@ -79,76 +93,70 @@ public abstract class BaseObject {
      * text replacement in strings (see StringHandler) where it is useful to retrieve data from many
      * different types of game objects.
      */
-        @SuppressWarnings("InnerClassFieldHidesOuterClassField")
-        private enum ValueToken {
-        error, name, value, tag, object;
+    private enum ValueToken {
+        ERROR, NAME, VALUE, THIS;
 
         public static ValueToken get(String str) {
             try {
-                return valueOf(str.trim().toLowerCase(Locale.US));
-            } catch (Exception ex) {
-                return error;
+                return valueOf(str.trim().toUpperCase(Locale.US));
+            } catch (IllegalArgumentException e) {
+                Crashlytics.logException(e);
+                return ERROR;
             }
         }
     }
 
-    public int getInteger(String id0) {
-        switch (ValueToken.get(id0)) {
-            case value:
-                return getValue();
-            default:
-                return 0;
-        }
+    public int getInteger(String str) {
+        if (ValueToken.get(str) == ValueToken.VALUE)
+            return value;
+        return 0;
     }
 
-    public String getString(Context c, String id0) {
-        switch (ValueToken.get(id0)) {
-            case name:
+    @NonNull
+    public String getString(Context context, String str) {
+        switch (ValueToken.get(str)) {
+            case NAME:
                 return getName();
-            case value:
-                return Integer.toString(getValue());
+            case VALUE:
+                return Integer.toString(value);
             default:
-                return StringHandler.get(c, R.string.default_error);
+                return StringHandler.get(context, R.string.default_error);
         }
     }
 
-    public BaseObject getObject(String id0) {
-        switch (ValueToken.get(id0)) {
-            case object:
-                return this;
-            default:
-                return null;
-        }
+    @NonNull
+    public BaseObject getObject(String str) {
+        ValueToken token = ValueToken.get(str);
+        return (token == ValueToken.THIS) ? this : new BaseObject();
     }
 
     public static int evaluate(String test, HashMap<String, Object> variables) {
-        final String[] tokens;
-        tokens = test.split("[&]");
+        String[] tokens = AND_SPLITTER.split(test);
         if (tokens.length == 1)
             return evaluateStatement(test, variables);
         boolean ret = true;
         for (String s : tokens) {
-            Log.d("TAG", "Evaluate of " + s);
             if (evaluateStatement(s, variables) <= 0) {
                 ret = false;
-                Log.d(TAG, "False");
+                Log.d(TAG, "Evaluate of " + s + " is false");
             }
             else {
-                Log.d(TAG, "True");
+                Log.d(TAG, "Evaluate of " + s + " is true");
             }
         }
         return ret ? 1 : 0;
     }
 
+    @SuppressWarnings({"MethodWithMultipleReturnPoints", "OverlyComplexMethod"})
     private static int evaluateStatement(String str, AbstractMap<String, Object> variables) {
-        final String[] tokens;
+        String[] tokens;
         // Random Value
         // >=
         if (str.contains(">=")) {
-            tokens = str.split("[>=]+");
+            tokens = GEQ_SPLITTER.split(str);
             if (tokens.length == 2) {
-                final String val1 = tokens[0].trim().toLowerCase(Locale.US);
-                final String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                String val2 = tokens[1].trim().toLowerCase(Locale.US);
                 return (getVariableValue(val1, variables) >= getVariableValue(val2, variables)) ? 1 : 0;
             }
             Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
@@ -156,10 +164,10 @@ public abstract class BaseObject {
         }
         // >=
         if (str.contains("<=")) {
-            tokens = str.split("[<=]+");
+            tokens = LEQ_SPLITTER.split(str);
             if (tokens.length == 2) {
-                final String val1 = tokens[0].trim().toLowerCase(Locale.US);
-                final String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                String val2 = tokens[1].trim().toLowerCase(Locale.US);
                 return (getVariableValue(val1, variables) <= getVariableValue(val2, variables)) ? 1 : 0;
             }
             Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " +  str);
@@ -167,10 +175,10 @@ public abstract class BaseObject {
         }
         // >
         if (str.contains(">")) {
-            tokens = str.split("[>]+");
+            tokens = GT_SPLITTER.split(str);
             if (tokens.length == 2) {
-                final String val1 = tokens[0].trim().toLowerCase(Locale.US);
-                final String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                String val2 = tokens[1].trim().toLowerCase(Locale.US);
                 return (getVariableValue(val1, variables) > getVariableValue(val2, variables)) ? 1 : 0;
             }
             Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " +  str);
@@ -178,10 +186,10 @@ public abstract class BaseObject {
         }
         // <
         if (str.contains("<")) {
-            tokens = str.split("[<]+");
+            tokens = LT_SPLITTER.split(str);
             if (tokens.length == 2) {
-                final String val1 = tokens[0].trim().toLowerCase(Locale.US);
-                final String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                String val2 = tokens[1].trim().toLowerCase(Locale.US);
                 return (getVariableValue(val1, variables) < getVariableValue(val2, variables)) ? 1 : 0;
             }
             Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
@@ -190,10 +198,10 @@ public abstract class BaseObject {
         // Set Last, as it will otherwise take precedence over all the others.
         // =
         if (str.contains("=")) {
-            tokens = str.split("[=]+");
+            tokens = EQ_SPLITTER.split(str);
             if (tokens.length == 2) {
-                final String val1 = tokens[0].trim().toLowerCase(Locale.US);
-                final String val2 = tokens[1].trim().toLowerCase(Locale.US);
+                String val1 = tokens[0].trim().toLowerCase(Locale.US);
+                String val2 = tokens[1].trim().toLowerCase(Locale.US);
                 return (getVariableValue(val1, variables) == getVariableValue(val2, variables)) ? 1 : 0;
             }
             Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " +  str);
@@ -203,41 +211,39 @@ public abstract class BaseObject {
         return getVariableValue(str, variables);
     }
 
+    @SuppressWarnings({"ChainOfInstanceofChecks", "MethodWithMultipleReturnPoints", "OverlyComplexMethod"})
     private static int getVariableValue(String key, AbstractMap<String, Object> variables) {
-        final String var = key.trim().toLowerCase(Locale.US);
-        if (var.isEmpty()) return 0;
-        if (var.charAt(0) != '$') {
+        String str = key.trim().toLowerCase(Locale.US);
+        if (str.isEmpty()) return 0;
+        if (str.charAt(0) != VAR_CHAR) {
             try {
-                return Integer.parseInt(var);
+                return Integer.parseInt(str);
             } catch (NumberFormatException e) {
-                Crashlytics.log(Log.ERROR, TAG, var + " is not a valid variable");
+                Crashlytics.logException(e);
                 return 0;
             }
         }
-        final String[] tokens = var.split("[.]", 2);
+        String[] tokens = DOT_SPLITTER.split(str, 2);
         if (tokens.length > 2) {
-            Crashlytics.log(Log.ERROR, TAG, "Failed to interpret object " + var);
+            Crashlytics.log(Log.ERROR, TAG, "Failed to interpret object " + str);
             return 0;
         }
         if (variables == null)
             return 0;
-        final Object obj = variables.get(tokens[0]);
+        Object obj = variables.get(tokens[0]);
         if (obj == null) {
             return 0;
         }
         if (obj instanceof Boolean) {
-            if (((Boolean) obj))
-                return 1;
-            else
-                return 0;
+            return (Boolean) obj ? 1 : 0;
         }
         if (obj instanceof Integer)
             return (Integer) obj;
         if (obj instanceof Double)
             return ((Double) obj).intValue();
-        @SuppressWarnings("LocalVariableOfConcreteClass") final BaseObject gObj = (BaseObject) obj;
+        BaseObject gObj = (BaseObject) obj;
         if (tokens.length == 1) {
-            return gObj.getValue();
+            return gObj.value;
         }
         return gObj.getInteger(tokens[1]);
     }

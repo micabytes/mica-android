@@ -48,15 +48,16 @@ public class ImageHandler {
     // Shortcut to the Display Density
     public static float density;
     // Bitmap cache
-    private final SparseArray<SoftReference<Bitmap>> cachedBitmaps = new SparseArray<SoftReference<Bitmap>>();
-    private final SparseArray<Bitmap> persistBitmaps = new SparseArray<Bitmap>();
+    private final SparseArray<SoftReference<Bitmap>> cachedBitmaps = new SparseArray<>();
+    private final SparseArray<Bitmap> persistBitmaps = new SparseArray<>();
 
     private ImageHandler(Context c) {
         resources = c.getResources();
-        final DisplayMetrics metrics = resources.getDisplayMetrics();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
         density = metrics.density;
     }
 
+    @SuppressWarnings("CallToSystemGC")
     public void release() {
         cachedBitmaps.clear();
         System.gc();
@@ -82,7 +83,7 @@ public class ImageHandler {
             ret = persistBitmaps.get(key);
             if (ret != null) return ret;
         }
-        final SoftReference<Bitmap> ref = cachedBitmaps.get(key);
+        SoftReference<Bitmap> ref = cachedBitmaps.get(key);
         if (ref != null) {
             ret = ref.get();
             if (ret != null) {
@@ -93,13 +94,13 @@ public class ImageHandler {
         if (persist)
             persistBitmaps.put(key, ret);
         else
-            cachedBitmaps.put(key, new SoftReference<Bitmap>(ret));
+            cachedBitmaps.put(key, new SoftReference<>(ret));
         return ret;
     }
 
     @SuppressWarnings("deprecation")
     private Bitmap loadBitmap(int key, Bitmap.Config bitmapConfig) {
-        final BitmapFactory.Options opts = new BitmapFactory.Options();
+        BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inPreferredConfig = bitmapConfig;
         opts.inPurgeable = true;
         opts.inInputShareable = true;
@@ -107,16 +108,16 @@ public class ImageHandler {
     }
 
     public Bitmap getSceneBitmap(int bkg, int left, int right) {
-        final Bitmap bitmap = get(bkg);
+        Bitmap bitmap = get(bkg);
         if (bitmap == null) return null;
-        final Bitmap output =
+        Bitmap output =
                 Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(output);
-        final int color = 0xff424242;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        final RectF rectF = new RectF(rect);
-        final float roundPx = 12;
+        Canvas canvas = new Canvas(output);
+        int color = 0xff424242;
+        Paint paint = new Paint();
+        Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        RectF rectF = new RectF(rect);
+        float roundPx = 12;
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
@@ -134,7 +135,7 @@ public class ImageHandler {
     }
 
     public BitmapFactory.Options getDimensions(int key) {
-        final BitmapFactory.Options opt = new BitmapFactory.Options();
+        BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inPreferredConfig = BitmapSurfaceRenderer.DEFAULT_CONFIG;
         opt.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(resources, key, opt);
@@ -142,7 +143,7 @@ public class ImageHandler {
     }
 
     // Instance Code
-    private static ImageHandler instance = null;
+    private static ImageHandler instance;
 
     public static ImageHandler getInstance(Context c) {
         checkInstance(c);

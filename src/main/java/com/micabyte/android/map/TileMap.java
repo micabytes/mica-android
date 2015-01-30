@@ -62,20 +62,20 @@ public abstract class TileMap extends BaseObject {
     }
 
     public void drawBase(Context c, SurfaceRenderer.ViewPort p) {
-        final Canvas canvas = new Canvas(p.bitmap);
-        final Paint paint = new Paint();
+        Canvas canvas = new Canvas(p.getBitmap());
+        Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setFilterBitmap(true);
         paint.setDither(true);
-        final float scaleFactor = p.getZoom();
-        final int tileSize = tileRect.width();
+        float scaleFactor = p.getZoom();
+        int tileSize = tileRect.width();
         p.getOrigin(viewPortOrigin);
         p.getSize(viewPortSize);
-        final int windowLeft = viewPortOrigin.x;
-        final int windowTop = viewPortOrigin.y;
-        final int windowRight = viewPortOrigin.x + viewPortSize.x;
-        final int windowBottom = viewPortOrigin.y + viewPortSize.y;
-        final Rect destRect = new Rect();
+        int windowLeft = viewPortOrigin.x;
+        int windowTop = viewPortOrigin.y;
+        int windowRight = viewPortOrigin.x + viewPortSize.x;
+        int windowBottom = viewPortOrigin.y + viewPortSize.y;
+        Rect destRect = new Rect();
         // Clip tiles not in view
         int iMn = windowLeft / tileSize;
         if (iMn < 0) iMn = 0;

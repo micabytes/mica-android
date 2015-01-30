@@ -24,7 +24,7 @@ import java.util.Random;
  */
 public class RandomHandler {
     // Random Generator
-    private static Random random = null;
+    private static Random random;
     // Dice Rolling
     public static final int WDICE_DEFAULT_HIT = 4;
     public static final int BASE_DICE_THRESHOLD = 4;
