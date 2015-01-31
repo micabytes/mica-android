@@ -25,7 +25,7 @@ import android.util.Log;
  * SurfaceRenderer is the superclass of the renderer. The game should subclass the renderer and extend the drawing methods to add game drawing.
  * <p/>
  * - BitmapSurfaceRenderer can be extended for apps that require background images
- * - TileMapSurfaceRenderer can be extended for apps that need to display TileMaps (not currently up to date)
+ * - TileMapSurfaceRenderer can be extended for apps that need to display TileMaps (not currently onTouchUp to date)
  * - HexMapSurfaceRenderer can be extended for apps that need to display HexMaps
  *
  * @author micabyte
@@ -44,7 +44,7 @@ public abstract class SurfaceRenderer {
      * Constructor for the surface renderer
      *
      * @param con We need to pass in the context, so that we have it when we create bitmaps for drawing operations later. Since the draw operations are
-     *          run in a thread, we can't pass the context through the thread (at least not easily)
+     *            run in a thread, we can't pass the context through the thread (at least not easily)
      */
     SurfaceRenderer(Context con) {
         context = con;
@@ -234,7 +234,6 @@ public abstract class SurfaceRenderer {
             zoom = f;
         }
 
-        @SuppressWarnings("OverlyComplexMethod")
         public void zoom(float factor, PointF screenFocus) {
             if (getBitmap() == null) return;
             PointF screenSize = new PointF(getBitmap().getWidth(), getBitmap().getHeight());

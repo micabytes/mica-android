@@ -26,17 +26,16 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.GamesActivityResultCodes;
-
 import com.micabyte.android.R;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings("ALL")
 public class GameUtils {
 
     /**
      * Show an {@link android.app.AlertDialog} with an 'OK' button and a message.
      *
      * @param activity the Activity in which the Dialog should be displayed.
-     * @param message the message to display in the Dialog.
+     * @param message  the message to display in the Dialog.
      */
     public static void showAlert(Activity activity, String message) {
         (new AlertDialog.Builder(activity)).setMessage(message)
@@ -47,11 +46,11 @@ public class GameUtils {
      * Resolve a connection failure from
      * {@link com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener#onConnectionFailed(com.google.android.gms.common.ConnectionResult)}
      *
-     * @param activity the Activity trying to resolve the connection failure.
-     * @param client the GoogleAPIClient instance of the Activity.
-     * @param result the ConnectionResult received by the Activity.
-     * @param requestCode a request code which the calling Activity can use to identify the result
-     *                    of this resolution in onActivityResult.
+     * @param activity             the Activity trying to resolve the connection failure.
+     * @param client               the GoogleAPIClient instance of the Activity.
+     * @param result               the ConnectionResult received by the Activity.
+     * @param requestCode          a request code which the calling Activity can use to identify the result
+     *                             of this resolution in onActivityResult.
      * @param fallbackErrorMessage a generic error message to display if the failure cannot be resolved.
      * @return true if the connection failure is resolved, false otherwise.
      */
@@ -87,10 +86,10 @@ public class GameUtils {
     /**
      * Show a {@link android.app.Dialog} with the correct message for a connection error.
      *
-     * @param activity the Activity in which the Dialog should be displayed.
-     * @param requestCode the request code from onActivityResult.
-     * @param actResp the response code from onActivityResult.
-     * @param errorCode the resource id of a String for an 'Unable to sign in' error message,
+     * @param activity         the Activity in which the Dialog should be displayed.
+     * @param requestCode      the request code from onActivityResult.
+     * @param actResp          the response code from onActivityResult.
+     * @param errorCode        the resource id of a String for an 'Unable to sign in' error message,
      * @param errorDescription the resource id of a String for a generic error message.
      */
     public static void showActivityResultError(Activity activity, int requestCode, int actResp,
@@ -138,7 +137,7 @@ public class GameUtils {
      * Create a simple {@link Dialog} with an 'OK' button and a message.
      *
      * @param activity the Activity in which the Dialog should be displayed.
-     * @param text the message to display on the Dialog.
+     * @param text     the message to display on the Dialog.
      * @return an instance of {@link android.app.AlertDialog}
      */
     public static Dialog makeSimpleDialog(Activity activity, String text) {
@@ -150,8 +149,8 @@ public class GameUtils {
      * Create a simple {@link Dialog} with an 'OK' button, a title, and a message.
      *
      * @param activity the Activity in which the Dialog should be displayed.
-     * @param title the title to display on the dialog.
-     * @param text the message to display on the Dialog.
+     * @param title    the title to display on the dialog.
+     * @param text     the message to display on the Dialog.
      * @return an instance of {@link android.app.AlertDialog}
      */
     public static Dialog makeSimpleDialog(Activity activity, String title, String text) {

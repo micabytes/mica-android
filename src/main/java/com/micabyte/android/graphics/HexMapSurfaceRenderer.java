@@ -24,55 +24,47 @@ import com.micabyte.android.map.HexMap;
  */
 public class HexMapSurfaceRenderer extends SurfaceRenderer {
     // The HexMap object
-    private HexMap GameSurfaceTileMap;
+    private HexMap gameSurfaceTileMap;
 
-    public HexMapSurfaceRenderer(Context c) {
-        super(c);
+    public HexMapSurfaceRenderer(Context con) {
+        super(con);
     }
 
     private static int getRenderWidth() {
-        return ((HexMap.mapWidth) * HexMap.tileRect.width()) - (HexMap.tileRect.width() / 2);
+        return ((HexMap.getMapWidth()) * HexMap.getTileRect().width()) - (HexMap.getTileRect().width() / 2);
     }
 
     private static int getRenderHeight() {
-        return ((HexMap.mapHeight - 2) * (HexMap.tileRect.height() - HexMap.tileSlope)) + (HexMap.tileSlope);
+        return ((HexMap.getMapHeight() - 2) * (HexMap.getTileRect().height() - HexMap.getTileSlope())) + (HexMap.getTileSlope());
     }
 
     /**
      * Set the TileMap
      */
     public void setTileMap(HexMap map) {
-        GameSurfaceTileMap = map;
+        gameSurfaceTileMap = map;
         backgroundSize.set(getRenderWidth(), getRenderHeight());
     }
 
     @Override
     public void drawBase() {
-        GameSurfaceTileMap.drawBase(context, viewPort);
+        gameSurfaceTileMap.drawBase(context, viewPort);
     }
 
     @Override
     protected void drawLayer() {
-        GameSurfaceTileMap.drawLayer(context, viewPort);
+        gameSurfaceTileMap.drawLayer(context, viewPort);
     }
 
     @Override
     protected void drawFinal() {
-        GameSurfaceTileMap.drawFinal(context, viewPort);
+        gameSurfaceTileMap.drawFinal(context, viewPort);
     }
 
     @Override
-    public void setViewPosition(int x, int y)
-    {
-        viewPort.setOrigin(x, y);
-    }
-
-
-    @Override
-    public void setMapPosition(int x, int y)
-    {
-        Point p = GameSurfaceTileMap.getViewPortOrigin(x, y, viewPort);
-        viewPort.setOrigin(p.x, p.y);
+    public void setMapPosition(int x, int y) {
+        Point p = gameSurfaceTileMap.getViewPortOrigin(x, y, viewPort);
+        super.setMapPosition(p.x, p.y);
     }
 
     @Override
@@ -86,7 +78,12 @@ public class HexMapSurfaceRenderer extends SurfaceRenderer {
     }
 
     @Override
-    public void suspend(boolean b) {
+    public void suspend() {
+        // NOOP
+    }
+
+    @Override
+    public void resume() {
         // NOOP
     }
 

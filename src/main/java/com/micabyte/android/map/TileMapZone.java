@@ -34,22 +34,22 @@ public abstract class TileMapZone extends BaseObject {
     /**
      * Get the width of a tile
      */
-    public int getWidth(Context c) {
-        return ImageHandler.getInstance(c).get(getValue()).getWidth();
+    public int getWidth(Context context) {
+        return ImageHandler.getInstance(context).get(getValue()).getWidth();
     }
 
     /**
      * Get the height of a tile
      */
-    public int getHeight(Context c) {
-        return ImageHandler.getInstance(c).get(getValue()).getHeight();
+    public int getHeight(Context context) {
+        return ImageHandler.getInstance(context).get(getValue()).getHeight();
     }
 
     /**
      * Draw the base bitmap of the tile on a canvas
      */
-    public void drawBase(Context c, Canvas canvas, Rect tileRect, Rect destRect, Paint paint) {
-        canvas.drawBitmap(ImageHandler.getInstance(c).get(getValue(), true), tileRect, destRect, paint);
+    public void drawBase(Context context, Canvas canvas, Rect tileRect, Rect destRect, Paint paint) {
+        canvas.drawBitmap(ImageHandler.getInstance(context).get(getValue(), true), tileRect, destRect, paint);
     }
 
 

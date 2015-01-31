@@ -47,7 +47,7 @@ import com.google.android.gms.plus.Plus.PlusOptions;
 
 import java.util.ArrayList;
 
-@SuppressWarnings({"JavaDoc", "WeakerAccess"})
+@SuppressWarnings("ALL")
 public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
@@ -56,7 +56,6 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
     /**
      * Listener for sign-in success or failure events.
      */
-    @SuppressWarnings("JavaDoc")
     public interface GameHelperListener {
         /**
          * Called when sign-in fails. As a result, a "Sign-In" button can be

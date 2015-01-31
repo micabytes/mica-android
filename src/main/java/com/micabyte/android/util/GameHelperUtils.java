@@ -25,13 +25,12 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.games.GamesActivityResultCodes;
+import com.micabyte.android.R;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import com.micabyte.android.R;
-
-@SuppressWarnings({"WeakerAccess", "CallToPrintStackTrace"})
+@SuppressWarnings("ALL")
 class GameHelperUtils {
     public static final int R_UNKNOWN_ERROR = 0;
     public static final int R_SIGN_IN_FAILED = 1;

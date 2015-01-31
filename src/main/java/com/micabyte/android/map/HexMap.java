@@ -32,11 +32,11 @@ import com.micabyte.android.graphics.SurfaceRenderer;
  * @author micabyte
  */
 public abstract class HexMap extends BaseObject {
-    public static boolean standardOrientation = true;
-    public static int mapWidth;
-    public static int mapHeight;
-    public static int tileSlope;
-    public static Rect tileRect = new Rect();
+    private static boolean standardOrientation = true;
+    private static int mapWidth;
+    private static int mapHeight;
+    private static int tileSlope;
+    private static Rect tileRect = new Rect();
     protected TileMapZone[][] zones;
     protected float scaleFactor;
     protected final Point viewPortOrigin = new Point();
@@ -63,15 +63,20 @@ public abstract class HexMap extends BaseObject {
 
     }
 
-    protected void setHexMap(Context c, TileMapZone[][] map) {
-        zones = map;
+    @SuppressWarnings("AssignmentToStaticFieldFromInstanceMethod")
+    protected void setHexMap(Context con, TileMapZone[][] map) {
+        zones = new TileMapZone[map.length][map[0].length];
+        for (int i = 0; i < map.length; i++) {
+            System.arraycopy(map[i], 0, zones[i], 0, map[i].length);
+        }
         mapHeight = map[0].length;
         mapWidth = map.length;
-        tileRect = new Rect(0, 0, map[0][0].getWidth(c), map[0][0].getHeight(c));
+        tileRect = new Rect(0, 0, map[0][0].getWidth(con), map[0][0].getHeight(con));
         tileSlope = tileRect.height() / 4;
     }
 
-    public void drawBase(Context c, SurfaceRenderer.ViewPort p) {
+    @SuppressWarnings({"MethodWithMultipleLoops", "OverlyComplexMethod", "OverlyLongMethod", "NumericCastThatLosesPrecision"})
+    public void drawBase(Context con, SurfaceRenderer.ViewPort p) {
         if (p.getBitmap() == null) {
             Log.e("HM", "Viewport bitmap is null");
             return;
@@ -79,13 +84,13 @@ public abstract class HexMap extends BaseObject {
         canvas.setBitmap(p.getBitmap());
         scaleFactor = p.getZoom();
         int yOffset = (tileRect.height() - tileSlope);
-        int xOffset;
         p.getOrigin(viewPortOrigin);
         p.getSize(viewPortSize);
         windowLeft = viewPortOrigin.x;
         windowTop = viewPortOrigin.y;
         windowRight = viewPortOrigin.x + viewPortSize.x;
         windowBottom = viewPortOrigin.y + viewPortSize.y;
+        int xOffset;
         if (standardOrientation) {
             // Clip tiles not in view
             int iMn = (windowLeft / tileRect.width()) - 1;
@@ -105,7 +110,7 @@ public abstract class HexMap extends BaseObject {
                         destRect.top = (int) (((j * (tileRect.height() - tileSlope)) - windowTop - yOffset) / scaleFactor);
                         destRect.right = (int) ((((i * tileRect.width()) + tileRect.width()) - windowLeft - xOffset) / scaleFactor);
                         destRect.bottom = (int) ((((j * (tileRect.height() - tileSlope)) + tileRect.height()) - windowTop - yOffset) / scaleFactor);
-                        zones[i][j].drawBase(c, canvas, tileRect, destRect, tilePaint);
+                        zones[i][j].drawBase(con, canvas, tileRect, destRect, tilePaint);
                     }
                 }
             }
@@ -128,17 +133,58 @@ public abstract class HexMap extends BaseObject {
                         destRect.top = (int) ((((mapHeight - j - 1) * (tileRect.height() - tileSlope)) - windowTop - yOffset) / scaleFactor);
                         destRect.right = (int) (((((mapWidth - i - 1) * tileRect.width()) + tileRect.width()) - windowLeft - xOffset) / scaleFactor);
                         destRect.bottom = (int) (((((mapHeight - j - 1) * (tileRect.height() - tileSlope)) + tileRect.height()) - windowTop - yOffset) / scaleFactor);
-                        zones[i][j].drawBase(c, canvas, tileRect, destRect, tilePaint);
+                        zones[i][j].drawBase(con, canvas, tileRect, destRect, tilePaint);
                     }
                 }
             }
         }
     }
 
-    public abstract void drawLayer(Context c, SurfaceRenderer.ViewPort p);
+    public abstract void drawLayer(Context context, SurfaceRenderer.ViewPort p);
 
-    public abstract void drawFinal(Context c, SurfaceRenderer.ViewPort p);
+    public abstract void drawFinal(Context context, SurfaceRenderer.ViewPort p);
 
     public abstract Point getViewPortOrigin(int x, int y, SurfaceRenderer.ViewPort p);
+
+    public static boolean isStandardOrientation() {
+        return standardOrientation;
+    }
+
+    @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
+    public static void setStandardOrientation(boolean orient) {
+        standardOrientation = orient;
+    }
+
+    public static int getMapWidth() {
+        return mapWidth;
+    }
+
+    public static void setMapWidth(int i) {
+        mapWidth = i;
+    }
+
+    public static int getMapHeight() {
+        return mapHeight;
+    }
+
+    public static void setMapHeight(int i) {
+        mapHeight = i;
+    }
+
+    public static int getTileSlope() {
+        return tileSlope;
+    }
+
+    public static void setTileSlope(int i) {
+        tileSlope = i;
+    }
+
+    public static Rect getTileRect() {
+        return tileRect;
+    }
+
+    public static void setTileRect(Rect rect) {
+        tileRect = rect;
+    }
 
 }

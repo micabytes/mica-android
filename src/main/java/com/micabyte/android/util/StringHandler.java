@@ -22,9 +22,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.ArrayList;
 
 /**
  * StringHandler is a wrapper around the standard Android getString functionality. It is primarily
@@ -32,6 +32,7 @@ import java.util.ArrayList;
  *
  * @author micabyte
  */
+@SuppressWarnings("ALL")
 public class StringHandler {
     private static final int NOT_FOUND = -1;
     private static final String punctuation = "(),;.!?\"";
@@ -122,14 +123,14 @@ public class StringHandler {
             start = ret.indexOf("[#");
         }
         // Markup Link Notation
-        start = ret.indexOf("[");
+        start = ret.indexOf('[');
         while (start != NOT_FOUND) {
-            end = ret.indexOf("]", start);
+            end = ret.indexOf(']', start);
             if (end != NOT_FOUND) {
                 String opt = ret.substring(start + 1, end);
                 String condition = null;
                 if (ret.charAt(end + 1) == '(') {
-                    int i = ret.indexOf(")", end);
+                    int i = ret.indexOf(')', end);
                     condition = ret.substring(end + 2, i).trim();
                     if (i != NOT_FOUND) end = i;
                 }
@@ -202,31 +203,29 @@ public class StringHandler {
     }
 
     public static String list(Context c, ArrayList<BaseObject> list) {
-        String ret = "";
-        if (list.isEmpty()) return ret;
+        if (list.isEmpty()) return "";
         if (list.size() == 1) {
-            ret = list.get(0).getName();
-            return ret;
+            return list.get(0).getName();
         }
         if (list.size() == 2) {
-            ret = list.get(0).getName() + " " + c.getString(R.string.stringhandler_and1) + " " + list.get(1).getName();
-            return ret;
+            return new StringBuilder(list.get(0).getName()).append(" ").append(c.getString(R.string.stringhandler_and1)).append(' ').append(list.get(1).getName()).toString();
         }
+        StringBuilder ret = new StringBuilder();
         for (int i = 0; i < (list.size() - 1); i++) {
-            ret += list.get(i).getName();
+            ret.append(list.get(i).getName());
             if (i < (list.size() - 2)) {
-                ret += c.getString(R.string.stringhandler_comma);
-                ret += " ";
+                ret.append(c.getString(R.string.stringhandler_comma));
+                ret.append(' ');
             } else {
-                ret += c.getString(R.string.stringhandler_and2);
-                ret += " ";
+                ret.append(c.getString(R.string.stringhandler_and2));
+                ret.append(' ');
             }
         }
-        ret += list.get(list.size()-1).getName();
-        return ret;
+        ret.append(list.get(list.size() - 1).getName());
+        return ret.toString();
     }
 
-    public static String listString(Context c, ArrayList<String> list) {
+    public static String listString(Context context, ArrayList<String> list) {
         String ret = "";
         if (list.isEmpty()) return ret;
         if (list.size() == 1) {
@@ -234,12 +233,12 @@ public class StringHandler {
             return ret;
         }
         if (list.size() == 2) {
-            ret = list.get(0) + c.getString(R.string.stringhandler_and1) + list.get(1);
+            ret = list.get(0) + context.getString(R.string.stringhandler_and1) + list.get(1);
             return ret;
         }
         for (int i = 0; i < (list.size() - 1); i++) {
             ret += list.get(i);
-            ret += i < (list.size() - 2) ? c.getString(R.string.stringhandler_comma) : c.getString(R.string.stringhandler_and2);
+            ret += i < (list.size() - 2) ? context.getString(R.string.stringhandler_comma) : context.getString(R.string.stringhandler_and2);
         }
         ret += list.get(list.size() - 1);
         return ret;

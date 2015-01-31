@@ -38,11 +38,15 @@ public abstract class TileMap extends BaseObject {
         super(id, name, 0);
     }
 
-    public void setTileMap(Context c, TileMapZone[][] map) {
-        zones = map;
+    @SuppressWarnings("AssignmentToStaticFieldFromInstanceMethod")
+    public void setTileMap(Context con, TileMapZone[][] map) {
+        zones = new TileMapZone[map.length][map[0].length];
+        for (int i = 0; i < map.length; i++) {
+            System.arraycopy(map[i], 0, zones[i], 0, map[i].length);
+        }
         mapHeight = map[0].length;
         mapWidth = map.length;
-        tileRect = new Rect(0, 0, map[0][0].getWidth(c), map[0][0].getHeight(c));
+        tileRect = new Rect(0, 0, map[0][0].getWidth(con), map[0][0].getHeight(con));
     }
 
     public int getRenderHeight() {
@@ -61,7 +65,8 @@ public abstract class TileMap extends BaseObject {
         return tileRect.width();
     }
 
-    public void drawBase(Context c, SurfaceRenderer.ViewPort p) {
+    @SuppressWarnings({"MethodWithMultipleLoops", "NumericCastThatLosesPrecision"})
+    public void drawBase(Context context, SurfaceRenderer.ViewPort p) {
         Canvas canvas = new Canvas(p.getBitmap());
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -93,14 +98,14 @@ public abstract class TileMap extends BaseObject {
                     destRect.top = (int) (((j * tileSize) - windowTop) / scaleFactor);
                     destRect.right = (int) ((((i * tileSize) + tileSize) - windowLeft) / scaleFactor);
                     destRect.bottom = (int) ((((j * tileSize) + tileSize) - windowTop) / scaleFactor);
-                    zones[i][j].drawBase(c, canvas, tileRect, destRect, paint);
+                    zones[i][j].drawBase(context, canvas, tileRect, destRect, paint);
                 }
             }
         }
     }
 
-    public abstract void drawLayer(Context c, SurfaceRenderer.ViewPort p);
+    public abstract void drawLayer(Context context, SurfaceRenderer.ViewPort p);
 
-    public abstract void drawFinal(Context c, SurfaceRenderer.ViewPort p);
+    public abstract void drawFinal(Context context, SurfaceRenderer.ViewPort p);
 
 }

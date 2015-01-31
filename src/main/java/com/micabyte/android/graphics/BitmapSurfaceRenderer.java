@@ -12,9 +12,6 @@
  */
 package com.micabyte.android.graphics;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,6 +21,9 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.appcompat.BuildConfig;
 import android.util.Log;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * GameSurfaceRendererBitmap is a renderer that handles the rendering of a background bitmap to the
@@ -70,6 +70,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      */
     private final Rect calculatedCacheWindowRect = new Rect();
 
+    @SuppressWarnings("UnusedDeclaration")
     private BitmapSurfaceRenderer(Context con) {
         super(con);
         options.inPreferredConfig = DEFAULT_CONFIG;
@@ -78,6 +79,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
         lowResThreshold = DEFAULT_THRESHOLD;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     protected BitmapSurfaceRenderer(Context con, Bitmap.Config config, int sample, int memUse, float threshold) {
         super(con);
         options.inPreferredConfig = config;
@@ -188,7 +190,6 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
 
     /**
      * This function tries to recover from an OutOfMemoryError in the CacheThread.
-     *
      */
     void cacheBitmapOutOfMemoryError() {
         if (memUsage > 0) memUsage -= 1;
@@ -272,7 +273,8 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
         // Set the origin based on our new calculated values.
         calculatedCacheWindowRect.set(left, top, right, bottom);
         if (BuildConfig.DEBUG)
-            if (BuildConfig.DEBUG) Log.d(TAG, "new cache.originRect = " + calculatedCacheWindowRect.toShortString() + " size=" + sz.toString());
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, "new cache.originRect = " + calculatedCacheWindowRect.toShortString() + " size=" + sz.toString());
         return calculatedCacheWindowRect;
     }
 
@@ -285,7 +287,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     }
 
     /**
-     * The cached bitmap object. This object is continually kept up to date by CacheThread. If the
+     * The cached bitmap object. This object is continually kept onTouchUp to date by CacheThread. If the
      * object is locked, the background is updated using the low resolution background image instead
      */
     private class CacheBitmap {
@@ -512,7 +514,8 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                             // End Loading Timer
                             long endTime = System.currentTimeMillis();
                             if (BuildConfig.DEBUG)
-                                if (BuildConfig.DEBUG) Log.d(TAG, "Loaded background image in " + (endTime - startTime) + " ms");
+                                if (BuildConfig.DEBUG)
+                                    Log.d(TAG, "Loaded background image in " + (endTime - startTime) + " ms");
                         } catch (OutOfMemoryError ignored) {
                             if (BuildConfig.DEBUG) Log.d(TAG, "CacheThread out of memory");
                             // Out of memory error detected. Lower the memory allocation

@@ -12,19 +12,19 @@
  */
 package com.micabyte.android;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.regex.Pattern;
-
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.micabyte.android.util.StringHandler;
 
 import org.jetbrains.annotations.NonNls;
-import android.support.annotation.NonNull;
+
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * BaseObject is a generic Object that contains a number of frequently used attributes.
@@ -139,8 +139,7 @@ public class BaseObject {
             if (evaluateStatement(s, variables) <= 0) {
                 ret = false;
                 Log.d(TAG, "Evaluate of " + s + " is false");
-            }
-            else {
+            } else {
                 Log.d(TAG, "Evaluate of " + s + " is true");
             }
         }
@@ -170,7 +169,7 @@ public class BaseObject {
                 String val2 = tokens[1].trim().toLowerCase(Locale.US);
                 return (getVariableValue(val1, variables) <= getVariableValue(val2, variables)) ? 1 : 0;
             }
-            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " +  str);
+            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
             return 0;
         }
         // >
@@ -181,7 +180,7 @@ public class BaseObject {
                 String val2 = tokens[1].trim().toLowerCase(Locale.US);
                 return (getVariableValue(val1, variables) > getVariableValue(val2, variables)) ? 1 : 0;
             }
-            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " +  str);
+            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
             return 0;
         }
         // <
@@ -204,7 +203,7 @@ public class BaseObject {
                 String val2 = tokens[1].trim().toLowerCase(Locale.US);
                 return (getVariableValue(val1, variables) == getVariableValue(val2, variables)) ? 1 : 0;
             }
-            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " +  str);
+            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
             return 0;
         }
         // Retrieve

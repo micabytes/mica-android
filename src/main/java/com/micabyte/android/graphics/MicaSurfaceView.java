@@ -36,6 +36,8 @@ import android.widget.Scroller;
  */
 public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callback, GestureDetector.OnGestureListener {
     private static final String TAG = MicaSurfaceView.class.getName();
+    private static final String DRAW_THREAD = "drawThread";
+    private static final int SCALE_MOVE_GUARD = 500;
     /**
      * The Game Controller. This where we send UI events other than scroll and pinch-zoom in order to be handled
      */
@@ -43,6 +45,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     /**
      * The Game Renderer. This handles all of the drawing duties to the Surface view
      */
+    @SuppressWarnings("FieldAccessedSynchronizedAndUnsynchronized")
     private SurfaceRenderer renderer;
     // The Touch Handlers
     private TouchHandler touch;
@@ -90,8 +93,8 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     /**
      * Sets the surface view listener
      */
-    public void setListener(SurfaceListener l) {
-        listener = l;
+    public void setListener(SurfaceListener surfaceListener) {
+        listener = surfaceListener;
     }
 
     /**
@@ -147,7 +150,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         thread = new GameSurfaceViewThread(holder);
-        thread.setName("drawThread");
+        thread.setName(DRAW_THREAD);
         thread.setRunning(true);
         thread.start();
         renderer.start();
@@ -168,7 +171,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             try {
                 thread.join();
                 retry = false;
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
                 // Repeat until success
             }
         }
@@ -199,46 +202,35 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         if (BuildConfig.DEBUG) Log.d(TAG, "onWindowFocusChanged");
     }
 
-    // Set a Runnable to be run on the rendering thread.
-    /*public void setEvent(Runnable r) {
-		this.threadEvent = r;
-		if (this.thread != null)
-			this.thread.setEvent(r);
-	}*/
-
-    // Clears the runnable event, if any, from the rendering thread.
-	/*public void clearEvent() {
-		this.thread.clearEvent();
-	}*/
-
     // ----------------------------------------------------------------------
 
     /**
      * The Rendering thread for the MicaSurfaceView
      */
     class GameSurfaceViewThread extends Thread {
+        private static final int BUG_DELAY = 475;
         private final SurfaceHolder surfaceHolder;
         private boolean running;
 
-        public GameSurfaceViewThread(SurfaceHolder surface) {
-            setName("GameSurfaceViewThread");
+        GameSurfaceViewThread(SurfaceHolder surface) {
+            setName(GameSurfaceViewThread.class.getName());
             surfaceHolder = surface;
         }
 
-        public void setRunning(boolean b) {
-            running = b;
+        public void setRunning(boolean run) {
+            running = run;
         }
 
-        @SuppressWarnings("MagicNumber")
+        @SuppressWarnings({"RefusedBequest", "WhileLoopSpinsOnField", "BusyWait"})
         @Override
         public void run() {
-            Canvas canvas;
             // Handle issue 58385 in Android 4.3
             int delayMillis = 5;
-            if (Build.VERSION.SDK_INT == 18) delayMillis = 475;
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN_MR2)
+                delayMillis = BUG_DELAY;
             try {
                 Thread.sleep(delayMillis);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
                 // NOOP
             }
             // This is the rendering loop; it goes until asked to quit.
@@ -246,11 +238,11 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
                 // CPU timeout - help keep things cool
                 try {
                     Thread.sleep(5);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                     // NOOP
                 }
                 // Render Graphics
-                canvas = null;
+                Canvas canvas = null;
                 try {
                     canvas = surfaceHolder.lockCanvas();
                     if (canvas != null) {
@@ -266,37 +258,6 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             }
 
         }
-
-		/*
-		public void onWindowFocusChanged(boolean hasFocus) {
-			synchronized (this) {
-				this.hasFocus = hasFocus;
-				if (this.hasFocus == true) {
-					notify();
-				}
-			}
-		}
-
-		public void surfaceDestroyed() {
-			synchronized (this) {
-				this.running = false;
-			}
-		}
-
-		// Queue an "event" to be run on the rendering thread.
-		public void setEvent(Runnable r) {
-			synchronized (this) {
-				this.event = r;
-			}
-		}
-
-		public void clearEvent() {
-			synchronized (this) {
-				this.event = null;
-			}
-		}
-		*/
-
     }
 
     // ----------------------------------------------------------------------
@@ -304,34 +265,36 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     /**
      * Handle Touch Events
      */
-    @SuppressWarnings("MagicNumber")
+    @SuppressWarnings({"MethodWithMultipleReturnPoints", "NumericCastThatLosesPrecision"})
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         boolean consumed = gesture.onTouchEvent(event);
         if (consumed) return true;
         scaleGesture.onTouchEvent(event);
         // Calculate actual event position in background view
-        Point c = new Point();
-        renderer.getViewPosition(c);
-        float s = renderer.getZoom();
-        int x = (int) (c.x + (event.getX() * s));
-        int y = (int) (c.y + (event.getY() * s));
+        Point point = new Point();
+        renderer.getViewPosition(point);
+        float zoom = renderer.getZoom();
+        int x = (int) (point.x + (event.getX() * zoom));
+        int y = (int) (point.y + (event.getY() * zoom));
         // Resolve events
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 listener.onTouchDown(x, y);
                 return touch.down(event);
             case MotionEvent.ACTION_MOVE:
-                long SCALE_MOVE_GUARD = 500;
-                if (scaleGesture.isInProgress() || ((System.currentTimeMillis() - lastScaleTime) < SCALE_MOVE_GUARD))
+                long scaleMoveGuard = SCALE_MOVE_GUARD;
+                if (scaleGesture.isInProgress() || ((System.currentTimeMillis() - lastScaleTime) < scaleMoveGuard))
                     //noinspection BreakStatement
                     break;
                 return touch.move(event);
             case MotionEvent.ACTION_UP:
                 listener.onTouchUp(x, y);
-                return touch.up(event);
+                return touch.onTouchUp(event);
             case MotionEvent.ACTION_CANCEL:
                 return touch.cancel(event);
+            default:
+                break;
         }
         return super.onTouchEvent(event);
     }
@@ -375,13 +338,10 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         private final PointF screenFocus = new PointF();
 
-        public ScaleListener() {
-        }
-
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float scaleFactor = detector.getScaleFactor();
-            if ((scaleFactor != 0.0f) && (scaleFactor != 1.0f)) {
+            if (scaleFactor != 0.0f) {
                 scaleFactor = 1 / scaleFactor;
                 screenFocus.set(detector.getFocusX(), detector.getFocusY());
                 renderer.zoom(
@@ -390,7 +350,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
                 invalidate();
             }
             lastScaleTime = System.currentTimeMillis();
-            return true;
+            return super.onScale(detector);
         }
     }
 
@@ -399,8 +359,9 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     }
 
     class TouchHandler {
+        private static final String TOUCH_THREAD = "touchThread";
         // Current Touch State
-        TouchState state = TouchState.NO_TOUCH;
+        private TouchState state = TouchState.NO_TOUCH;
         // Point initially touched
         private final Point touchDown = new Point(0, 0);
         // View Center onTouchDown
@@ -414,7 +375,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         // Scroller
         final Scroller scroller;
         // Thread for handling
-        TouchHandlerThread touchThread;
+        private TouchHandlerThread touchThread;
 
         TouchHandler(Context context) {
             scroller = new Scroller(context);
@@ -422,7 +383,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
         void start() {
             touchThread = new TouchHandlerThread(this);
-            touchThread.setName("touchThread");
+            touchThread.setName(TOUCH_THREAD);
             touchThread.start();
         }
 
@@ -434,7 +395,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
                 try {
                     touchThread.join();
                     retry = false;
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                     // Wait until done
                 }
             }
@@ -444,13 +405,13 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         /**
          * Handle a down event
          */
-        @SuppressWarnings("SameReturnValue")
+        @SuppressWarnings({"SameReturnValue", "BooleanMethodNameMustStartWithQuestion", "NumericCastThatLosesPrecision"})
         boolean down(MotionEvent event) {
             // Cancel rendering suspension
-            renderer.suspend(false);
+            renderer.resume();
             // Get position
             synchronized (this) {
-                state = TouchState.IN_TOUCH;
+                setState(TouchState.IN_TOUCH);
                 touchDown.x = (int) event.getX();
                 touchDown.y = (int) event.getY();
                 Point p = new Point();
@@ -463,8 +424,9 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         /**
          * Handle a move event
          */
+        @SuppressWarnings({"NumericCastThatLosesPrecision", "BooleanMethodNameMustStartWithQuestion"})
         boolean move(MotionEvent event) {
-            if (state == TouchState.IN_TOUCH) {
+            if (getState() == TouchState.IN_TOUCH) {
                 float zoom = renderer.getZoom();
                 float deltaX = (event.getX() - touchDown.x) * zoom;
                 float deltaY = (event.getY() - touchDown.y) * zoom;
@@ -478,12 +440,12 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         }
 
         /**
-         * Handle an up event
+         * Handle an onTouchUp event
          */
-        @SuppressWarnings({"SameReturnValue", "UnusedParameters"})
-        boolean up(MotionEvent event) {
-            if (state == TouchState.IN_TOUCH) {
-                state = TouchState.NO_TOUCH;
+        @SuppressWarnings({"BooleanMethodNameMustStartWithQuestion", "UnusedParameters"})
+        boolean onTouchUp(MotionEvent event) {
+            if (getState() == TouchState.IN_TOUCH) {
+                setState(TouchState.NO_TOUCH);
             }
             return true;
         }
@@ -493,23 +455,23 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
          */
         @SuppressWarnings({"SameReturnValue", "UnusedParameters"})
         boolean cancel(MotionEvent event) {
-            if (state == TouchState.IN_TOUCH) {
-                state = TouchState.NO_TOUCH;
+            if (getState() == TouchState.IN_TOUCH) {
+                setState(TouchState.NO_TOUCH);
             }
             return true;
         }
 
-        @SuppressWarnings({"SameReturnValue", "UnusedParameters"})
+        @SuppressWarnings({"UnusedParameters", "BooleanMethodNameMustStartWithQuestion", "NumericCastThatLosesPrecision"})
         boolean fling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             renderer.getViewPosition(viewCenterAtFling);
             renderer.getViewSize(viewSizeAtFling);
-            backgroundSizeAtFling = renderer.getBackgroundSize();
             synchronized (this) {
-                state = TouchState.ON_FLING;
-                renderer.suspend(true);
+                backgroundSizeAtFling = renderer.getBackgroundSize();
+                setState(TouchState.ON_FLING);
+                renderer.suspend();
                 scroller.fling(viewCenterAtFling.x, viewCenterAtFling.y, (int) -velocityX, (int) -velocityY, 0, backgroundSizeAtFling.x - viewSizeAtFling.x, 0, backgroundSizeAtFling.y - viewSizeAtFling.y);
-                touchThread.interrupt();
             }
+            touchThread.interrupt();
             return true;
         }
 
@@ -522,36 +484,38 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
             TouchHandlerThread(TouchHandler t) {
                 touchHandler = t;
-                setName("touchThread");
+                setName(TOUCH_THREAD);
             }
 
+            @SuppressWarnings({"MethodWithMultipleLoops", "RefusedBequest", "WhileLoopSpinsOnField", "BusyWait"})
             @Override
             public void run() {
                 isRunning = true;
                 while (isRunning) {
-                    while ((touchHandler.state != TouchState.ON_FLING) && (touchHandler.state != TouchState.IN_FLING)) {
+                    while ((touchHandler.getState() != TouchState.ON_FLING) && (touchHandler.getState() != TouchState.IN_FLING)) {
                         try {
                             Thread.sleep(Integer.MAX_VALUE);
-                        } catch (InterruptedException e) {
+                        } catch (InterruptedException ignored) {
                             // NOOP
                         }
                         if (!isRunning) return;
                     }
                     synchronized (touchHandler) {
-                        if (touchHandler.state == TouchState.ON_FLING) {
-                            touchHandler.state = TouchState.IN_FLING;
+                        if (touchHandler.getState() == TouchState.ON_FLING) {
+                            touchHandler.setState(TouchState.IN_FLING);
                         }
                     }
-                    if (touchHandler.state == TouchState.IN_FLING) {
+                    if (touchHandler.getState() == TouchState.IN_FLING) {
                         scroller.computeScrollOffset();
                         renderer.setViewPosition(scroller.getCurrX(), scroller.getCurrY());
                         if (scroller.isFinished()) {
-                            renderer.suspend(false);
+                            renderer.resume();
                             synchronized (touchHandler) {
-                                touchHandler.state = TouchState.NO_TOUCH;
+                                touchHandler.setState(TouchState.NO_TOUCH);
                                 try {
+                                    //noinspection SleepWhileHoldingLock
                                     Thread.sleep(5);
-                                } catch (InterruptedException e) {
+                                } catch (InterruptedException ignored) {
                                     // NOOP
                                 }
                             }
@@ -560,10 +524,18 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
                 }
             }
 
-            public void setRunning(boolean b) {
-                isRunning = b;
+            public void setRunning(boolean run) {
+                isRunning = run;
             }
 
+        }
+
+        private synchronized TouchState getState() {
+            return state;
+        }
+
+        private synchronized void setState(TouchState st) {
+            state = st;
         }
 
     }

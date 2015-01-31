@@ -25,8 +25,9 @@ public class TileMapSurfaceRenderer extends SurfaceRenderer {
     // The low resolution version of the background image
     private TileMap gameSurfaceTileMap;
 
-    private TileMapSurfaceRenderer(Context c) {
-        super(c);
+    @SuppressWarnings("UnusedDeclaration")
+    private TileMapSurfaceRenderer(Context con) {
+        super(con);
     }
 
     /**
@@ -63,7 +64,12 @@ public class TileMapSurfaceRenderer extends SurfaceRenderer {
     }
 
     @Override
-    public void suspend(boolean suspend) {
+    public void suspend() {
+        // NOOP
+    }
+
+    @Override
+    public void resume() {
         // NOOP
     }
 

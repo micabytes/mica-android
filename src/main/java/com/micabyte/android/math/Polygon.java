@@ -18,7 +18,7 @@ package com.micabyte.android.math;
  * <p/>
  * Basic polygon wrapper to handle simple point in polygon problems.
  */
-class Polygon {
+public class Polygon {
     // Polygon coordinates.
     private final int[] polyX;
     private final int[] polyY;
@@ -26,14 +26,17 @@ class Polygon {
     private final int polyN;
 
     public Polygon(int[] px, int[] py, int ps) {
-        polyX = px;
-        polyY = py;
+        polyX = new int[px.length];
+        System.arraycopy(px, 0, polyX, 0,  px.length);
+        polyY = new int[py.length];
+        System.arraycopy(py, 0, polyY, 0,  py.length);
         polyN = ps;
     }
 
     /**
      * Checks if the Polygon contains the point x, y
      */
+    @SuppressWarnings("ValueOfIncrementOrDecrementUsed")
     public boolean contains(int x, int y) {
         boolean oddTransitions = false;
         for (int i = 0, j = polyN - 1; i < polyN; j = i++) {

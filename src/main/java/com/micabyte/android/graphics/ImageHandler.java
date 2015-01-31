@@ -22,11 +22,12 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.appcompat.BuildConfig;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
-
-import com.micabyte.android.BuildConfig;
 
 import java.lang.ref.SoftReference;
 
@@ -43,18 +44,29 @@ public class ImageHandler {
     private static final String TAG = ImageHandler.class.getName();
     // Default Config for Bitmap Retrieval
     private static final Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.ARGB_8888;
+    private static final int COLOR_RED = 0xff424242;
+    private static final int PIXEL_ROUNDING = 12;
     // Application context
     private final Resources resources;
     // Shortcut to the Display Density
-    public static float density;
+    private static float density = 1.0f;
     // Bitmap cache
     private final SparseArray<SoftReference<Bitmap>> cachedBitmaps = new SparseArray<>();
     private final SparseArray<Bitmap> persistBitmaps = new SparseArray<>();
 
-    private ImageHandler(Context c) {
-        resources = c.getResources();
+    private ImageHandler(Context con) {
+        resources = con.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
+        //noinspection AssignmentToStaticFieldFromInstanceMethod
         density = metrics.density;
+    }
+
+    public static float getDensity() {
+        return density;
+    }
+
+    public static void setDensity(float den) {
+        density = den;
     }
 
     @SuppressWarnings("CallToSystemGC")
@@ -75,9 +87,11 @@ public class ImageHandler {
         return get(key, config, false);
     }
 
+    @NonNull
     Bitmap get(int key, Bitmap.Config config, boolean persist) {
         if (key == 0)
-            if (BuildConfig.DEBUG) Log.d(TAG, "Null resource sent to get()", new Exception());
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, "Null resource sent to get()", new Exception("Null resource sent to Bitmap.get()"));
         Bitmap ret;
         if (persist) {
             ret = persistBitmaps.get(key);
@@ -91,6 +105,10 @@ public class ImageHandler {
             }
         }
         ret = loadBitmap(key, config);
+        if (ret == null) {
+            Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+            return Bitmap.createBitmap(1, 1, conf);
+        }
         if (persist)
             persistBitmaps.put(key, ret);
         else
@@ -98,29 +116,28 @@ public class ImageHandler {
         return ret;
     }
 
-    @SuppressWarnings("deprecation")
+    @Nullable
     private Bitmap loadBitmap(int key, Bitmap.Config bitmapConfig) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inPreferredConfig = bitmapConfig;
-        opts.inPurgeable = true;
-        opts.inInputShareable = true;
         return BitmapFactory.decodeResource(resources, key, opts);
     }
 
+    @Nullable
     public Bitmap getSceneBitmap(int bkg, int left, int right) {
         Bitmap bitmap = get(bkg);
         if (bitmap == null) return null;
         Bitmap output =
                 Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
-        int color = 0xff424242;
         Paint paint = new Paint();
         Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         RectF rectF = new RectF(rect);
-        float roundPx = 12;
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
+        int color = COLOR_RED;
         paint.setColor(color);
+        float roundPx = PIXEL_ROUNDING;
         canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
@@ -134,6 +151,7 @@ public class ImageHandler {
         return output;
     }
 
+    @NonNull
     public BitmapFactory.Options getDimensions(int key) {
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inPreferredConfig = BitmapSurfaceRenderer.DEFAULT_CONFIG;
@@ -143,15 +161,14 @@ public class ImageHandler {
     }
 
     // Instance Code
-    private static ImageHandler instance;
+    @SuppressWarnings("RedundantFieldInitialization")
+    private static ImageHandler instance = null;
 
-    public static ImageHandler getInstance(Context c) {
-        checkInstance(c);
+    @SuppressWarnings("NonThreadSafeLazyInitialization")
+    @NonNull
+    public static ImageHandler getInstance(Context con) {
+        if (instance == null) instance = new ImageHandler(con);
         return instance;
-    }
-
-    private static void checkInstance(Context c) {
-        if (instance == null) instance = new ImageHandler(c);
     }
 
 }

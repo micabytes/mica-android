@@ -33,7 +33,7 @@ import java.text.DecimalFormat;
 
 /**
  * Base class for Game Activities.
- *
+ * <p/>
  * This implementation now also implements the GamesClient object from Google Play Games services
  * and manages its lifecycle. Subclasses should override the @link{#onSignInSucceeded} and
  *
@@ -84,7 +84,7 @@ public class BaseActivity extends FragmentActivity implements GameHelper.GameHel
      * is a no-op.
      *
      * @param requestClients A combination of the flags CLIENT_GAMES, CLIENT_PLUS
-     *                         and CLIENT_APPSTATE, or CLIENT_ALL to request all available clients.
+     *                       and CLIENT_APPSTATE, or CLIENT_ALL to request all available clients.
      */
     protected void setRequestedClients(int requestClients) {
         requestedClients = requestClients;
@@ -279,7 +279,7 @@ public class BaseActivity extends FragmentActivity implements GameHelper.GameHel
     /*
      * Show Heap
      */
-    @SuppressWarnings({"rawtypes", "MagicNumber", "CallToSystemGC"})
+    @SuppressWarnings({"MagicNumber", "CallToSystemGC"})
     public static void logHeap(Class clazz) {
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2);

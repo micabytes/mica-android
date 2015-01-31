@@ -22,12 +22,16 @@ import java.util.Random;
  *
  * @author micabyte
  */
-public class RandomHandler {
+public final class RandomHandler {
     // Random Generator
-    private static Random random;
+    @SuppressWarnings("RedundantFieldInitialization")
+    private static Random random = null;
     // Dice Rolling
     public static final int WDICE_DEFAULT_HIT = 4;
     public static final int BASE_DICE_THRESHOLD = 4;
+
+    private RandomHandler() {
+    }
 
     /**
      * Returns a random double
@@ -56,9 +60,8 @@ public class RandomHandler {
     public static int roll(int nDice, int dSize, int toHit) {
         if (nDice == 0) return 0;
         int ret = 0;
-        int roll;
         for (int i = 0; i < nDice; i++) {
-            roll = random(dSize) + 1;
+            int roll = random(dSize) + 1;
             if (roll >= toHit) {
                 ret++;
             }
@@ -72,12 +75,12 @@ public class RandomHandler {
      *
      * @return Number of dice that beat the Hit number
      */
+    @SuppressWarnings("MethodWithMultipleLoops")
     public static int wRoll(int nDice, int dSize, int toHit) {
         if (nDice == 0) return 0;
         int ret = 0;
-        int roll;
         for (int i = 0; i < nDice; i++) {
-            roll = random(dSize) + 1;
+            int roll = random(dSize) + 1;
             while (roll == dSize) { // Wild Dice
                 ret++;
                 roll = random(dSize) + 1;
