@@ -67,7 +67,7 @@ public class BalloonPopup extends Popup implements PopupWindow.OnDismissListener
         //}
         //showArrow(((onTop) ? R.id.arrow_down : R.id.arrow_up), anchorRect.centerX() - xPos);
         if (BuildConfig.DEBUG)
-            Log.d("Balloon", xPos + " " + yPos + ' ' + location[0] + ' ' + location[1] + ' ' + rootWidth + ' ' + rootHeight);
+            Log.d("Balloon", xPos + StringHandler.WHITESPACE + yPos + ' ' + location[0] + ' ' + location[1] + ' ' + rootWidth + ' ' + rootHeight);
         showArrow((R.id.arrow_down), anchorRect.centerX() - xPos);
         //setAnimationStyle(screenWidth, anchorRect.centerX(), onTop);
         window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);

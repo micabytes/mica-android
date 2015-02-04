@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("HardCodedStringLiteral")
 public class BaseObject {
     private static final String TAG = BaseObject.class.getName();
+    protected static final String DRAWABLE = "drawable";
     private static final char VAR_CHAR = '$';
     private static final Pattern AND_SPLITTER = Pattern.compile("[&]");
     private static final Pattern GEQ_SPLITTER = Pattern.compile("[>=]+");
@@ -106,15 +107,15 @@ public class BaseObject {
         }
     }
 
-    public int getInteger(String str) {
-        if (ValueToken.get(str) == ValueToken.VALUE)
+    public int getInteger(@NonNls String id) {
+        if (ValueToken.get(id) == ValueToken.VALUE)
             return value;
         return 0;
     }
 
     @NonNull
-    public String getString(Context context, String str) {
-        switch (ValueToken.get(str)) {
+    public String getString(Context context, @NonNls  String id) {
+        switch (ValueToken.get(id)) {
             case NAME:
                 return getName();
             case VALUE:
@@ -125,8 +126,8 @@ public class BaseObject {
     }
 
     @NonNull
-    public BaseObject getObject(String str) {
-        ValueToken token = ValueToken.get(str);
+    public BaseObject getObject(@NonNls String id) {
+        ValueToken token = ValueToken.get(id);
         return (token == ValueToken.THIS) ? this : new BaseObject();
     }
 

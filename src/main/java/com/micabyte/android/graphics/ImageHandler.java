@@ -75,14 +75,17 @@ public class ImageHandler {
         System.gc();
     }
 
+    @NonNull
     public Bitmap get(int key) {
         return get(key, DEFAULT_CONFIG, false);
     }
 
+    @NonNull
     public Bitmap get(int key, boolean persist) {
         return get(key, DEFAULT_CONFIG, persist);
     }
 
+    @NonNull
     public Bitmap get(int key, Bitmap.Config config) {
         return get(key, config, false);
     }

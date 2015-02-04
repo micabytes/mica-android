@@ -125,7 +125,7 @@ public class GameUtils {
                     errorDialog = makeSimpleDialog(
                             activity,
                             activity.getString(errorCode)
-                                    + " "
+                                    + StringHandler.WHITESPACE
                                     + activity.getString(errorDescription));
                 }
         }

@@ -996,7 +996,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
                             activity,
                             GameHelperUtils.getString(activity,
                                     GameHelperUtils.R_UNKNOWN_ERROR)
-                                    + " "
+                                    + StringHandler.WHITESPACE
                                     + GameHelperUtils.errorCodeToString(errorCode));
                 }
         }

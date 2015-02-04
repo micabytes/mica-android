@@ -18,6 +18,8 @@ import com.crashlytics.android.Crashlytics;
 import com.micabyte.android.BaseObject;
 import com.micabyte.android.R;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,8 +36,12 @@ import java.util.Locale;
  */
 @SuppressWarnings("ALL")
 public class StringHandler {
+
     private static final int NOT_FOUND = -1;
     private static final String punctuation = "(),;.!?\"";
+    public static final char WHITESPACE = ' ';
+    public static final char HASH_MARK = '#';
+    public static final char PERCENT = '%';
 
     /**
      * This is the workhorse function of the class. It takes a string and strips out the formatting
@@ -61,7 +67,7 @@ public class StringHandler {
      * @return String with all of the scripting code replaced appropriately
      */
     @SuppressWarnings({"WeakerAccess", "InstanceofInterfaces", "ChainOfInstanceofChecks"})
-    public static String format(Context c, String text, HashMap<String, Object> variables) {
+    public static String format(Context c, String text, @Nullable HashMap<String, Object> variables) {
         int start;
         int end;
         String ret = text;
@@ -208,7 +214,7 @@ public class StringHandler {
             return list.get(0).getName();
         }
         if (list.size() == 2) {
-            return new StringBuilder(list.get(0).getName()).append(" ").append(c.getString(R.string.stringhandler_and1)).append(' ').append(list.get(1).getName()).toString();
+            return new StringBuilder(list.get(0).getName()).append(StringHandler.WHITESPACE).append(c.getString(R.string.stringhandler_and1)).append(' ').append(list.get(1).getName()).toString();
         }
         StringBuilder ret = new StringBuilder();
         for (int i = 0; i < (list.size() - 1); i++) {
