@@ -14,6 +14,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.micabyte.android.R;
+import com.micabyte.android.util.StringHandler;
 
 public class BalloonPopup extends Popup implements PopupWindow.OnDismissListener {
     private final ImageView arrowUp;
@@ -67,7 +68,7 @@ public class BalloonPopup extends Popup implements PopupWindow.OnDismissListener
         //}
         //showArrow(((onTop) ? R.id.arrow_down : R.id.arrow_up), anchorRect.centerX() - xPos);
         if (BuildConfig.DEBUG)
-            Log.d("Balloon", xPos + StringHandler.WHITESPACE + yPos + ' ' + location[0] + ' ' + location[1] + ' ' + rootWidth + ' ' + rootHeight);
+            Log.d("Balloon", xPos + StringHandler.WHITESPACE + yPos + StringHandler.WHITESPACE + location[0] + StringHandler.WHITESPACE + location[1] + StringHandler.WHITESPACE + rootWidth + StringHandler.WHITESPACE + rootHeight);
         showArrow((R.id.arrow_down), anchorRect.centerX() - xPos);
         //setAnimationStyle(screenWidth, anchorRect.centerX(), onTop);
         window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
