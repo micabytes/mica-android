@@ -12,6 +12,7 @@
  */
 package com.micabyte.android.app;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -35,11 +36,11 @@ import java.text.DecimalFormat;
  * Base class for Game Activities.
  * <p/>
  * This implementation now also implements the GamesClient object from Google Play Games services
- * and manages its lifecycle. Subclasses should override the @link{#onSignInSucceeded} and
+ * and manages its lifecycle. Subclasses should override the onSignInSucceeded
  *
  * @author micabyte
- * @link{#onSignInFailed abstract methods.}
  */
+@SuppressLint("Registered")
 public class BaseActivity extends FragmentActivity implements GameHelper.GameHelperListener {
     // The game helper object. This class is mainly a wrapper around this object.
     private final GameHelper gameHelper;

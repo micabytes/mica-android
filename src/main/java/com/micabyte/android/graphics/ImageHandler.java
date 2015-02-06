@@ -129,7 +129,6 @@ public class ImageHandler {
     @Nullable
     public Bitmap getSceneBitmap(int bkg, int left, int right) {
         Bitmap bitmap = get(bkg);
-        if (bitmap == null) return null;
         Bitmap output =
                 Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);

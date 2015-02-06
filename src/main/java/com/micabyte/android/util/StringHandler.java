@@ -18,7 +18,7 @@ import com.crashlytics.android.Crashlytics;
 import com.micabyte.android.BaseObject;
 import com.micabyte.android.R;
 
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
