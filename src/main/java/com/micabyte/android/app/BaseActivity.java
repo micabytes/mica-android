@@ -43,7 +43,7 @@ import java.text.DecimalFormat;
 @SuppressLint("Registered")
 public class BaseActivity extends FragmentActivity implements GameHelper.GameHelperListener {
     // The game helper object. This class is mainly a wrapper around this object.
-    private final GameHelper gameHelper;
+    private GameHelper gameHelper = null;
 
     // We expose these constants here because we don't want users of this class
     // to have to know about gameHelper at all.
@@ -62,8 +62,7 @@ public class BaseActivity extends FragmentActivity implements GameHelper.GameHel
      * Constructs a BaseGameActivity with default client (GamesClient).
      */
     protected BaseActivity() {
-        gameHelper = new GameHelper(this, requestedClients);
-        gameHelper.enableDebugLog(debugLog);
+        // NOOP
     }
 
     /**
@@ -73,8 +72,6 @@ public class BaseActivity extends FragmentActivity implements GameHelper.GameHel
      */
     protected BaseActivity(int requestClients) {
         requestedClients = requestClients;
-        gameHelper = new GameHelper(this, requestClients);
-        gameHelper.enableDebugLog(debugLog);
     }
 
     /**
@@ -92,76 +89,80 @@ public class BaseActivity extends FragmentActivity implements GameHelper.GameHel
     }
 
     public GameHelper getGameHelper() {
+        if (gameHelper == null) {
+            gameHelper = new GameHelper(this, requestedClients);
+            gameHelper.enableDebugLog(debugLog);
+        }
         return gameHelper;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gameHelper.setup(this);
+        getGameHelper().setup(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        gameHelper.onStart(this);
+        getGameHelper().onStart(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        gameHelper.onStop();
+        getGameHelper().onStop();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        gameHelper.onActivityResult(requestCode, resultCode, data);
+        getGameHelper().onActivityResult(requestCode, resultCode, data);
     }
 
     public GoogleApiClient getApiClient() {
-        return gameHelper.getApiClient();
+        return getGameHelper().getApiClient();
     }
 
     public boolean isSignedIn() {
-        return gameHelper.isSignedIn();
+        return getGameHelper().isSignedIn();
     }
 
     public void beginUserInitiatedSignIn() {
-        gameHelper.beginUserInitiatedSignIn();
+        getGameHelper().beginUserInitiatedSignIn();
     }
 
     public void signOut() {
-        gameHelper.signOut();
+        getGameHelper().signOut();
     }
 
     protected void showAlert(String message) {
-        gameHelper.makeSimpleDialog(message).show();
+        getGameHelper().makeSimpleDialog(message).show();
     }
 
     protected void showAlert(String title, String message) {
-        gameHelper.makeSimpleDialog(title, message).show();
+        getGameHelper().makeSimpleDialog(title, message).show();
     }
 
     protected void enableDebugLog(boolean enabled) {
         debugLog = true;
-        gameHelper.enableDebugLog(enabled);
+        getGameHelper().enableDebugLog(enabled);
     }
 
     protected String getInvitationId() {
-        return gameHelper.getInvitationId();
+        return getGameHelper().getInvitationId();
     }
 
     protected void reconnectClient() {
-        gameHelper.reconnectClient();
+        getGameHelper().reconnectClient();
     }
 
     protected boolean hasSignInError() {
-        return gameHelper.hasSignInError();
+        return getGameHelper().hasSignInError();
     }
 
     protected GameHelper.SignInFailureReason getSignInError() {
-        return gameHelper.getSignInError();
+        return getGameHelper().getSignInError();
     }
 
     public void showSpinner() {

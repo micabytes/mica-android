@@ -40,6 +40,7 @@ public class StringHandler {
     private static final int NOT_FOUND = -1;
     private static final String punctuation = "(),;.!?\"";
     public static final String WHITESPACE = " ";
+    public static final char CHAR_WHITESPACE = ' ';
     public static final char HASH_MARK = '#';
     public static final char PERCENT = '%';
 
