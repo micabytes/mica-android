@@ -12,12 +12,10 @@
  */
 package com.micabyte.android;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.micabyte.android.util.StringHandler;
 
 import org.jetbrains.annotations.NonNls;
 
@@ -34,6 +32,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("HardCodedStringLiteral")
 public class BaseObject {
     private static final String TAG = BaseObject.class.getName();
+    private static final String ERROR = "ERROR";
     protected static final String DRAWABLE = "drawable";
     private static final char VAR_CHAR = '$';
     private static final Pattern AND_SPLITTER = Pattern.compile("[&]");
@@ -114,14 +113,14 @@ public class BaseObject {
     }
 
     @NonNull
-    public String getString(Context context, @NonNls  String id) {
+    public String getString(@NonNls  String id) {
         switch (ValueToken.get(id)) {
             case NAME:
                 return getName();
             case VALUE:
                 return Integer.toString(value);
             default:
-                return StringHandler.get(context, R.string.default_error);
+                return ERROR;
         }
     }
 
@@ -241,6 +240,8 @@ public class BaseObject {
             return (Integer) obj;
         if (obj instanceof Double)
             return ((Double) obj).intValue();
+        if (obj instanceof String)
+            return 1;
         BaseObject gObj = (BaseObject) obj;
         if (tokens.length == 1) {
             return gObj.value;

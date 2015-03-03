@@ -168,27 +168,28 @@ public class StringHandler {
                 while (punctuation.indexOf(ret.charAt(end - 1)) != NOT_FOUND)
                     end--;
                 String variable = ret.substring(start, end);
+                String variableRegex = "\\" + variable;
                 String[] tokens = variable.split("[.]");
                 if (tokens.length == 1) {
                     Object obj = variables.get(tokens[0].trim().toLowerCase(Locale.US));
                     if (obj != null) {
                         if (obj instanceof Integer) {
-                            ret = ret.replace(variable, obj.toString());
+                            ret = ret.replaceFirst(variableRegex, obj.toString());
                         } else if (obj instanceof Double) {
-                            ret = ret.replace(variable, obj.toString());
+                            ret = ret.replaceFirst(variableRegex, obj.toString());
                         } else if (obj instanceof String) {
-                            ret = ret.replace(variable, ((String) obj));
+                            ret = ret.replaceFirst(variableRegex, ((String) obj));
                         } else
-                            ret = obj instanceof BaseObject ? ret.replace(variable, ((BaseObject) obj).getName()) : ret.replace(variable, "VariableTypeError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
+                            ret = obj instanceof BaseObject ? ret.replaceFirst(variableRegex, ((BaseObject) obj).getName()) : ret.replaceFirst(variableRegex, "VariableTypeError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
                     } else {
-                        ret = ret.replace(variable, "VariableMissingError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
+                        ret = ret.replaceFirst(variableRegex, "VariableMissingError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
                     }
                 } else {
                     Object obj = variables.get(tokens[0].trim().toLowerCase(Locale.US));
                     if (obj != null) {
-                        ret = obj instanceof BaseObject ? ret.replace(variable, ((BaseObject) obj).getString(c, tokens[1].trim())) : ret.replace(variable, "VariableTypeError:" + variable);
+                        ret = obj instanceof BaseObject ? ret.replaceFirst(variableRegex, ((BaseObject) obj).getString(tokens[1].trim())) : ret.replaceFirst(variableRegex, "VariableTypeError:" + variable);
                     } else {
-                        ret = ret.replace(variable, "VariableMissingError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
+                        ret = ret.replaceFirst(variableRegex, "VariableMissingError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
                     }
                 }
                 start = ret.indexOf('$');
