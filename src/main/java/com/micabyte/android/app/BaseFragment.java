@@ -38,7 +38,10 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
+import com.crashlytics.android.Crashlytics;
 import com.micabyte.android.util.StringHandler;
+
+import org.jetbrains.annotations.NonNls;
 
 /**
  * Convenience class to replace Fragment
@@ -293,7 +296,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     }
 
     public void error(String tag, String message) {
-        Log.e(tag, message);
+        Crashlytics.log(Log.ERROR, tag, message);
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
@@ -301,7 +304,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         Log.d(tag, message);
     }
 
-    public void toast(String message) {
+    public void toast(@NonNls String message) {
         toast(message, Toast.LENGTH_SHORT);
     }
 
