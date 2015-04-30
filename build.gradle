@@ -1,27 +1,28 @@
 buildscript {
     repositories {
-        maven { url 'http://download.crashlytics.com/maven' }
+        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
         //noinspection GradleDynamicVersion
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
 apply plugin: 'com.android.library'
 
 repositories {
-    maven { url 'http://download.crashlytics.com/maven' }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion '21.1.2'
+    publishNonDefault true
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
 
     defaultConfig {
         minSdkVersion 10
-        targetSdkVersion 21
+        targetSdkVersion 22
     }
     buildTypes {
         release {
@@ -30,32 +31,28 @@ android {
         }
 
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.intellij:annotations:+@jar'
+    // Annotations
     //noinspection GradleDynamicVersion
+    compile 'com.intellij:annotations:+@jar'
     compile 'com.android.support:support-annotations:21.0.3'
-    compile 'com.android.support:appcompat-v7:21.+'
+    // Android Support
+    compile 'com.android.support:appcompat-v7:22.0.0'
     // JSON Libraries
     compile files('libs/jackson-core-2.4.2.jar')
     compile files('libs/jackson-annotations-2.4.2.jar')
     compile files('libs/jackson-databind-2.4.2.jar')
-    //noinspection GradleDynamicVersion
-    compile 'com.crashlytics.android:crashlytics:1.+'
-    //noinspection GradleDynamicVersion
-    compile 'com.google.android.gms:play-services-ads:6.5.+'
-    //noinspection GradleDynamicVersion
-    compile 'com.google.android.gms:play-services-appstate:6.5.+'
-    //noinspection GradleDynamicVersion
-    compile 'com.google.android.gms:play-services-drive:6.5.+'
-    //noinspection GradleDynamicVersion
-    compile 'com.google.android.gms:play-services-games:6.5.+'
-    //noinspection GradleDynamicVersion
-    compile 'com.google.android.gms:play-services-plus:6.5.+'
+    // Fabric
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
+        transitive = true;
+    }
+    // Google Play
+    compile 'com.google.android.gms:play-services-ads:7.0.0'
+    compile 'com.google.android.gms:play-services-appstate:7.0.0'
+    compile 'com.google.android.gms:play-services-drive:7.0.0'
+    compile 'com.google.android.gms:play-services-games:7.0.0'
+    compile 'com.google.android.gms:play-services-plus:7.0.0'
 }

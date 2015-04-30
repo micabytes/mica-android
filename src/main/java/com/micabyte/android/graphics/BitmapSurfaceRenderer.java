@@ -17,10 +17,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v7.appcompat.BuildConfig;
 import android.util.Log;
+
+import com.micabyte.android.util.GameLog;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,8 +33,6 @@ import java.io.InputStream;
  * screen (e.g., a game map). It is able to do this even if the bitmap is too large to fit into
  * memory. The game should subclass the renderer and extend the drawing methods to add other game
  * elements.
- *
- * @author micabyte
  */
 public class BitmapSurfaceRenderer extends SurfaceRenderer {
     private static final String TAG = BitmapSurfaceRenderer.class.getName();
@@ -368,7 +369,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                 switch (getState()) {
                     case NOT_INITIALIZED:
                         // Error
-                        Log.e(TAG, "Attempting to update an uninitialized CacheBitmap");
+                        GameLog.e(TAG, "Attempting to update an uninitialized CacheBitmap");
                         return;
                     case IS_INITIALIZED:
                         // Start data caching
@@ -425,6 +426,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                     srcRect.set(left, top, right, bottom);
                     dstRect.set(0, 0, dstSize.x, dstSize.y);
                     Canvas canvas = new Canvas(viewPort.getBitmap());
+                    canvas.drawColor(Color.BLACK);
                     canvas.drawBitmap(bmp, srcRect, dstRect, null);
                 }
             }

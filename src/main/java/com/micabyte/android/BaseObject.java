@@ -68,7 +68,7 @@ public class BaseObject {
         id = oid;
     }
 
-    public boolean equalsId(String oid) {
+    public boolean equalsId(@NonNls String oid) {
         return id.equalsIgnoreCase(oid);
     }
 

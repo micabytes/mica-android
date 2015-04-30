@@ -26,14 +26,17 @@ import android.util.SparseArray;
  *
  * @author micabyte
  */
-final class MusicHandler {
+public final class MusicHandler {
     private static final String TAG = MusicHandler.class.getName();
     private static final int INVALID_NUMBER = 0;
     private static final SparseArray<MediaPlayer> PLAYERS = new SparseArray<>();
+    public static final float VOLUME_MAX = 1f;
     private static int nextMusic;
     private static int currentMusic;
+    private static float volume = VOLUME_MAX;
 
     private MusicHandler() {
+        // NOOP
     }
 
     /**
@@ -107,13 +110,14 @@ final class MusicHandler {
     /**
      * Pause all media PLAYERS
      */
-    private static void pause() {
+    public static void pause() {
         for (int i = 0; i < PLAYERS.size(); i++) {
             MediaPlayer p = PLAYERS.valueAt(i);
             if (p.isPlaying()) {
                 p.pause();
             }
         }
+        nextMusic = currentMusic;
         currentMusic = INVALID_NUMBER;
     }
 
@@ -121,7 +125,7 @@ final class MusicHandler {
      * Advance to the next resource
      */
     @SuppressWarnings("MethodOnlyUsedFromInnerClass")
-    private static void next() {
+    public static void next() {
         if (nextMusic == INVALID_NUMBER) {
             return;
         }
@@ -152,4 +156,11 @@ final class MusicHandler {
         currentMusic = INVALID_NUMBER;
     }
 
+    public static void setVolume(float v) {
+        volume = v;
+        for (int i = 0; i < PLAYERS.size(); i++) {
+            MediaPlayer p = PLAYERS.valueAt(i);
+            p.setVolume(volume, volume);
+        }
+    }
 }

@@ -19,7 +19,6 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 
 /**
  * SurfaceRenderer is the superclass of the renderer. The game should subclass the renderer and extend the drawing methods to add game drawing.
@@ -32,7 +31,7 @@ import android.util.Log;
  */
 public abstract class SurfaceRenderer {
     // View Size Minimum
-    private static final int MINIMUM_PIXELS_IN_VIEW = 50;
+    private static final int MINIMUM_PIXELS_IN_VIEW = 200;
     // Context
     protected final Context context;
     // The ViewPort
@@ -184,7 +183,6 @@ public abstract class SurfaceRenderer {
                 bitmap = null;
             }
             bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565);
-            Log.d("SF", "Created bitmap of size " + w + ' ' + h);
             int x = window.left;
             int y = window.top;
             // check bounds

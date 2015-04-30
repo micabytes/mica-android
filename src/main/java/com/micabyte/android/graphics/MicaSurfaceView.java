@@ -58,7 +58,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     public MicaSurfaceView(Context context) {
         super(context);
-        // This ensures that we don't get errors when using it in Eclipse layout editing
+        // This ensures that we don't get errors when using it in layout editing
         if (isInEditMode()) return;
         touch = new TouchHandler(context);
         initialize(context);
@@ -66,7 +66,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     public MicaSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        // This ensures that we don't get errors when using it in Eclipse layout editing
+        // This ensures that we don't get errors when using it in layout editing
         if (isInEditMode()) return;
         touch = new TouchHandler(context);
         initialize(context);
@@ -74,7 +74,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     public MicaSurfaceView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        // This ensures that we don't get errors when using it in Eclipse layout editing
+        // This ensures that we don't get errors when using it in layout editing
         if (isInEditMode()) return;
         touch = new TouchHandler(context);
         initialize(context);
@@ -338,6 +338,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         private final PointF screenFocus = new PointF();
 
+        @SuppressWarnings("RefusedBequest")
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float scaleFactor = detector.getScaleFactor();
@@ -350,7 +351,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
                 invalidate();
             }
             lastScaleTime = System.currentTimeMillis();
-            return super.onScale(detector);
+            return true;
         }
     }
 

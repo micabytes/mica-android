@@ -79,8 +79,11 @@ public final class RandomHandler {
     public static int wRoll(int nDice, int dSize, int toHit) {
         if (nDice == 0) return 0;
         int ret = 0;
+        int fail = 0;
         for (int i = 0; i < nDice; i++) {
             int roll = random(dSize) + 1;
+            if (roll == 1)
+                fail ++;
             while (roll == dSize) { // Wild Dice
                 ret++;
                 roll = random(dSize) + 1;
@@ -89,6 +92,8 @@ public final class RandomHandler {
                 ret++;
             }
         }
+        if ((ret == 0) && (fail >= (nDice / 2)))
+            return -1;
         return ret;
     }
 

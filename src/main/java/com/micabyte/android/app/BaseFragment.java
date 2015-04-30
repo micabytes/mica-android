@@ -13,6 +13,7 @@
 package com.micabyte.android.app;
 
 import android.R;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.support.annotation.Nullable;
@@ -52,7 +53,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-
+        // NOOP
     }
 
     @Override
@@ -69,12 +70,12 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
 
     // Used to set up UI elements
     protected void createFragment() {
-
+        // NOOP
     }
 
     // Used to update the UI elements
     public void updateFragment() {
-
+        // NOOP
     }
 
 
@@ -82,17 +83,23 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return (BaseActivity) getActivity();
     }
 
-    @Nullable
     protected TextView getTextView(int resId) {
-        if (getView() == null) return null;
-        return (TextView) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        TextView v = (TextView) root.findViewById(resId);
+        if (v == null)
+            throw new Resources.NotFoundException("getTextView");
+        return v;
     }
 
     @Nullable
     public TextView setTextView(int resId, Typeface font) {
-        if (getView() == null) return null;
-        TextView t = (TextView) getView().findViewById(resId);
-        if (t != null) {
+        View root = getView();
+        assert root != null;
+        TextView t = (TextView) root.findViewById(resId);
+        if (t == null)
+            throw new Resources.NotFoundException("getTextView");
+        else {
             if (font != null)
                 t.setTypeface(font);
             t.setOnClickListener(this);
@@ -100,132 +107,159 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return t;
     }
 
-    @Nullable
     protected EditText getEditText(int resId) {
-        if (getView() == null) return null;
-        return (EditText) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        EditText v = (EditText) root.findViewById(resId);
+        if (v == null)
+            throw new Resources.NotFoundException("getEditText");
+        return v;
     }
 
-    @Nullable
     protected ImageView getImageView(int resId) {
-        if (getView() == null) return null;
-        return (ImageView) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        ImageView v = (ImageView) root.findViewById(resId);
+        if (v == null)
+            throw new Resources.NotFoundException("getImageView");
+        return v;
     }
 
-    @Nullable
+
     protected ImageView setImageView(int resId) {
-        if (getView() == null) return null;
-        ImageView v = (ImageView) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        ImageView v = (ImageView) root.findViewById(resId);
+        if (v == null)
+            throw new Resources.NotFoundException("setImageView");
         v.setOnClickListener(this);
         return v;
     }
 
-    @Nullable
     protected ImageView setImageView(int resId, Bitmap img) {
-        if (getView() == null) return null;
+        View root = getView();
+        assert root != null;
         if (img == null)
             throw new IllegalArgumentException("setting image view " + resId + " with null bitmap");
-        ImageView v = (ImageView) getView().findViewById(resId);
+        ImageView v = (ImageView) root.findViewById(resId);
+        if (v == null)
+            throw new Resources.NotFoundException("setImageView(int, Bitmap)");
         v.setImageBitmap(img);
         return v;
     }
 
-    @Nullable
     protected CheckBox getCheckBox(int resId) {
-        if (getView() == null) return null;
-        return (CheckBox) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        CheckBox v = (CheckBox) root.findViewById(resId);
+        if (v == null)
+            throw new Resources.NotFoundException("getTextView");
+        return v;
     }
 
     @Nullable
     protected RadioButton getRadioButton(int resId) {
-        if (getView() == null) return null;
-        return (RadioButton) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        return (RadioButton) root.findViewById(resId);
     }
 
-    @Nullable
     protected ImageButton getImageButton(int resId) {
-        if (getView() == null) return null;
-        return (ImageButton) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        ImageButton b = (ImageButton) root.findViewById(resId);
+        if (b == null)
+            throw new Resources.NotFoundException("getImageButton");
+        return b;
     }
 
-    @Nullable
     protected ImageButton setImageButton(int resId) {
-        if (getView() == null) return null;
-        ImageButton button = (ImageButton) getView().findViewById(resId);
-        if (button != null) {
-            button.setOnClickListener(this);
-        }
+        View root = getView();
+        assert root != null;
+        ImageButton button = (ImageButton) root.findViewById(resId);
+        if (button == null)
+            throw new Resources.NotFoundException("setImageButton(int)");
+        button.setOnClickListener(this);
         return button;
     }
 
-    @Nullable
     protected ImageButton setImageButton(int resId, Bitmap img) {
-        if (getView() == null) return null;
+        View root = getView();
+        assert root != null;
         if (img == null)
             throw new IllegalArgumentException("setting image button " + resId + " with null bitmap");
-        ImageButton button = (ImageButton) getView().findViewById(resId);
+        ImageButton button = (ImageButton) root.findViewById(resId);
+        if (button == null)
+            throw new Resources.NotFoundException("setImageButton(int, Bitmap)");
         button.setOnClickListener(this);
         button.setImageBitmap(img);
         return button;
     }
 
-    @Nullable
     protected Button setButton(View v, int resId) {
         if (v == null) return null;
         Button button = (Button) v.findViewById(resId);
-        if (button != null) {
-            button.setOnClickListener(this);
-        }
+        if (button == null)
+            throw new Resources.NotFoundException("setButton(View, int)");
+        button.setOnClickListener(this);
         return button;
     }
 
-    @Nullable
     protected Button setButton(int resId) {
-        if (getView() == null) return null;
-        Button button = (Button) getView().findViewById(resId);
-        if (button != null) {
-            button.setOnClickListener(this);
-        }
+        View root = getView();
+        assert root != null;
+        Button button = (Button) root.findViewById(resId);
+        if (button == null)
+            throw new Resources.NotFoundException("setButton(int)");
+        button.setOnClickListener(this);
         return button;
     }
 
-    @Nullable
     protected Button setButton(int resId, Typeface font) {
-        if (getView() == null) return null;
-        Button button = (Button) getView().findViewById(resId);
-        if (button != null) {
-            if (font != null) button.setTypeface(font);
-            button.setOnClickListener(this);
-        }
+        View root = getView();
+        assert root != null;
+        Button button = (Button) root.findViewById(resId);
+        if (button == null)
+            throw new Resources.NotFoundException("setButton(int, Typeface)");
+        if (font != null) button.setTypeface(font);
+        button.setOnClickListener(this);
         return button;
     }
 
-    @Nullable
     protected Button getButton(int resId) {
-        if (getView() == null) return null;
-        return (Button) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        Button b = (Button) root.findViewById(resId);
+        if (b == null)
+            throw new Resources.NotFoundException("getButton");
+        return b;
     }
 
-    @Nullable
     protected ToggleButton setToggleButton(int resId) {
-        if (getView() == null) return null;
-        ToggleButton button = (ToggleButton) getView().findViewById(resId);
-        if (button != null) {
-            button.setOnClickListener(this);
-        }
+        View root = getView();
+        assert root != null;
+        ToggleButton button = (ToggleButton) root.findViewById(resId);
+        if (button == null)
+            throw new Resources.NotFoundException("setToggleButton");
+        button.setOnClickListener(this);
         return button;
     }
 
-    @Nullable
     public ToggleButton getToggleButton(int resId) {
-        if (getView() == null) return null;
-        return (ToggleButton) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        ToggleButton button = (ToggleButton) root.findViewById(resId);
+        if (button == null)
+            throw new Resources.NotFoundException("getToggleButton");
+        return button;
     }
 
-    @Nullable
     protected Spinner setSpinner(int resId, int arrId) {
-        if (getView() == null) return null;
-        Spinner spinner = (Spinner) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        Spinner spinner = (Spinner) root.findViewById(resId);
+        if (spinner == null)
+            throw new Resources.NotFoundException("setSpinner");
         ArrayAdapter<CharSequence> adapter =
                 ArrayAdapter.createFromResource(getActivity().getApplicationContext(), arrId,
                         R.layout.simple_spinner_item);
@@ -234,10 +268,12 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return spinner;
     }
 
-    @Nullable
     protected Spinner setSpinner(int resId, int arrId, int spIt, int spDd) {
-        if (getView() == null) return null;
-        Spinner spinner = (Spinner) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        Spinner spinner = (Spinner) root.findViewById(resId);
+        if (spinner == null)
+            throw new Resources.NotFoundException("setSpinner");
         ArrayAdapter<CharSequence> adapter =
                 ArrayAdapter.createFromResource(getActivity().getApplicationContext(), arrId, spIt);
         adapter.setDropDownViewResource(spDd);
@@ -245,54 +281,68 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return spinner;
     }
 
-    @Nullable
     protected Spinner getSpinner(int resId) {
-        if (getView() == null) return null;
-        return (Spinner) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        Spinner s = (Spinner) root.findViewById(resId);
+        if (s == null)
+            throw new Resources.NotFoundException("getSpinner");
+        return s;
     }
 
     @Nullable
     protected ListView getListView(int resId) {
-        if (getView() == null) return null;
-        return (ListView) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        return (ListView) root.findViewById(resId);
     }
 
     @Nullable
     protected ListView setListView(int resId, BaseAdapter adapter) {
-        if (getView() == null) return null;
-        ListView listView = (ListView) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        ListView listView = (ListView) root.findViewById(resId);
         listView.setAdapter(adapter);
         return listView;
     }
 
-    @Nullable
     protected RelativeLayout getRelativeLayout(int resId) {
-        if (getView() == null) return null;
-        return (RelativeLayout) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        RelativeLayout v = (RelativeLayout) root.findViewById(resId);
+        if (v == null)
+            throw new Resources.NotFoundException("getRelativeLayout");
+        return v;
     }
 
-    @Nullable
     protected LinearLayout getLinearLayout(int resId) {
-        if (getView() == null) return null;
-        return (LinearLayout) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        LinearLayout v = (LinearLayout) root.findViewById(resId);
+        if (v == null)
+            throw new Resources.NotFoundException("getLinearLayout");
+        return v;
     }
 
     @Nullable
     protected ProgressBar getProgressBar(int resId) {
-        if (getView() == null) return null;
-        return (ProgressBar) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        return (ProgressBar) root.findViewById(resId);
     }
 
     @Nullable
     public SeekBar getSeekBar(int resId) {
-        if (getView() == null) return null;
-        return (SeekBar) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        return (SeekBar) root.findViewById(resId);
     }
 
     @Nullable
     protected ViewFlipper getViewFlipper(int resId) {
-        if (getView() == null) return null;
-        return (ViewFlipper) getView().findViewById(resId);
+        View root = getView();
+        assert root != null;
+        return (ViewFlipper) root.findViewById(resId);
     }
 
     public void error(String tag, String message) {
