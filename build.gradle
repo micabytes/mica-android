@@ -40,7 +40,7 @@ dependencies {
     compile 'com.intellij:annotations:+@jar'
     compile 'com.android.support:support-annotations:21.0.3'
     // Android Support
-    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:appcompat-v7:22.1.1'
     // JSON Libraries
     compile files('libs/jackson-core-2.4.2.jar')
     compile files('libs/jackson-annotations-2.4.2.jar')
@@ -50,9 +50,9 @@ dependencies {
         transitive = true;
     }
     // Google Play
-    compile 'com.google.android.gms:play-services-ads:7.0.0'
-    compile 'com.google.android.gms:play-services-appstate:7.0.0'
-    compile 'com.google.android.gms:play-services-drive:7.0.0'
-    compile 'com.google.android.gms:play-services-games:7.0.0'
-    compile 'com.google.android.gms:play-services-plus:7.0.0'
+    compile 'com.google.android.gms:play-services-ads:7.3.0'
+    compile 'com.google.android.gms:play-services-appstate:7.3.0'
+    compile 'com.google.android.gms:play-services-drive:7.3.0'
+    compile 'com.google.android.gms:play-services-games:7.3.0'
+    compile 'com.google.android.gms:play-services-plus:7.3.0'
 }
