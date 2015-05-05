@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        mavenCentral()
         maven { url 'https://maven.fabric.io/public' }
     }
 
@@ -12,6 +13,7 @@ buildscript {
 apply plugin: 'com.android.library'
 
 repositories {
+    mavenCentral()
     maven { url 'https://maven.fabric.io/public' }
 }
 
@@ -42,9 +44,9 @@ dependencies {
     // Android Support
     compile 'com.android.support:appcompat-v7:22.1.1'
     // JSON Libraries
-    compile files('libs/jackson-core-2.4.2.jar')
-    compile files('libs/jackson-annotations-2.4.2.jar')
-    compile files('libs/jackson-databind-2.4.2.jar')
+    compile 'com.fasterxml.jackson.core:jackson-core:2.5.3'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
     // Fabric
     compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
