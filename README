@@ -1,19 +1,3 @@
-Note:
-I have recently converted my projects to Android Studio, and converted the library to work with Gradle/Android Studio.
-
-Short instructions on how to integrate:
-
-1. From your projects root directory (assuming it is version controlled in Git), run:
-> git submodule add git@github.com:micabyte/lib_base.git
-
-2. In settings.gradle, add:
-include ':lib_base'
-
-Then sync the project, and make sure to add a dependency on lib_base in the core project file.
-
-
-Old README: To be updated
-
 The MicaByte Game Library (micabyte/android_game) is an Android library that
 encapsulates some of the logic required for creating a simple 2D game using
 the native Android graphics library.
@@ -43,20 +27,18 @@ them back to the library to be incorporated in future iterations.
 
 Usage:
 
-The current project setup uses two libraries:
- 
-  * google-play-services_lib: The standard Google Play Services lib that exists
-  in the Android SDK.
-  
-  * google-compatibility_lib: A library project containing app compatibility
-  libraries for v4 and v7. Google will create this automatically if you use
-  the current API to create a new library with minimum SDK 10.
+The current project setup is built for Android Studio, and utilizes a number of
+base libraries that I find useful.
 
+   * Jackson: for effective JSON decoding
+   * Google Play Services: For all the extra Google Play functionality such as
+   cloud-saves, etc.
+   * Fabric: Currently the best crash-reporting tool for Android.
 
 Main Components:
 
-* ImageHandler: This is a standard singleton class image cache using 
-SoftReferences. Useful to manage bitmaps.  
+* ImageHandler: This is a standard singleton class image cache using
+SoftReferences. Useful to manage bitmaps.
 
 * MusicHandler: A very simple static class to manage playback of music. Needs
 more work.
@@ -76,12 +58,9 @@ handles a simple TileMap of squares.
 
 Example code:
 
-A very simple example project can also be found on github:
+The old example project can also be found on github, but it is no longer
+up to date:
 https://github.com/micabyte/android_game_example
-
-I would like to demonstrate how I use the framework with fragments, etc.,
-but for the moment I don't have the time to build anything more elaborate,
-so at the moment this is very simple (just shows how a map is displayed).
 
 
 Limitations:
@@ -95,6 +74,15 @@ and I use it in my current development, this particular version of the library
 has not yet stood the "test of fire" from tens of thousands of devices. There
 may still be many subtle (and not so subtle) bugs in the code.
 
-TODO:
 
-* HexMap class.
+Integrating lib_base in another Android Project
+
+1. From your projects root directory (assuming it is version controlled in Git), run:
+> git submodule add git@github.com:micabyte/lib_base.git
+
+2. In settings.gradle, add:
+include ':lib_base'
+
+Then sync the project, and make sure to add a dependency on lib_base in the core project file.
+
+
