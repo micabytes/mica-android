@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 @SuppressWarnings("HardCodedStringLiteral")
 public class BaseObject {
     private static final String TAG = BaseObject.class.getName();
-    private static final String ERROR = "ERROR";
+    public static final String ERROR = "ERROR";
     protected static final String DRAWABLE = "drawable";
     private static final char VAR_CHAR = '$';
     private static final Pattern AND_SPLITTER = Pattern.compile("[&]");
@@ -88,6 +88,10 @@ public class BaseObject {
         value = val;
     }
 
+    public boolean isEmpty() {
+        return (id.isEmpty() && name.isEmpty() && value == 0);
+    }
+
     /*
      * Basic methods for extracting various kinds of data from a BaseObject. Used for scripting and
      * text replacement in strings (see StringHandler) where it is useful to retrieve data from many
@@ -109,7 +113,7 @@ public class BaseObject {
     public int getInteger(@NonNls String id) {
         if (ValueToken.get(id) == ValueToken.VALUE)
             return value;
-        return 0;
+        return Integer.MIN_VALUE;
     }
 
     @NonNull

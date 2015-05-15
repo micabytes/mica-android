@@ -44,7 +44,7 @@ public class RadialLayout extends ViewGroup {
     private View mMotionTarget;
     private Bitmap mDrawingCache;
     private Canvas mCachedCanvas;
-    private Set<View> mDirtyViews = new HashSet<View>();
+    private Set<View> mDirtyViews = new HashSet<>();
     private boolean mCached = false;
 
     public RadialLayout(Context context) {

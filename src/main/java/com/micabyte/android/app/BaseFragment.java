@@ -12,7 +12,6 @@
  */
 package com.micabyte.android.app;
 
-import android.R;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -40,6 +39,7 @@ import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
 import com.crashlytics.android.Crashlytics;
+import com.micabyte.android.R;
 import com.micabyte.android.util.StringHandler;
 
 import org.jetbrains.annotations.NonNls;
@@ -125,7 +125,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return v;
     }
 
-
+    @SuppressWarnings("UnusedReturnValue")
     protected ImageView setImageView(int resId) {
         View root = getView();
         assert root != null;
@@ -205,6 +205,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return button;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     protected Button setButton(int resId) {
         View root = getView();
         assert root != null;
@@ -262,12 +263,13 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
             throw new Resources.NotFoundException("setSpinner");
         ArrayAdapter<CharSequence> adapter =
                 ArrayAdapter.createFromResource(getActivity().getApplicationContext(), arrId,
-                        R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+                        android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         return spinner;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     protected Spinner setSpinner(int resId, int arrId, int spIt, int spDd) {
         View root = getView();
         assert root != null;
@@ -297,6 +299,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return (ListView) root.findViewById(resId);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     @Nullable
     protected ListView setListView(int resId, BaseAdapter adapter) {
         View root = getView();

@@ -20,6 +20,7 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
@@ -35,19 +36,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.micabyte.android.R;
+import com.micabyte.android.util.GameLog;
 
 /**
- * This class has been pulled from the Android platform source code, its an internal widget that hasn't been
- * made public so its included in the project in this fashion for use with the preferences screen; I have made
- * a few slight modifications to the code here, I simply put a MAX and MIN default in the code but these values
- * can still be set publically by calling code.
+ * This class has been pulled from the Android platform source code, its an internal widget that
+ * hasn't been made public so its included in the project in this fashion for use with the
+ * preferences screen; I have made  a few slight modifications to the code here,
  *
- * @author Google
+ * @author micabyte
  */
 public class NumberPicker extends LinearLayout implements OnClickListener,
         OnFocusChangeListener, OnLongClickListener {
-
-	// private static final String TAG = "NumberPicker";
+    private static final String TAG = NumberPicker.class.getName();
     private static final int DEFAULT_MAX = 200;
     private static final int DEFAULT_MIN = 0;
 
@@ -58,26 +58,6 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
     public interface Formatter {
         String toString(int value);
     }
-
-    /*
-     * Use a custom NumberPicker formatting callback to use two-digit
-     * minutes strings like "01".  Keeping a static formatter etc. is the
-     * most efficient way to do this; it avoids creating temporary objects
-     * on every call to format().
-     */
-    public static final NumberPicker.Formatter TWO_DIGIT_FORMATTER =
-            new NumberPicker.Formatter() {
-                final StringBuilder mBuilder = new StringBuilder();
-                final java.util.Formatter mFmt = new java.util.Formatter(this.mBuilder);
-                final Object[] mArgs = new Object[1];
-                @Override
-				public String toString(int value) {
-                    this.mArgs[0] = value;
-                    this.mBuilder.delete(0, this.mBuilder.length());
-                    this.mFmt.format("%02d", this.mArgs);
-                    return this.mFmt.toString();
-                }
-        };
 
     final Handler mHandler;
     private final Runnable mRunnable = new Runnable() {
@@ -162,10 +142,6 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
         this.mListener = listener;
     }
 
-    public void setFormatter(Formatter formatter) {
-        this.mFormatter = formatter;
-    }
-
     /**
      * Set the range of numbers allowed for the number picker. The current
      * value will be automatically set to the start.
@@ -174,6 +150,7 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
      * @param end the end of the range (inclusive)
      */
     public void setRange(int start, int end) {
+        GameLog.d(TAG, "Set range of dialog " + start + " to " + end);
         this.mStart = start;
         this.mEnd = end;
         this.mCurrent = start;
@@ -385,7 +362,7 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
         }
 
         @Override
-        public CharSequence filter(CharSequence source, int start, int end,
+        public CharSequence filter(@NonNull CharSequence source, int start, int end,
                 Spanned dest, int dstart, int dend) {
 
             CharSequence filtered = super.filter(source, start, end, dest, dstart, dend);

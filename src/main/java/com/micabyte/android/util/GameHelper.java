@@ -16,7 +16,6 @@
 
 package com.micabyte.android.util;
 
-import android.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -34,6 +34,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.Api.ApiOptions.NoOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Games.GamesOptions;
@@ -42,8 +43,12 @@ import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
 import com.google.android.gms.games.request.GameRequest;
+import com.google.android.gms.games.snapshot.Snapshot;
+import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
+import com.google.android.gms.games.snapshot.Snapshots;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.Plus.PlusOptions;
+import com.micabyte.android.R;
 
 import java.util.ArrayList;
 
@@ -1006,13 +1011,13 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
 
     static Dialog makeSimpleDialog(Activity activity, String text) {
         return (new AlertDialog.Builder(activity)).setMessage(text)
-                .setNeutralButton(R.string.ok, null).create();
+                .setNeutralButton(android.R.string.ok, null).create();
     }
 
     static Dialog
     makeSimpleDialog(Activity activity, String title, String text) {
         return (new AlertDialog.Builder(activity)).setMessage(text)
-                .setTitle(title).setNeutralButton(R.string.ok, null)
+                .setTitle(title).setNeutralButton(android.R.string.ok, null)
                 .create();
     }
 
@@ -1089,4 +1094,19 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
         debugLog("Forcing mConnectOnStart=" + connectOnStart);
         mConnectOnStart = connectOnStart;
     }
+
+    private PendingResult<Snapshots.CommitSnapshotResult> writeSnapshot(Snapshot snapshot, byte[] data, Bitmap coverImage, String desc) {
+        // Set the data payload for the snapshot
+        snapshot.getSnapshotContents().writeBytes(data);
+
+        // Create the change operation
+        SnapshotMetadataChange metadataChange = new SnapshotMetadataChange.Builder()
+                .setCoverImage(coverImage)
+                .setDescription(desc)
+                .build();
+
+        // Commit the operation
+        return Games.Snapshots.commitAndClose(mGoogleApiClient, snapshot, metadataChange);
+    }
+
 }
