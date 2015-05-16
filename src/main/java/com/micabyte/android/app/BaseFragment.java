@@ -15,6 +15,7 @@ package com.micabyte.android.app;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -164,6 +165,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return (RadioButton) root.findViewById(resId);
     }
 
+    @NonNull
     protected ImageButton getImageButton(int resId) {
         View root = getView();
         assert root != null;
@@ -173,6 +175,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return b;
     }
 
+    @NonNull
     protected ImageButton setImageButton(int resId) {
         View root = getView();
         assert root != null;
@@ -183,6 +186,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return button;
     }
 
+    @NonNull
     protected ImageButton setImageButton(int resId, Bitmap img) {
         View root = getView();
         assert root != null;
@@ -216,6 +220,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return button;
     }
 
+    @NonNull
     protected Button setButton(int resId, Typeface font) {
         View root = getView();
         assert root != null;
@@ -236,6 +241,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return b;
     }
 
+    @NonNull
     protected ToggleButton setToggleButton(int resId) {
         View root = getView();
         assert root != null;
@@ -246,6 +252,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return button;
     }
 
+    @NonNull
     public ToggleButton getToggleButton(int resId) {
         View root = getView();
         assert root != null;
@@ -255,21 +262,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return button;
     }
 
-    protected Spinner setSpinner(int resId, int arrId) {
-        View root = getView();
-        assert root != null;
-        Spinner spinner = (Spinner) root.findViewById(resId);
-        if (spinner == null)
-            throw new Resources.NotFoundException("setSpinner");
-        ArrayAdapter<CharSequence> adapter =
-                ArrayAdapter.createFromResource(getActivity().getApplicationContext(), arrId,
-                        android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        return spinner;
-    }
-
-    @SuppressWarnings("UnusedReturnValue")
+    @NonNull
     protected Spinner setSpinner(int resId, int arrId, int spIt, int spDd) {
         View root = getView();
         assert root != null;
@@ -283,6 +276,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return spinner;
     }
 
+    @NonNull
     protected Spinner getSpinner(int resId) {
         View root = getView();
         assert root != null;
@@ -292,23 +286,49 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return s;
     }
 
-    @Nullable
+    @NonNull
     protected ListView getListView(int resId) {
         View root = getView();
         assert root != null;
-        return (ListView) root.findViewById(resId);
+        ListView listView = (ListView) root.findViewById(resId);
+        if (listView == null)
+            throw new Resources.NotFoundException("setListView()");
+        return listView;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
-    @Nullable
+    @NonNull
     protected ListView setListView(int resId, BaseAdapter adapter) {
         View root = getView();
         assert root != null;
         ListView listView = (ListView) root.findViewById(resId);
+        if (listView == null)
+            throw new Resources.NotFoundException("setListView");
         listView.setAdapter(adapter);
         return listView;
     }
 
+    @NonNull
+    protected LinearListView getLinearListView(int resId) {
+        View root = getView();
+        assert root != null;
+        LinearListView listView = (LinearListView) root.findViewById(resId);
+        if (listView == null)
+            throw new Resources.NotFoundException("setListView()");
+        return listView;
+    }
+
+    @NonNull
+    protected LinearListView setLinearListView(int resId, BaseAdapter adapter) {
+        View root = getView();
+        assert root != null;
+        LinearListView listView = (LinearListView) root.findViewById(resId);
+        if (listView == null)
+            throw new Resources.NotFoundException("setListView");
+        listView.setAdapter(adapter);
+        return listView;
+    }
+
+    @NonNull
     protected RelativeLayout getRelativeLayout(int resId) {
         View root = getView();
         assert root != null;
@@ -318,6 +338,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return v;
     }
 
+    @NonNull
     protected LinearLayout getLinearLayout(int resId) {
         View root = getView();
         assert root != null;
