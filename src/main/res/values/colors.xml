@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Standard Colors -->
+    <color name="Transparent" tools:ignore="UnusedResources">#00000000</color>
     <color name="White" tools:ignore="UnusedResources">#FFFFFF</color>
     <color name="Ivory" tools:ignore="UnusedResources">#FFFFF0</color>
     <color name="LightYellow" tools:ignore="UnusedResources">#FFFFE0</color>

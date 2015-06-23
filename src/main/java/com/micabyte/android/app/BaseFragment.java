@@ -348,11 +348,14 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         return v;
     }
 
-    @Nullable
+    @NonNull
     protected ProgressBar getProgressBar(int resId) {
         View root = getView();
         assert root != null;
-        return (ProgressBar) root.findViewById(resId);
+        ProgressBar v = (ProgressBar) root.findViewById(resId);
+        if (v == null)
+            throw new Resources.NotFoundException("getLinearLayout");
+        return v;
     }
 
     @Nullable

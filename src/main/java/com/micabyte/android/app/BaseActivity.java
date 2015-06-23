@@ -14,6 +14,7 @@ package com.micabyte.android.app;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.micabyte.android.R;
@@ -54,7 +56,7 @@ public class BaseActivity extends FragmentActivity implements GameHelper.GameHel
     public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
 
     // Requested clients. By default, that's just the games client.
-    private int requestedClients = CLIENT_GAMES;
+    private int requestedClients = CLIENT_GAMES & CLIENT_SAVES;
 
     private boolean debugLog;
 
@@ -317,6 +319,40 @@ public class BaseActivity extends FragmentActivity implements GameHelper.GameHel
         return requestedClients;
     }
 
+    // Progress Dialog used to display loading messages.
+    private ProgressDialog progressDialog;
+
+    /**
+     * Show a progress dialog for asynchronous operations.
+     * @param msg the message to display.
+     */
+    protected void showProgressDialog(String msg) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setIndeterminate(true);
+        }
+        progressDialog.setMessage(msg);
+        progressDialog.show();
+    }
+
+    /**
+     * Hide the progress dialog, if it was showing.
+     */
+    protected void dismissProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    /**
+     * Display a status message for the last operation at the bottom of the screen.
+     * @param msg the message to display.
+     * @param error true if an error occurred, false otherwise.
+     */
+    public void showMessage(String msg, boolean error) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
     public boolean isDebugLog() {
         return debugLog;
     }
@@ -324,4 +360,5 @@ public class BaseActivity extends FragmentActivity implements GameHelper.GameHel
     public void setDebugLog(boolean log) {
         debugLog = log;
     }
+
 }

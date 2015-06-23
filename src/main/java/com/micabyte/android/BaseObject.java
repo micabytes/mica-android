@@ -253,4 +253,8 @@ public class BaseObject {
         return gObj.getInteger(tokens[1]);
     }
 
+    @Override
+    public String toString() {
+        return getId();
+    }
 }
