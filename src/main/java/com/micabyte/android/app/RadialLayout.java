@@ -1,8 +1,5 @@
 package com.micabyte.android.app;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -13,8 +10,8 @@ import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-import android.graphics.Xfermode;
 import android.graphics.Region.Op;
+import android.graphics.Xfermode;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -25,6 +22,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.micabyte.android.R;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class RadialLayout extends ViewGroup {
     private Drawable mInnerCircle;

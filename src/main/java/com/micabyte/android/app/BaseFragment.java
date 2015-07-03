@@ -39,8 +39,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
-import com.crashlytics.android.Crashlytics;
-import com.micabyte.android.R;
+import com.micabyte.android.util.GameLog;
 import com.micabyte.android.util.StringHandler;
 
 import org.jetbrains.annotations.NonNls;
@@ -373,7 +372,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     }
 
     public void error(String tag, String message) {
-        Crashlytics.log(Log.ERROR, tag, message);
+        GameLog.e(tag, message);
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 

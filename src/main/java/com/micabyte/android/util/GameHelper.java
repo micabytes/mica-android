@@ -48,7 +48,6 @@ import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
 import com.google.android.gms.games.snapshot.Snapshots;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.Plus.PlusOptions;
-import com.micabyte.android.R;
 
 import java.util.ArrayList;
 

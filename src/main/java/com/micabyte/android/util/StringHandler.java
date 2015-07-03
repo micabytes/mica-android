@@ -13,12 +13,10 @@
 package com.micabyte.android.util;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
-import com.crashlytics.android.Crashlytics;
 import com.micabyte.android.BaseObject;
 import com.micabyte.android.R;
-
-import android.support.annotation.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -279,12 +277,12 @@ public class StringHandler {
                 sb.append(line).append("\n");
             }
         } catch (IOException e) {
-            Crashlytics.logException(e);
+            GameLog.logException(e);
         } finally {
             try {
                 is.close();
             } catch (IOException e) {
-                Crashlytics.logException(e);
+                GameLog.logException(e);
             }
         }
         return sb.toString();

@@ -16,8 +16,6 @@
 
 package com.micabyte.android.app;
 
-import java.util.Locale;
-
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -37,6 +35,8 @@ import android.widget.TextView;
 
 import com.micabyte.android.R;
 import com.micabyte.android.util.GameLog;
+
+import java.util.Locale;
 
 /**
  * This class has been pulled from the Android platform source code, its an internal widget that

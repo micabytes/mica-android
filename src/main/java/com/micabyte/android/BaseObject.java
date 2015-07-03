@@ -15,7 +15,7 @@ package com.micabyte.android;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
+import com.micabyte.android.util.GameLog;
 
 import org.jetbrains.annotations.NonNls;
 
@@ -104,7 +104,7 @@ public class BaseObject {
             try {
                 return valueOf(str.trim().toUpperCase(Locale.US));
             } catch (IllegalArgumentException e) {
-                Crashlytics.logException(e);
+                GameLog.logException(e);
                 return ERROR;
             }
         }
@@ -162,7 +162,7 @@ public class BaseObject {
                 String val2 = tokens[1].trim().toLowerCase(Locale.US);
                 return (getVariableValue(val1, variables) >= getVariableValue(val2, variables)) ? 1 : 0;
             }
-            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
+            GameLog.e(TAG, "Could not parse statement fragment " + str);
             return 0;
         }
         // >=
@@ -173,7 +173,7 @@ public class BaseObject {
                 String val2 = tokens[1].trim().toLowerCase(Locale.US);
                 return (getVariableValue(val1, variables) <= getVariableValue(val2, variables)) ? 1 : 0;
             }
-            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
+            GameLog.e(TAG, "Could not parse statement fragment " + str);
             return 0;
         }
         // >
@@ -184,7 +184,7 @@ public class BaseObject {
                 String val2 = tokens[1].trim().toLowerCase(Locale.US);
                 return (getVariableValue(val1, variables) > getVariableValue(val2, variables)) ? 1 : 0;
             }
-            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
+            GameLog.e(TAG, "Could not parse statement fragment " + str);
             return 0;
         }
         // <
@@ -195,7 +195,7 @@ public class BaseObject {
                 String val2 = tokens[1].trim().toLowerCase(Locale.US);
                 return (getVariableValue(val1, variables) < getVariableValue(val2, variables)) ? 1 : 0;
             }
-            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
+            GameLog.e(TAG, "Could not parse statement fragment " + str);
             return 0;
         }
         // Set Last, as it will otherwise take precedence over all the others.
@@ -207,7 +207,7 @@ public class BaseObject {
                 String val2 = tokens[1].trim().toLowerCase(Locale.US);
                 return (getVariableValue(val1, variables) == getVariableValue(val2, variables)) ? 1 : 0;
             }
-            Crashlytics.log(Log.ERROR, TAG, "Could not parse statement fragment " + str);
+            GameLog.e(TAG, "Could not parse statement fragment " + str);
             return 0;
         }
         // Retrieve
@@ -222,13 +222,13 @@ public class BaseObject {
             try {
                 return Integer.parseInt(str);
             } catch (NumberFormatException e) {
-                Crashlytics.logException(e);
+                GameLog.logException(e);
                 return 0;
             }
         }
         String[] tokens = DOT_SPLITTER.split(str, 2);
         if (tokens.length > 2) {
-            Crashlytics.log(Log.ERROR, TAG, "Failed to interpret object " + str);
+            GameLog.e(TAG, "Failed to interpret object " + str);
             return 0;
         }
         if (variables == null)

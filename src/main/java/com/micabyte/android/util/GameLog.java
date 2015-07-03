@@ -50,12 +50,12 @@ public final class GameLog {
     public static void e(String tag, String s) {
         if (LOG) Log.e(tag, s);
         else if (Fabric.isInitialized())
-            Crashlytics.log(Log.ERROR, tag, s);
+            GameLog.e(tag, s);
     }
 
     public static void logException(Exception e) {
         if (Fabric.isInitialized())
-            Crashlytics.logException(e);
+            GameLog.logException(e);
         if (LOG) //noinspection CallToPrintStackTrace
             e.printStackTrace();
     }
