@@ -54,8 +54,8 @@ public final class GameLog {
     }
 
     public static void logException(Exception e) {
-        if (Fabric.isInitialized())
-            GameLog.logException(e);
+        //if (Fabric.isInitialized())
+        //    GameLog.logException(e);
         if (LOG) //noinspection CallToPrintStackTrace
             e.printStackTrace();
     }

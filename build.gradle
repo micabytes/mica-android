@@ -40,7 +40,7 @@ dependencies {
     // Annotations
     //noinspection GradleDynamicVersion
     compile 'com.intellij:annotations:+@jar'
-    compile 'com.android.support:support-annotations:21.0.3'
+    compile 'com.android.support:support-annotations:22.2.0'
     // Android Support
     compile 'com.android.support:appcompat-v7:22.2.0'
     // JSON Libraries
@@ -48,7 +48,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
     // Fabric
-    compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
     }
     // Google Play

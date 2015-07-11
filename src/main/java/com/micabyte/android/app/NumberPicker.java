@@ -63,12 +63,12 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
     private final Runnable mRunnable = new Runnable() {
         @Override
 		public void run() {
-            if (NumberPicker.this.mIncrement) {
-                changeCurrent(NumberPicker.this.mCurrent + NumberPicker.this.mIncrementSize);
-                NumberPicker.this.mHandler.postDelayed(this, NumberPicker.this.mSpeed);
-            } else if (NumberPicker.this.mDecrement) {
-                changeCurrent(NumberPicker.this.mCurrent - NumberPicker.this.mIncrementSize);
-                NumberPicker.this.mHandler.postDelayed(this, NumberPicker.this.mSpeed);
+            if (mIncrement) {
+                changeCurrent(mCurrent + mIncrementSize);
+                mHandler.postDelayed(this, mSpeed);
+            } else if (mDecrement) {
+                changeCurrent(mCurrent - mIncrementSize);
+                mHandler.postDelayed(this, mSpeed);
             }
         }
     };
@@ -105,41 +105,41 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
         setOrientation(VERTICAL);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.number_picker, this, true);
-        this.mHandler = new Handler();
+        mHandler = new Handler();
         InputFilter inputFilter = new NumberPickerInputFilter();
-        this.mNumberInputFilter = new NumberRangeKeyListener();
-        this.mIncrementButton = (NumberPickerButton) findViewById(R.id.increment);
-        this.mIncrementButton.setOnClickListener(this);
-        this.mIncrementButton.setOnLongClickListener(this);
-        this.mIncrementButton.setNumberPicker(this);
-        this.mDecrementButton = (NumberPickerButton) findViewById(R.id.decrement);
-        this.mDecrementButton.setOnClickListener(this);
-        this.mDecrementButton.setOnLongClickListener(this);
-        this.mDecrementButton.setNumberPicker(this);
+        mNumberInputFilter = new NumberRangeKeyListener();
+        mIncrementButton = (NumberPickerButton) findViewById(R.id.increment);
+        mIncrementButton.setOnClickListener(this);
+        mIncrementButton.setOnLongClickListener(this);
+        mIncrementButton.setNumberPicker(this);
+        mDecrementButton = (NumberPickerButton) findViewById(R.id.decrement);
+        mDecrementButton.setOnClickListener(this);
+        mDecrementButton.setOnLongClickListener(this);
+        mDecrementButton.setNumberPicker(this);
 
-        this.mText = (EditText) findViewById(R.id.timepicker_input);
-        this.mText.setOnFocusChangeListener(this);
-        this.mText.setFilters(new InputFilter[] {inputFilter});
-        this.mText.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+        mText = (EditText) findViewById(R.id.timepicker_input);
+        mText.setOnFocusChangeListener(this);
+        mText.setFilters(new InputFilter[]{inputFilter});
+        mText.setRawInputType(InputType.TYPE_CLASS_NUMBER);
 
         if (!isEnabled()) {
             setEnabled(false);
         }
 
-        this.mStart = DEFAULT_MIN;
-        this.mEnd = DEFAULT_MAX;
+        mStart = DEFAULT_MIN;
+        mEnd = DEFAULT_MAX;
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        this.mIncrementButton.setEnabled(enabled);
-        this.mDecrementButton.setEnabled(enabled);
-        this.mText.setEnabled(enabled);
+        mIncrementButton.setEnabled(enabled);
+        mDecrementButton.setEnabled(enabled);
+        mText.setEnabled(enabled);
     }
 
     public void setOnChangeListener(OnChangedListener listener) {
-        this.mListener = listener;
+        mListener = listener;
     }
 
     /**
@@ -151,9 +151,9 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
      */
     public void setRange(int start, int end) {
         GameLog.d(TAG, "Set range of dialog " + start + " to " + end);
-        this.mStart = start;
-        this.mEnd = end;
-        this.mCurrent = start;
+        mStart = start;
+        mEnd = end;
+        mCurrent = start;
         updateView();
     }
 
@@ -167,19 +167,19 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
      * @param displayedValues the values displayed to the user.
      */
     public void setRange(int start, int end, String[] displayedValues) {
-        this.mDisplayedValues = displayedValues;
-        this.mStart = start;
-        this.mEnd = end;
-        this.mCurrent = start;
+        mDisplayedValues = displayedValues;
+        mStart = start;
+        mEnd = end;
+        mCurrent = start;
         updateView();
     }
     
     public void setIncrementSize(int n) {
-    	this.mIncrementSize = n;
+        mIncrementSize = n;
     }
 
     public void setCurrent(int current) {
-        this.mCurrent = current;
+        mCurrent = current;
         updateView();
     }
 
@@ -188,45 +188,45 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
      * when the the +/- buttons are longpressed. Default is 300ms.
      */
     public void setSpeed(long speed) {
-        this.mSpeed = speed;
+        mSpeed = speed;
     }
 
     @Override
 	public void onClick(View v) {
-        validateInput(this.mText);
-        if (!this.mText.hasFocus()) this.mText.requestFocus();
+        validateInput(mText);
+        if (!mText.hasFocus()) mText.requestFocus();
         // now perform the increment/decrement
         if (R.id.increment == v.getId()) {
-            changeCurrent(this.mCurrent + this.mIncrementSize);
+            changeCurrent(mCurrent + mIncrementSize);
         } else if (R.id.decrement == v.getId()) {
-            changeCurrent(this.mCurrent - this.mIncrementSize);
+            changeCurrent(mCurrent - mIncrementSize);
         }
     }
 
     private String formatNumber(int value) {
-        return (this.mFormatter != null)
-                ? this.mFormatter.toString(value)
+        return (mFormatter != null)
+                ? mFormatter.toString(value)
                 : String.valueOf(value);
     }
 
     protected void changeCurrent(int current) {
     	int cur = current;
         // Wrap around the values if we go past the start or end
-        if (cur > this.mEnd) {
-            cur = this.mStart;
-        } else if (cur < this.mStart) {
-            cur = this.mEnd;
+        if (cur > mEnd) {
+            cur = mStart;
+        } else if (cur < mStart) {
+            cur = mEnd;
         }
-        this.mPrevious = this.mCurrent;
-        this.mCurrent = cur;
+        mPrevious = mCurrent;
+        mCurrent = cur;
 
         notifyChange();
         updateView();
     }
 
     protected void notifyChange() {
-        if (this.mListener != null) {
-            this.mListener.onChanged(this, this.mPrevious, this.mCurrent);
+        if (mListener != null) {
+            mListener.onChanged(this, mPrevious, mCurrent);
         }
     }
 
@@ -236,20 +236,20 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
          * current number else find the correct value in the
          * displayed values for the current number.
          */
-        if (this.mDisplayedValues == null) {
-            this.mText.setText(formatNumber(this.mCurrent));
+        if (mDisplayedValues == null) {
+            mText.setText(formatNumber(mCurrent));
         } else {
-            this.mText.setText(this.mDisplayedValues[this.mCurrent - this.mStart]);
+            mText.setText(mDisplayedValues[mCurrent - mStart]);
         }
-        this.mText.setSelection(this.mText.getText().length());
+        mText.setSelection(mText.getText().length());
     }
 
     private void validateCurrentView(CharSequence str) {
         int val = getSelectedPos(str.toString());
-        if ((val >= this.mStart) && (val <= this.mEnd)) {
-            if (this.mCurrent != val) {
-                this.mPrevious = this.mCurrent;
-                this.mCurrent = val;
+        if ((val >= mStart) && (val <= mEnd)) {
+            if (mCurrent != val) {
+                mPrevious = mCurrent;
+                mCurrent = val;
                 notifyChange();
             }
         }
@@ -290,24 +290,24 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
         /* The text view may still have focus so clear it's focus which will
          * trigger the on focus changed and any typed values to be pulled.
          */
-        this.mText.clearFocus();
+        mText.clearFocus();
 
         if (R.id.increment == v.getId()) {
-            this.mIncrement = true;
-            this.mHandler.post(this.mRunnable);
+            mIncrement = true;
+            mHandler.post(mRunnable);
         } else if (R.id.decrement == v.getId()) {
-            this.mDecrement = true;
-            this.mHandler.post(this.mRunnable);
+            mDecrement = true;
+            mHandler.post(mRunnable);
         }
         return true;
     }
 
     public void cancelIncrement() {
-        this.mIncrement = false;
+        mIncrement = false;
     }
 
     public void cancelDecrement() {
-        this.mDecrement = false;
+        mDecrement = false;
     }
 
     static final char[] DIGIT_CHARACTERS = new char[] {
@@ -325,15 +325,15 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
 		@Override
 		public CharSequence filter(CharSequence source, int start, int end,
                 Spanned dest, int dstart, int dend) {
-            if (NumberPicker.this.mDisplayedValues == null) {
-                return NumberPicker.this.mNumberInputFilter.filter(source, start, end, dest, dstart, dend);
+            if (mDisplayedValues == null) {
+                return mNumberInputFilter.filter(source, start, end, dest, dstart, dend);
             }
             CharSequence filtered = String.valueOf(source.subSequence(start, end));
             String result = String.valueOf(dest.subSequence(0, dstart))
                     + filtered
                     + dest.subSequence(dend, dest.length());
             String str = String.valueOf(result).toLowerCase(Locale.US);
-            for (String val : NumberPicker.this.mDisplayedValues) {
+            for (String val : mDisplayedValues) {
                 val = val.toLowerCase(Locale.US);
                 if (val.startsWith(str)) {
                     return filtered;
@@ -384,7 +384,7 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
              * as the user might want to delete some numbers
              * and then type a new number.
              */
-            if (val > NumberPicker.this.mEnd) {
+            if (val > mEnd) {
                 return "";
             }
 			return filtered;
@@ -392,14 +392,14 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
     }
 
     int getSelectedPos(String str) {
-        if (this.mDisplayedValues == null) {
+        if (mDisplayedValues == null) {
             return Integer.parseInt(str);
         }
-		for (int i = 0; i < this.mDisplayedValues.length; i++) {
+		for (int i = 0; i < mDisplayedValues.length; i++) {
 		    /* Don't force the user to type in jan when ja will do */
 		    String strl = str.toLowerCase(Locale.US);
-		    if (this.mDisplayedValues[i].toLowerCase(Locale.US).startsWith(strl)) {
-		        return this.mStart + i;
+		    if (mDisplayedValues[i].toLowerCase(Locale.US).startsWith(strl)) {
+		        return mStart + i;
 		    }
 		}
 
@@ -412,7 +412,7 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
 
 		    /* Ignore as if it's not a number we don't care */
 		}
-        return this.mStart;
+        return mStart;
     }
 
     /**
@@ -420,11 +420,11 @@ public class NumberPicker extends LinearLayout implements OnClickListener,
      */
     public int getCurrent() {
     	try {
-    		this.mCurrent = Integer.parseInt(String.valueOf(((TextView) findViewById(R.id.timepicker_input)).getText()));
+          mCurrent = Integer.parseInt(String.valueOf(((TextView) findViewById(R.id.timepicker_input)).getText()));
     	}
     	catch (NumberFormatException e){
     		return 0;    		
     	}
-        return this.mCurrent;
+        return mCurrent;
     }
 }

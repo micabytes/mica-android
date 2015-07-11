@@ -45,7 +45,7 @@ public class NumberPickerButton extends ImageButton {
     }
     
     public void setNumberPicker(NumberPicker picker) {
-        this.mNumberPicker = picker;
+        mNumberPicker = picker;
     }
     
     @Override
@@ -78,9 +78,9 @@ public class NumberPickerButton extends ImageButton {
 
     private void cancelLongpress() {
         if (R.id.increment == getId()) {
-            this.mNumberPicker.cancelIncrement();
+            mNumberPicker.cancelIncrement();
         } else if (R.id.decrement == getId()) {
-            this.mNumberPicker.cancelDecrement();
+            mNumberPicker.cancelDecrement();
         }
     }
 }

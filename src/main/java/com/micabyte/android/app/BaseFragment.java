@@ -392,7 +392,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     public class ContentDescriptionClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            toast((String) v.getContentDescription(), Toast.LENGTH_LONG);
+            toast((String) v.getContentDescription(), Toast.LENGTH_SHORT);
         }
     }
 
