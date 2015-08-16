@@ -1,10 +1,8 @@
 package com.micabyte.android.app;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.appcompat.BuildConfig;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +11,11 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.micabyte.android.R;
 import com.micabyte.android.util.StringHandler;
+import com.micabytes.R;
+import com.micabytes.util.GameLog;
 
+@SuppressWarnings("unused")
 public class BalloonPopup extends Popup implements PopupWindow.OnDismissListener {
     private final ImageView arrowUp;
     private final ImageView arrowDown;
@@ -27,7 +27,6 @@ public class BalloonPopup extends Popup implements PopupWindow.OnDismissListener
      *
      * @param context Context
      */
-    @SuppressLint("InflateParams")
     public BalloonPopup(Context context) {
         super(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -68,8 +67,8 @@ public class BalloonPopup extends Popup implements PopupWindow.OnDismissListener
         //}
         //showArrow(((onTop) ? R.id.arrow_down : R.id.arrow_up), anchorRect.centerX() - xPos);
         if (BuildConfig.DEBUG)
-            Log.d("Balloon", xPos + StringHandler.WHITESPACE + yPos + StringHandler.WHITESPACE + location[0] + StringHandler.WHITESPACE + location[1] + StringHandler.WHITESPACE + rootWidth + StringHandler.WHITESPACE + rootHeight);
-        showArrow((R.id.arrow_down), anchorRect.centerX() - xPos);
+            GameLog.d("Balloon", xPos + StringHandler.WHITESPACE + yPos + StringHandler.WHITESPACE + location[0] + StringHandler.WHITESPACE + location[1] + StringHandler.WHITESPACE + rootWidth + StringHandler.WHITESPACE + rootHeight);
+        showArrow(R.id.arrow_down, anchorRect.centerX() - xPos);
         //setAnimationStyle(screenWidth, anchorRect.centerX(), onTop);
         window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
         //if (this.mAnimateTrack) this.text.startAnimation(this.trackAnim);
@@ -92,15 +91,6 @@ public class BalloonPopup extends Popup implements PopupWindow.OnDismissListener
         hideArrow.setVisibility(View.INVISIBLE);
     }
 
-    /**
-     * Set listener for window dismissed. This listener will only be fired if the quick action
-     * dialog is dismissed by clicking outside the dialog or clicking on sticky item.
-     */
-    public void setOnDismissListener(OnDismissListener listener) {
-        setOnDismissListener(this);
-        dismissListener = listener;
-    }
-
     @Override
     public void onDismiss() {
         if (dismissListener != null) {
@@ -111,18 +101,10 @@ public class BalloonPopup extends Popup implements PopupWindow.OnDismissListener
     }
 
     /**
-     * Listener for item click
-     */
-    @SuppressWarnings("InterfaceNeverImplemented")
-    protected interface OnActionItemClickListener {
-        void onItemClick(BalloonPopup source, int pos, int actionId);
-    }
-
-    /**
      * Listener for window dismiss
      */
     @SuppressWarnings("InterfaceNeverImplemented")
-    protected interface OnDismissListener {
+    private interface OnDismissListener {
         void onDismiss();
     }
 

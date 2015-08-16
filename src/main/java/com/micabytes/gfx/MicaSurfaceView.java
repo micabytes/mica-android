@@ -10,7 +10,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.micabyte.android.graphics;
+package com.micabytes.gfx;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -18,9 +18,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v7.appcompat.BuildConfig;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -28,14 +26,20 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Scroller;
 
+import com.micabytes.util.GameLog;
+
+import org.jetbrains.annotations.NonNls;
+
 /**
  * MicaSurfaceView encapsulates all of the logic for handling 2D game maps. Pass it a
  * SurfaceListener to receive touch events and a SurfaceRenderer to handle the drawing.
  *
  * @author micabyte
  */
+@SuppressWarnings("MethodReturnAlwaysConstant")
 public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callback, GestureDetector.OnGestureListener {
     private static final String TAG = MicaSurfaceView.class.getName();
+    @NonNls
     private static final String DRAW_THREAD = "drawThread";
     private static final int SCALE_MOVE_GUARD = 500;
     /**
@@ -188,7 +192,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         //this.renderer.getViewPosition(p);
         renderer.setViewPosition(p.x, p.y);
         // Debug
-        Log.d(TAG, "surfaceChanged; new dimensions: w=" + width + ", h= " + height);
+        GameLog.d(TAG, "surfaceChanged; new dimensions: w=" + width + ", h= " + height);
         // Required to ensure thread has focus
         //if (this.thread != null)
         //	this.thread.onWindowFocusChanged(true);
@@ -199,7 +203,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
         //this.thread.onWindowFocusChanged(hasFocus);
-        if (BuildConfig.DEBUG) Log.d(TAG, "onWindowFocusChanged");
+        GameLog.d(TAG, "onWindowFocusChanged");
     }
 
     // ----------------------------------------------------------------------
@@ -355,11 +359,12 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         }
     }
 
-    enum TouchState {
+    protected enum TouchState {
         NO_TOUCH, IN_TOUCH, ON_FLING, IN_FLING
     }
 
     class TouchHandler {
+        @NonNls
         private static final String TOUCH_THREAD = "touchThread";
         // Current Touch State
         private TouchState state = TouchState.NO_TOUCH;
@@ -388,6 +393,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             touchThread.start();
         }
 
+        @SuppressWarnings("AssignmentToNull")
         void stop() {
             touchThread.isRunning = false;
             touchThread.interrupt();
@@ -479,6 +485,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         /**
          * Touch Handler Thread
          */
+        @SuppressWarnings("InnerClassTooDeeplyNested")
         class TouchHandlerThread extends Thread {
             private final TouchHandler touchHandler;
             boolean isRunning;

@@ -3,6 +3,7 @@ package com.micabyte.android.app;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,26 +11,24 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
-import com.micabyte.android.R;
-import com.micabyte.android.graphics.ImageHandler;
+import com.micabytes.R;
+import com.micabytes.gfx.ImageHandler;
 
 /**
  * Custom Popup Window
  */
+@SuppressWarnings("unused")
 class Popup {
     private final Context context;
-    protected View rootView;
+    View rootView;
     final PopupWindow window;
     final WindowManager windowManager;
+    @Nullable
     private Drawable background;
 
-    /**
-     * Constructor.
-     *
-     * @param context Context
-     */
     Popup(Context con) {
         context = con;
+        //noinspection AssignmentToNull
         rootView = null;
         window = new PopupWindow(context);
         window.setTouchInterceptor(new View.OnTouchListener() {
@@ -46,14 +45,14 @@ class Popup {
         background = null;
     }
 
-    protected void setRootView(View r) {
+    void setRootView(View r) {
         rootView = r;
     }
 
     /**
      * On Dismiss
      */
-    protected void onDismiss() {
+    void onDismiss() {
         // NOOP
     }
 
@@ -68,7 +67,7 @@ class Popup {
      * On show
      */
     @SuppressWarnings("EmptyMethod")
-    void onShow() {
+    private void onShow() {
         // NOOP
     }
 
@@ -93,8 +92,6 @@ class Popup {
 
     /**
      * Set background drawable.
-     *
-     * @param background Background drawable
      */
     public void setBackgroundDrawable(Drawable bkg) {
         background = bkg;

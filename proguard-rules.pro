@@ -27,9 +27,9 @@
 }
 
 # Jackson
--libraryjars ../lib_base/libs/jackson-annotations-2.4.2.jar
--libraryjars ../lib_base/libs/jackson-core-2.4.2.jar
--libraryjars ../lib_base/libs/jackson-databind-2.4.2.jar
+-libraryjars ../lib_base/libs/jackson-annotations-2.5.3.jar
+-libraryjars ../lib_base/libs/jackson-core-2.5.3.jar
+-libraryjars ../lib_base/libs/jackson-databind-2.5.3.jar
 
 -dontskipnonpubliclibraryclassmembers
 

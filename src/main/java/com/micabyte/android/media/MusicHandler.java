@@ -14,153 +14,143 @@ package com.micabyte.android.media;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.util.Log;
 import android.util.SparseArray;
 
+import com.micabytes.util.GameLog;
+
 /**
- * MusicHandler is a simple, dumb wrapper around the Android MediaPlayer. It plays music files placed
- * in the raw resource directory.
- * <p/>
- * General usage: Start it in the onResume of an activity, and stop the music in the onPause.
- * release should be called in onDestroy of the root activity.
+ * MusicHandler is a simple, dumb wrapper around the Android MediaPlayer. It plays music files
+ * placed in the raw resource directory. <p/> General usage: Start it in the onResume of an
+ * activity, and stop the music in the onPause. release should be called in onDestroy of the root
+ * activity.
  *
  * @author micabyte
  */
 public final class MusicHandler {
-    private static final String TAG = MusicHandler.class.getName();
-    private static final int INVALID_NUMBER = 0;
-    private static final SparseArray<MediaPlayer> PLAYERS = new SparseArray<>();
-    public static final float VOLUME_MAX = 1f;
-    private static int nextMusic;
-    private static int currentMusic;
-    private static float volume = VOLUME_MAX;
+  private static final String TAG = MusicHandler.class.getName();
+  private static final int INVALID_NUMBER = 0;
+  private static final SparseArray<MediaPlayer> PLAYERS = new SparseArray<>();
+  public static final float VOLUME_MAX = 1.0f;
+  private static int nextMusic = 0;
+  private static int currentMusic = 0;
 
-    private MusicHandler() {
-        // NOOP
-    }
+  private MusicHandler() {
+    // NOOP
+  }
 
-    /**
-     * Start playing a music resource
-     */
-    public static void start(Context context, int music) {
-        start(context, music, false);
-    }
-
-    /**
-     * Start playing a music resource
-     *
-     * @param context     The context (application or activity)
-     * @param music The resource id of the music file
-     * @param force Force-start playing this file
-     */
-    @SuppressWarnings({"SameParameterValue", "MethodWithMoreThanThreeNegations"})
-    private static void start(Context context, int music, boolean force) {
-        if ((!force) && (currentMusic != INVALID_NUMBER)) {
-            // already playing some music and not forced to change immediately
-            if (music != INVALID_NUMBER) {
-                nextMusic = music;
-                MediaPlayer mp = PLAYERS.get(music);
-                if (mp == null) {
-                    PLAYERS.put(music, MediaPlayer.create(context, music));
-                }
-                MediaPlayer cp = PLAYERS.get(currentMusic);
-                if (cp != null) {
-                    cp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            next();
-                        }
-                    });
-                    cp.setLooping(false);
-                }
-            }
-            return;
-        }
-        if (currentMusic == music) {
-            // already playing this music
-            return;
-        }
-        if (currentMusic != INVALID_NUMBER) {
-            // playing some other music, pause it and change
-            pause();
-        }
-        currentMusic = music;
+  /**
+   * Start playing a music resource
+   *
+   * @param force   Force-start playing this file
+   * @param context The context (application or activity)
+   * @param music   The resource id of the music file
+   */
+  @SuppressWarnings({"MethodWithMoreThanThreeNegations", "OverlyComplexMethod"})
+  private static void start(Context context, int music) {
+    if (!false && (currentMusic != INVALID_NUMBER)) {
+      // already playing some music and not forced to change immediately
+      if (music != INVALID_NUMBER) {
+        nextMusic = music;
         MediaPlayer mp = PLAYERS.get(music);
-        if (mp != null) {
-            if (!mp.isPlaying()) {
-                // Note: This continues the piece where it last let off
-                mp.setLooping(true);
-                mp.setOnCompletionListener(null);
-                mp.start();
-            }
-        } else {
-            MediaPlayer mediaPlayer = MediaPlayer.create(context, music);
-            PLAYERS.put(music, mediaPlayer);
-            if (mediaPlayer == null) {
-                // Log an error, but don't do anything (we do not want to risk f/context the app)
-                Log.e(TAG, "player was not created successfully");
-            } else {
-                mediaPlayer.setLooping(true);
-                mediaPlayer.setOnCompletionListener(null);
-                mediaPlayer.start();
-            }
+        if (mp == null) {
+          PLAYERS.put(music, MediaPlayer.create(context, music));
         }
+        MediaPlayer cp = PLAYERS.get(currentMusic);
+        if (cp != null) {
+          cp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+              next();
+            }
+          });
+          cp.setLooping(false);
+        }
+      }
+      return;
     }
+    if (currentMusic == music) {
+      // already playing this music
+      return;
+    }
+    if (currentMusic != INVALID_NUMBER) {
+      // playing some other music, pause it and change
+      pause();
+    }
+    currentMusic = music;
+    MediaPlayer mp = PLAYERS.get(music);
+    if (mp != null) {
+      if (!mp.isPlaying()) {
+        // Note: This continues the piece where it last let off
+        mp.setLooping(true);
+        mp.setOnCompletionListener(null);
+        mp.start();
+      }
+    } else {
+      MediaPlayer mediaPlayer = MediaPlayer.create(context, music);
+      PLAYERS.put(music, mediaPlayer);
+      if (mediaPlayer == null) {
+        // Log an ERROR, but don't do anything (we do not want to risk f/context the app)
+        GameLog.e(TAG, "player was not created successfully");
+      } else {
+        mediaPlayer.setLooping(true);
+        mediaPlayer.setOnCompletionListener(null);
+        mediaPlayer.start();
+      }
+    }
+  }
 
-    /**
-     * Pause all media PLAYERS
-     */
-    public static void pause() {
-        for (int i = 0; i < PLAYERS.size(); i++) {
-            MediaPlayer p = PLAYERS.valueAt(i);
-            if (p.isPlaying()) {
-                p.pause();
-            }
-        }
-        nextMusic = currentMusic;
-        currentMusic = INVALID_NUMBER;
+  /**
+   * Pause all media PLAYERS
+   */
+  private static void pause() {
+    for (int i = 0; i < PLAYERS.size(); i++) {
+      MediaPlayer p = PLAYERS.valueAt(i);
+      if (p.isPlaying()) {
+        p.pause();
+      }
     }
+    nextMusic = currentMusic;
+    currentMusic = INVALID_NUMBER;
+  }
 
-    /**
-     * Advance to the next resource
-     */
-    @SuppressWarnings("MethodOnlyUsedFromInnerClass")
-    public static void next() {
-        if (nextMusic == INVALID_NUMBER) {
-            return;
-        }
-        currentMusic = nextMusic;
-        nextMusic = INVALID_NUMBER;
-        MediaPlayer p = PLAYERS.get(currentMusic);
-        if (p != null) {
-            if (!p.isPlaying()) {
-                p.setLooping(true);
-                p.setOnCompletionListener(null);
-                p.start();
-            }
-        }
+  /**
+   * Advance to the next resource
+   */
+  private static void next() {
+    if (nextMusic == INVALID_NUMBER) {
+      return;
     }
+    currentMusic = nextMusic;
+    nextMusic = INVALID_NUMBER;
+    MediaPlayer p = PLAYERS.get(currentMusic);
+    if (p != null) {
+      if (!p.isPlaying()) {
+        p.setLooping(true);
+        p.setOnCompletionListener(null);
+        p.start();
+      }
+    }
+  }
 
-    /**
-     * Release the media PLAYERS.
-     */
-    public static void release() {
-        for (int i = 0; i < PLAYERS.size(); i++) {
-            MediaPlayer p = PLAYERS.valueAt(i);
-            if (p.isPlaying()) {
-                p.stop();
-            }
-            p.release();
-        }
-        PLAYERS.clear();
-        currentMusic = INVALID_NUMBER;
+  /**
+   * Release the media PLAYERS.
+   */
+  public static void release() {
+    for (int i = 0; i < PLAYERS.size(); i++) {
+      MediaPlayer p = PLAYERS.valueAt(i);
+      if (p.isPlaying()) {
+        p.stop();
+      }
+      p.release();
     }
+    PLAYERS.clear();
+    currentMusic = INVALID_NUMBER;
+  }
 
-    public static void setVolume(float v) {
-        volume = v;
-        for (int i = 0; i < PLAYERS.size(); i++) {
-            MediaPlayer p = PLAYERS.valueAt(i);
-            p.setVolume(volume, volume);
-        }
+  public static void setVolume(float v) {
+    for (int i = 0; i < PLAYERS.size(); i++) {
+      MediaPlayer p = PLAYERS.valueAt(i);
+      p.setVolume(v, v);
     }
+  }
 }

@@ -10,32 +10,40 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.micabyte.android.graphics;
+package com.micabytes.gfx;
 
 import android.content.Context;
+import android.graphics.Point;
 
-import com.micabyte.android.map.TileMap;
+import com.micabytes.map.HexMap;
 
 /**
- * TileMapSurfaceRenderer is a renderer that handles the rendering of a Tiled
- * (square) map to the screen. The game should subclass the renderer and extend
- * the drawing methods to add other game elements.
+ * HexMapSurfaceRenderer is a renderer that handles the rendering of a Tiled
+ * (hexagonal) map to the screen. The game should subclass the renderer and
+ * extend the drawing methods to add other game elements.
  */
-public class TileMapSurfaceRenderer extends SurfaceRenderer {
-    // The low resolution version of the background image
-    private TileMap gameSurfaceTileMap;
+public class HexMapSurfaceRenderer extends SurfaceRenderer {
+    // The HexMap object
+    private HexMap gameSurfaceTileMap;
 
-    @SuppressWarnings("UnusedDeclaration")
-    private TileMapSurfaceRenderer(Context con) {
+    public HexMapSurfaceRenderer(Context con) {
         super(con);
+    }
+
+    private static int getRenderWidth() {
+        return (HexMap.getMapWidth() * HexMap.getTileRect().width()) - (HexMap.getTileRect().width() / 2);
+    }
+
+    private static int getRenderHeight() {
+        return ((HexMap.getMapHeight() - 2) * (HexMap.getTileRect().height() - HexMap.getTileSlope())) + HexMap.getTileSlope();
     }
 
     /**
      * Set the TileMap
      */
-    public void setTileMap(TileMap map) {
+    public void setTileMap(HexMap map) {
         gameSurfaceTileMap = map;
-        backgroundSize.set(gameSurfaceTileMap.getRenderWidth(), gameSurfaceTileMap.getRenderHeight());
+        backgroundSize.set(getRenderWidth(), getRenderHeight());
     }
 
     @Override
@@ -51,6 +59,12 @@ public class TileMapSurfaceRenderer extends SurfaceRenderer {
     @Override
     protected void drawFinal() {
         gameSurfaceTileMap.drawFinal(context, viewPort);
+    }
+
+    @Override
+    public void setMapPosition(int x, int y) {
+        Point p = gameSurfaceTileMap.getViewPortOrigin(x, y, viewPort);
+        super.setMapPosition(p.x, p.y);
     }
 
     @Override

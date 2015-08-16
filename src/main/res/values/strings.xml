@@ -16,7 +16,6 @@
     <string name="stringhandler_comma">,</string>
     <string name="stringhandler_and1">and</string>
     <string name="stringhandler_and2">, and</string>
-    <string name="common_cancel">Cancel</string>
     <!-- Error Messages -->
     <string name="err_txt_ioexception" tools:ignore="UnusedResources">I/O error while processing the %1$s data file. Contact support@micabyte.com for help.</string>
     <string name="err_txt_jsonnotfound" tools:ignore="UnusedResources">Could not find the %1$s data file. Contact support@micabyte.com for help.</string>

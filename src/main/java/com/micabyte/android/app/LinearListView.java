@@ -16,8 +16,8 @@ import java.util.List;
 // android:orientation
 public class LinearListView extends LinearLayout
 {
-    Adapter adapter;
-    Observer observer = new Observer(this);
+    private Adapter adapter;
+    private final Observer observer = new Observer(this);
 
     public LinearListView(Context context)
     {
@@ -35,41 +35,46 @@ public class LinearListView extends LinearLayout
         super(context, attrs, defStyle);
     }
 
-    public void setAdapter(Adapter adapter)
+    public void setAdapter(Adapter adp)
     {
-        if (this.adapter != null)
-            this.adapter.unregisterDataSetObserver(observer);
+        if (adapter != null)
+            adapter.unregisterDataSetObserver(observer);
 
-        this.adapter = adapter;
-        adapter.registerDataSetObserver(observer);
+        adapter = adp;
+        adp.registerDataSetObserver(observer);
         observer.onChanged();
     }
 
-    private class Observer extends DataSetObserver
-    {
-        LinearListView context;
+    private Adapter getAdapter() {
+        return adapter;
+    }
 
-        public Observer(LinearListView context)
+    private static final class Observer extends DataSetObserver
+    {
+        final LinearListView listView;
+
+        private Observer(LinearListView lw)
         {
-            this.context = context;
+            listView = lw;
         }
 
+        @SuppressWarnings("MethodWithMultipleLoops")
         @Override
         public void onChanged()
         {
-            List<View> oldViews = new ArrayList<View>(context.getChildCount());
+            List<View> oldViews = new ArrayList<>(listView.getChildCount());
 
-            for (int i = 0; i < context.getChildCount(); i++)
-                oldViews.add(context.getChildAt(i));
+            for (int i = 0; i < listView.getChildCount(); i++)
+                oldViews.add(listView.getChildAt(i));
 
-            Iterator<View> iter = oldViews.iterator();
+            Iterator<View> itr = oldViews.iterator();
 
-            context.removeAllViews();
+            listView.removeAllViews();
 
-            for (int i = 0; i < context.adapter.getCount(); i++)
+            for (int i = 0; i < listView.getAdapter().getCount(); i++)
             {
-                View convertView = iter.hasNext() ? iter.next() : null;
-                context.addView(context.adapter.getView(i, convertView, context));
+                View convertView = itr.hasNext() ? itr.next() : null;
+                listView.addView(listView.getAdapter().getView(i, convertView, listView));
             }
             super.onChanged();
         }
@@ -77,7 +82,7 @@ public class LinearListView extends LinearLayout
         @Override
         public void onInvalidated()
         {
-            context.removeAllViews();
+            listView.removeAllViews();
             super.onInvalidated();
         }
     }

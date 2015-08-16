@@ -13,9 +13,9 @@
 package com.micabyte.android;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.micabyte.android.util.GameLog;
+import com.micabytes.util.GameConstants;
+import com.micabytes.util.GameLog;
 
 import org.jetbrains.annotations.NonNls;
 
@@ -29,11 +29,10 @@ import java.util.regex.Pattern;
  *
  * @author micabyte
  */
-@SuppressWarnings("HardCodedStringLiteral")
 public class BaseObject {
   private static final String TAG = BaseObject.class.getName();
-  public static final String ERROR = "ERROR";
-  protected static final String DRAWABLE = "drawable";
+  protected static final BaseObject ERROR_OBJECT = new BaseObject();
+  protected static final BaseObject NO_OBJECT = new BaseObject();
   private static final char VAR_CHAR = '$';
   private static final Pattern AND_SPLITTER = Pattern.compile("[&]");
   private static final Pattern GEQ_SPLITTER = Pattern.compile("[>=]+");
@@ -52,6 +51,11 @@ public class BaseObject {
 
   protected BaseObject() {
     // NOOP
+  }
+
+  protected BaseObject(String oid, String nam) {
+    id = oid;
+    name = nam;
   }
 
   protected BaseObject(String oid, String nam, int val) {
@@ -89,7 +93,7 @@ public class BaseObject {
   }
 
   public boolean isEmpty() {
-    return (id.isEmpty() && name.isEmpty() && value == 0);
+    return id.isEmpty() && name.isEmpty() && value == 0;
   }
 
   /*
@@ -98,45 +102,44 @@ public class BaseObject {
    * different types of game objects.
    */
   private enum ValueToken {
-    error,
-    name,
-    value,
-    me;
+    ERROR,
+    NAME,
+    VALUE,
+    ME;
 
     public static ValueToken get(String str) {
       try {
         String str1 = str.trim();
-        String str2 = str1.toLowerCase(Locale.US);
+        String str2 = str1.toUpperCase(Locale.US);
         return valueOf(str2);
-      } catch (IllegalArgumentException e) {
-        GameLog.logException(e);
-        return error;
+      } catch (IllegalArgumentException ignored) {
+        return ERROR;
       }
     }
   }
 
-  public int getInteger(@NonNls String id) {
-    if (ValueToken.get(id) == ValueToken.value)
+  public int getInteger(@NonNls String s) {
+    if (ValueToken.get(s) == ValueToken.VALUE)
       return value;
     return Integer.MIN_VALUE;
   }
 
   @NonNull
-  public String getString(@NonNls String id) {
-    switch (ValueToken.get(id)) {
-      case name:
+  public String getString(@NonNls String s) {
+    switch (ValueToken.get(s)) {
+      case NAME:
         return getName();
-      case value:
+      case VALUE:
         return Integer.toString(value);
       default:
-        return ERROR;
+        return GameConstants.ERROR;
     }
   }
 
   @NonNull
-  public BaseObject getObject(@NonNls String id) {
-    //ValueToken token = ValueToken.get(id);
-    return (id.equalsIgnoreCase("this")) ? this : new BaseObject();
+  public BaseObject getObject(@NonNls String s) {
+    //ValueToken token = ValueToken.get(s);
+    return GameConstants.THIS.equalsIgnoreCase(id) ? this : ERROR_OBJECT;
   }
 
   public static int evaluate(String test, HashMap<String, Object> variables) {
@@ -145,18 +148,13 @@ public class BaseObject {
       return evaluateStatement(test, variables);
     boolean ret = true;
     for (String s : tokens) {
-      if (evaluateStatement(s, variables) <= 0) {
+      if (evaluateStatement(s, variables) <= 0)
         ret = false;
-        Log.d(TAG, "Evaluate of " + s + " is false");
-      }
-      else {
-        Log.d(TAG, "Evaluate of " + s + " is true");
-      }
     }
     return ret ? 1 : 0;
   }
 
-  @SuppressWarnings({"MethodWithMultipleReturnPoints", "OverlyComplexMethod"})
+  @SuppressWarnings({"MethodWithMultipleReturnPoints", "OverlyComplexMethod", "OverlyLongMethod", "FeatureEnvy"})
   private static int evaluateStatement(String str, AbstractMap<String, Object> variables) {
     String[] tokens;
     // Random Value
@@ -168,7 +166,7 @@ public class BaseObject {
         String val2 = tokens[1].trim().toLowerCase(Locale.US);
         return (getVariableValue(val1, variables) >= getVariableValue(val2, variables)) ? 1 : 0;
       }
-      GameLog.e(TAG, "Could not parse statement fragment " + str);
+      GameLog.e(TAG, "Could not parse statement fragment GEQ:" + str);
       return 0;
     }
     // >=
@@ -179,7 +177,7 @@ public class BaseObject {
         String val2 = tokens[1].trim().toLowerCase(Locale.US);
         return (getVariableValue(val1, variables) <= getVariableValue(val2, variables)) ? 1 : 0;
       }
-      GameLog.e(TAG, "Could not parse statement fragment " + str);
+      GameLog.e(TAG, "Could not parse statement fragment LEQ:" + str);
       return 0;
     }
     // >
@@ -190,7 +188,7 @@ public class BaseObject {
         String val2 = tokens[1].trim().toLowerCase(Locale.US);
         return (getVariableValue(val1, variables) > getVariableValue(val2, variables)) ? 1 : 0;
       }
-      GameLog.e(TAG, "Could not parse statement fragment " + str);
+      GameLog.e(TAG, "Could not parse statement fragment GT:" + str);
       return 0;
     }
     // <
@@ -201,7 +199,7 @@ public class BaseObject {
         String val2 = tokens[1].trim().toLowerCase(Locale.US);
         return (getVariableValue(val1, variables) < getVariableValue(val2, variables)) ? 1 : 0;
       }
-      GameLog.e(TAG, "Could not parse statement fragment " + str);
+      GameLog.e(TAG, "Could not parse statement fragment LT:" + str);
       return 0;
     }
     // Set Last, as it will otherwise take precedence over all the others.
@@ -234,7 +232,7 @@ public class BaseObject {
     }
     String[] tokens = DOT_SPLITTER.split(str, 2);
     if (tokens.length > 2) {
-      GameLog.e(TAG, "Failed to interpret object " + str);
+      GameLog.e(TAG, "Failed to get variable value for object " + str);
       return 0;
     }
     if (variables == null)
@@ -259,8 +257,4 @@ public class BaseObject {
     return gObj.getInteger(tokens[1]);
   }
 
-  @Override
-  public String toString() {
-    return getId();
-  }
 }

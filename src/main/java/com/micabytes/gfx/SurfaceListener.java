@@ -10,7 +10,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.micabyte.android.graphics;
+package com.micabytes.gfx;
 
 /**
  * Interface for SurfaceListener. Is used to return touch information to the game controller

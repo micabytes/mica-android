@@ -17,12 +17,13 @@
 package com.micabyte.android.app;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.ImageButton;
 
-import com.micabyte.android.R;
+import com.micabytes.R;
 
 /**
  * This class exists purely to cancel long click events.
@@ -49,7 +50,7 @@ public class NumberPickerButton extends ImageButton {
     }
     
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         cancelLongpressIfRequired(event);
         return super.onTouchEvent(event);
     }
@@ -76,6 +77,7 @@ public class NumberPickerButton extends ImageButton {
         }
     }
 
+    @SuppressWarnings("MethodNamesDifferingOnlyByCase")
     private void cancelLongpress() {
         if (R.id.increment == getId()) {
             mNumberPicker.cancelIncrement();

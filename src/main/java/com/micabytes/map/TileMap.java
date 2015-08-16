@@ -10,7 +10,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.micabyte.android.map;
+package com.micabytes.map;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -19,13 +19,14 @@ import android.graphics.Point;
 import android.graphics.Rect;
 
 import com.micabyte.android.BaseObject;
-import com.micabyte.android.graphics.SurfaceRenderer;
+import com.micabytes.gfx.SurfaceRenderer;
 
 /**
  * TileMap superclass
  *
  * @author micabyte
  */
+@SuppressWarnings({"unused", "AbstractClassExtendsConcreteClass", "AbstractClassNeverImplemented"})
 public abstract class TileMap extends BaseObject {
     private static int mapWidth;
     private static int mapHeight;
@@ -50,11 +51,11 @@ public abstract class TileMap extends BaseObject {
     }
 
     public int getRenderHeight() {
-        return (mapHeight * tileRect.height());
+        return mapHeight * tileRect.height();
     }
 
     public int getRenderWidth() {
-        return (mapWidth * tileRect.width());
+        return mapWidth * tileRect.width();
     }
 
     public int getTileHeight() {
@@ -65,7 +66,7 @@ public abstract class TileMap extends BaseObject {
         return tileRect.width();
     }
 
-    @SuppressWarnings({"MethodWithMultipleLoops", "NumericCastThatLosesPrecision"})
+    @SuppressWarnings({"MethodWithMultipleLoops", "NumericCastThatLosesPrecision", "OverlyLongMethod"})
     public void drawBase(Context context, SurfaceRenderer.ViewPort p) {
         Canvas canvas = new Canvas(p.getBitmap());
         Paint paint = new Paint();

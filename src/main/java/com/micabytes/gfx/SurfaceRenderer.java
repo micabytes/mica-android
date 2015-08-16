@@ -10,7 +10,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.micabyte.android.graphics;
+package com.micabytes.gfx;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -177,6 +177,7 @@ public abstract class SurfaceRenderer {
             window.set(x, y, x + w, y + h);
         }
 
+        @SuppressWarnings("AssignmentToNull")
         public synchronized void setSize(int w, int h) {
             if (bitmap != null) {
                 bitmap.recycle();
@@ -232,6 +233,7 @@ public abstract class SurfaceRenderer {
             zoom = f;
         }
 
+        @SuppressWarnings("OverlyLongMethod")
         public void zoom(float factor, PointF screenFocus) {
             if (getBitmap() == null) return;
             PointF screenSize = new PointF(getBitmap().getWidth(), getBitmap().getHeight());
