@@ -12,7 +12,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
+//apply plugin: 'com.neenbedankt.android-apt'
 
 repositories {
     mavenCentral()
@@ -21,12 +21,12 @@ repositories {
 
 android {
     publishNonDefault true
-    compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    compileSdkVersion 23
+    buildToolsVersion '23.0.0'
 
     defaultConfig {
         minSdkVersion 10
-        targetSdkVersion 22
+        targetSdkVersion 23
     }
     buildTypes {
         release {
@@ -42,25 +42,25 @@ dependencies {
     // Annotations
     //noinspection GradleDynamicVersion
     compile 'com.intellij:annotations:+@jar'
-    compile 'com.android.support:support-annotations:22.2.1'
+    compile 'com.android.support:support-annotations:23.0.0'
     // Android Support
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:23.0.0'
     // Dagger 2
-    compile 'com.google.dagger:dagger:2.0.1'
-    apt 'com.google.dagger:dagger-compiler:2.0.1'
+    //compile 'com.google.dagger:dagger:2.0.1'
+    //apt 'com.google.dagger:dagger-compiler:2.0.1'
     // JSON Libraries
     // Remember to modify proguard-rules.pro also
-    compile 'com.fasterxml.jackson.core:jackson-core:2.5.3'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.3'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.3'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.6.1'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.1'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.1'
     // Fabric
-    compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.1@aar') {
         transitive = true;
     }
     // Google Play
-    compile 'com.google.android.gms:play-services-ads:7.5.0'
-    compile 'com.google.android.gms:play-services-appstate:7.5.0'
-    compile 'com.google.android.gms:play-services-drive:7.5.0'
-    compile 'com.google.android.gms:play-services-games:7.5.0'
-    compile 'com.google.android.gms:play-services-plus:7.5.0'
+    compile 'com.google.android.gms:play-services-ads:7.8.0'
+    compile 'com.google.android.gms:play-services-appstate:7.8.0'
+    compile 'com.google.android.gms:play-services-drive:7.8.0'
+    compile 'com.google.android.gms:play-services-games:7.8.0'
+    compile 'com.google.android.gms:play-services-plus:7.8.0'
 }

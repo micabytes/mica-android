@@ -41,12 +41,9 @@ public class BaseObject {
   private static final Pattern LT_SPLITTER = Pattern.compile("[<]+");
   private static final Pattern EQ_SPLITTER = Pattern.compile("[=]+");
   private static final Pattern DOT_SPLITTER = Pattern.compile("[.]");
-  // ID of Object
-  @NonNls
-  private String id = "";
-  // Name of Object
+
+  @NonNls private String id = "";
   private String name = "";
-  // Value of Object
   private int value;
 
   protected BaseObject() {
