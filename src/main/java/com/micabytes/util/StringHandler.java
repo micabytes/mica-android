@@ -15,7 +15,6 @@ package com.micabytes.util;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import com.micabytes.BaseObject;
 import com.micabytes.R;
 
 import org.jetbrains.annotations.NonNls;
@@ -41,8 +40,7 @@ public class StringHandler {
   private static final String TAG = StringHandler.class.getName();
   private static final int NOT_FOUND = -1;
   private static final String punctuation = "(),;.!?\"";
-  @NonNls
-  public static final String WHITESPACE = " ";
+  @NonNls public static final String WHITESPACE = " ";
   public static final char CHAR_WHITESPACE = ' ';
   public static final char HASH_MARK = '#';
   public static final char PERCENT = '%';
@@ -74,69 +72,11 @@ public class StringHandler {
    * @param variables A hash map containing variables
    * @return String with all of the scripting code replaced appropriately
    */
-  @SuppressWarnings({"WeakerAccess", "InstanceofInterfaces", "ChainOfInstanceofChecks"})
   public static String format(Context c, String text, @Nullable HashMap<String, Object> variables) {
+    String ret = resolveLineBreaks(text);
+    // Markup Link Notation
     int start;
     int end;
-    String ret = text;
-    // Insert Line breaks
-    //noinspection AccessOfSystemProperties
-    ret = ret.replace("\\n", System.getProperty("line.separator"));
-    // Handle random choice
-    start = ret.indexOf("[/");
-    while (start != NOT_FOUND) {
-      end = ret.indexOf("/]", start);
-      if (end != NOT_FOUND) {
-        String replace = ret.substring(start, end + 2);
-        String sub = ret.substring(start + 2, end);
-        String[] tokens = sub.split("[/]");
-        ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
-        start = ret.indexOf("[/");
-      } else
-        start = NOT_FOUND;
-    }
-    // Handle plurals
-    start = ret.indexOf("[#");
-    while (start != NOT_FOUND) {
-      end = ret.indexOf("#]", start);
-      if (end == NOT_FOUND) end = ret.length();
-      String replace = ret.substring(start, end + 2);
-      String sub = ret.substring(start + 2, end);
-      String[] tokens = sub.split("[/]");
-      if (tokens.length == 4) {
-        String nStr = tokens[0];
-        int nInt = 0;
-        try {
-          nInt = Integer.parseInt(nStr.trim());
-        } catch (NumberFormatException e) {
-          if (variables != null) {
-            String[] vars = nStr.split("[.]");
-            Object obj = variables.get(vars[0].trim().toLowerCase(Locale.US));
-            if (obj != null) {
-              if (vars.length == 1) {
-                if (obj instanceof Integer) {
-                  nInt = (Integer) obj;
-                } else if (obj instanceof Double) {
-                  nInt = ((Double) obj).intValue();
-                } else if (obj instanceof BaseObject) {
-                  nInt = ((BaseObject) obj).getInteger(GameConstants.VALUE);
-                }
-              } else {
-                nInt = ((BaseObject) obj).getInteger(vars[1].trim().toLowerCase(Locale.US));
-              }
-            }
-          }
-        }
-        if (nInt == 0) {
-          ret = ret.replace(replace, tokens[1]);
-        } else
-          ret = nInt == 1 ? ret.replace(replace, tokens[2]) : ret.replace(replace, tokens[3]);
-      } else {
-        ret = ret.replace(replace, "VariablePluralError:" + sub);
-      }
-      start = ret.indexOf("[#");
-    }
-    // Markup Link Notation
     start = ret.indexOf('[');
     while (start != NOT_FOUND) {
       end = ret.indexOf(']', start);
@@ -167,42 +107,45 @@ public class StringHandler {
     }
     // Game variable substitution
     if (variables != null) {
-      start = ret.indexOf('$');
+      start = ret.indexOf('{');
       while (start != NOT_FOUND) {
-        // Regular Variable
-        end = ret.indexOf(' ', start);
-        if (end == NOT_FOUND) end = ret.length();
-        while (punctuation.indexOf(ret.charAt(end - 1)) != NOT_FOUND)
-          end--;
-        String variable = ret.substring(start, end);
-        String variableRegex = "\\" + variable;
-        String[] tokens = variable.split("[.]");
-        if (tokens.length == 1) {
-          Object obj = variables.get(tokens[0].trim().toLowerCase(Locale.US));
-          if (obj != null) {
-            if (obj instanceof Integer) {
-              ret = ret.replaceFirst(variableRegex, obj.toString());
-            } else if (obj instanceof Double) {
-              ret = ret.replaceFirst(variableRegex, obj.toString());
-            } else if (obj instanceof String) {
-              ret = ret.replaceFirst(variableRegex, ((String) obj));
-            } else
-              ret = obj instanceof BaseObject ? ret.replaceFirst(variableRegex, ((BaseObject) obj).getName()) : ret.replaceFirst(variableRegex, "VariableTypeError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
-          } else {
-            ret = ret.replaceFirst(variableRegex, "VariableMissingError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
-          }
-        } else {
-          Object obj = variables.get(tokens[0].trim().toLowerCase(Locale.US));
-          if (obj != null) {
-            ret = obj instanceof BaseObject ? ret.replaceFirst(variableRegex, ((BaseObject) obj).getString(tokens[1].trim())) : ret.replaceFirst(variableRegex, "VariableTypeError:" + variable);
-          } else {
-            ret = ret.replaceFirst(variableRegex, "VariableMissingError:" + tokens[0].trim().toLowerCase(Locale.US).replace('$', ' '));
-          }
-        }
-        start = ret.indexOf('$');
+        end = ret.indexOf('}', start);
+        if (end != NOT_FOUND) {
+          String variable = ret.substring(start + 1, end);
+          String stringToReplace = ret.substring(start, end + 1);
+          ret.replace(stringToReplace, getStringValue(variable, variables));
+          start = ret.indexOf('{');
+        } else
+          start = NOT_FOUND;
       }
     }
     return ret;
+  }
+
+  private static String resolveLineBreaks(String text) {
+    return text.replace("\\n", System.getProperty("line.separator"));
+  }
+
+  private static String getStringValue(String key, AbstractMap<String, Object> variables) {
+    if (variables == null) {
+      return GameConstants.ERROR;
+    }
+    String str = key.trim().toLowerCase(Locale.US);
+    if (str.isEmpty())
+      return GameConstants.ERROR;
+    String[] tokens = DOT_SPLITTER.split(str, 2);
+    if (tokens.length > 2) {
+      GameLog.e(TAG, "Failed to get variable value for object " + str);
+      return GameConstants.ERROR;
+    }
+    Object obj = variables.get(tokens[0]);
+    if (obj == null) {
+      return GameConstants.ERROR;
+    }
+    if (tokens.length == 1)
+      return obj.toString();
+    StoryObject sObj = (StoryObject) obj;
+    return sObj.getString(tokens[1]);
   }
 
   @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
@@ -217,17 +160,17 @@ public class StringHandler {
     return str;
   }
 
-  public static String list(Context c, ArrayList<BaseObject> list) {
+  public static String list(Context c, ArrayList<String> list) {
     if (list.isEmpty()) return "";
     if (list.size() == 1) {
-      return list.get(0).getName();
+      return list.get(0);
     }
     if (list.size() == 2) {
-      return new StringBuilder(list.get(0).getName()).append(StringHandler.WHITESPACE).append(c.getString(R.string.stringhandler_and1)).append(' ').append(list.get(1).getName()).toString();
+      return new StringBuilder(list.get(0)).append(StringHandler.WHITESPACE).append(c.getString(R.string.stringhandler_and1)).append(' ').append(list.get(1)).toString();
     }
     StringBuilder ret = new StringBuilder();
     for (int i = 0; i < (list.size() - 1); i++) {
-      ret.append(list.get(i).getName());
+      ret.append(list.get(i));
       if (i < (list.size() - 2)) {
         ret.append(c.getString(R.string.stringhandler_comma));
         ret.append(' ');
@@ -236,7 +179,7 @@ public class StringHandler {
         ret.append(' ');
       }
     }
-    ret.append(list.get(list.size() - 1).getName());
+    ret.append(list.get(list.size() - 1));
     return ret.toString();
   }
 
@@ -405,10 +348,10 @@ public class StringHandler {
       return ((Double) obj).intValue();
     if (obj instanceof String)
       return 1;
-    BaseObject gObj = (BaseObject) obj;
-    if (tokens.length == 1) {
-      return gObj.getValue();
-    }
+    StoryObject gObj = (StoryObject) obj;
+    //if (tokens.length == 1) {
+    //  return gObj.getValue();
+    //}
     return gObj.getInteger(tokens[1]);
   }
 }

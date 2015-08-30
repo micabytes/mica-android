@@ -19,7 +19,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 
-import com.micabytes.BaseObject;
 import com.micabytes.gfx.SurfaceRenderer;
 import com.micabytes.util.GameLog;
 
@@ -30,7 +29,7 @@ import com.micabytes.util.GameLog;
  * @author micabyte
  */
 @SuppressWarnings({"AbstractClassExtendsConcreteClass", "unused"})
-public abstract class HexMap extends BaseObject {
+public abstract class HexMap {
   private static final String TAG = HexMap.class.getName();
   private static boolean standardOrientation = true;
   private static int mapWidth;
@@ -52,7 +51,6 @@ public abstract class HexMap extends BaseObject {
   protected final Canvas canvas = new Canvas();
 
   protected HexMap(String id, String name) {
-    super(id, name, 0);
     tilePaint.setAntiAlias(true);
     tilePaint.setFilterBitmap(true);
     tilePaint.setDither(true);

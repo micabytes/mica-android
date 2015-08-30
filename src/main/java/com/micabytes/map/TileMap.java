@@ -18,7 +18,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 
-import com.micabytes.BaseObject;
 import com.micabytes.gfx.SurfaceRenderer;
 
 /**
@@ -27,17 +26,13 @@ import com.micabytes.gfx.SurfaceRenderer;
  * @author micabyte
  */
 @SuppressWarnings({"unused", "AbstractClassExtendsConcreteClass", "AbstractClassNeverImplemented"})
-public abstract class TileMap extends BaseObject {
+public abstract class TileMap {
     private static int mapWidth;
     private static int mapHeight;
     private TileMapZone[][] zones;
     private Rect tileRect;
     private final Point viewPortOrigin = new Point();
     private final Point viewPortSize = new Point();
-
-    protected TileMap(String id, String name) {
-        super(id, name, 0);
-    }
 
     @SuppressWarnings("AssignmentToStaticFieldFromInstanceMethod")
     public void setTileMap(Context con, TileMapZone[][] map) {

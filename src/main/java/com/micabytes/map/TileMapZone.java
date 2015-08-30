@@ -17,7 +17,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-import com.micabytes.BaseObject;
 import com.micabytes.gfx.ImageHandler;
 
 /**
@@ -25,31 +24,28 @@ import com.micabytes.gfx.ImageHandler;
  *
  * @author micabyte
  */
-public class TileMapZone extends BaseObject {
-
-  protected TileMapZone(String id, String name) {
-    super(id, name, 0);
-  }
+public class TileMapZone {
+  int value;
 
   /**
    * Get the width of a tile
    */
   public int getWidth(Context context) {
-    return ImageHandler.getInstance(context).get(getValue()).getWidth();
+    return ImageHandler.getInstance(context).get(value).getWidth();
   }
 
   /**
    * Get the height of a tile
    */
   public int getHeight(Context context) {
-    return ImageHandler.getInstance(context).get(getValue()).getHeight();
+    return ImageHandler.getInstance(context).get(value).getHeight();
   }
 
   /**
    * Draw the base bitmap of the tile on a canvas
    */
   public void drawBase(Context context, Canvas canvas, Rect tileRect, Rect destRect, Paint paint) {
-    canvas.drawBitmap(ImageHandler.getInstance(context).get(getValue()), tileRect, destRect, paint);
+    canvas.drawBitmap(ImageHandler.getInstance(context).get(value), tileRect, destRect, paint);
   }
 
 
