@@ -24,9 +24,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * StringHandler is a wrapper around the standard Android getString functionality. It is primarily
@@ -36,7 +38,7 @@ import java.util.Locale;
  */
 @SuppressWarnings("ALL")
 public class StringHandler {
-
+  private static final String TAG = StringHandler.class.getName();
   private static final int NOT_FOUND = -1;
   private static final String punctuation = "(),;.!?\"";
   @NonNls
@@ -46,6 +48,14 @@ public class StringHandler {
   public static final char PERCENT = '%';
   @NonNls
   public static final char EOL = '\n';
+  private static final char VAR_CHAR = '$';
+  private static final Pattern AND_SPLITTER = Pattern.compile("[&]");
+  private static final Pattern GEQ_SPLITTER = Pattern.compile("[>=]+");
+  private static final Pattern LEQ_SPLITTER = Pattern.compile("[<=]+");
+  private static final Pattern GT_SPLITTER = Pattern.compile("[>]+");
+  private static final Pattern LT_SPLITTER = Pattern.compile("[<]+");
+  private static final Pattern EQ_SPLITTER = Pattern.compile("[=]+");
+  private static final Pattern DOT_SPLITTER = Pattern.compile("[.]");
 
   /**
    * This is the workhorse function of the class. It takes a string and strips out the formatting
@@ -146,7 +156,7 @@ public class StringHandler {
           ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
         } else {
           condition = condition.replace("?", "");
-          int nInt = BaseObject.evaluate(condition, variables);
+          int nInt = evaluate(condition, variables);
           if (nInt > (tokens.length - 1)) nInt = tokens.length - 1;
           if (nInt < 0) nInt = 0;
           ret = ret.replace(replace, tokens[nInt]);
@@ -285,5 +295,120 @@ public class StringHandler {
       }
     }
     return sb.toString();
+  }
+
+  public static int evaluate(String test, HashMap<String, Object> variables) {
+    String[] tokens = AND_SPLITTER.split(test);
+    if (tokens.length == 1)
+      return evaluateStatement(test, variables);
+    boolean ret = true;
+    for (String s : tokens) {
+      if (evaluateStatement(s, variables) <= 0)
+        ret = false;
+    }
+    return ret ? 1 : 0;
+  }
+
+  @SuppressWarnings({"MethodWithMultipleReturnPoints", "OverlyComplexMethod", "OverlyLongMethod", "FeatureEnvy"})
+  private static int evaluateStatement(String str, AbstractMap<String, Object> variables) {
+    String[] tokens;
+    // Random Value
+    // >=
+    if (str.contains(">=")) {
+      tokens = GEQ_SPLITTER.split(str);
+      if (tokens.length == 2) {
+        String val1 = tokens[0].trim().toLowerCase(Locale.US);
+        String val2 = tokens[1].trim().toLowerCase(Locale.US);
+        return (getVariableValue(val1, variables) >= getVariableValue(val2, variables)) ? 1 : 0;
+      }
+      GameLog.e(TAG, "Could not parse statement fragment GEQ:" + str);
+      return 0;
+    }
+    // >=
+    if (str.contains("<=")) {
+      tokens = LEQ_SPLITTER.split(str);
+      if (tokens.length == 2) {
+        String val1 = tokens[0].trim().toLowerCase(Locale.US);
+        String val2 = tokens[1].trim().toLowerCase(Locale.US);
+        return (getVariableValue(val1, variables) <= getVariableValue(val2, variables)) ? 1 : 0;
+      }
+      GameLog.e(TAG, "Could not parse statement fragment LEQ:" + str);
+      return 0;
+    }
+    // >
+    if (str.contains(">")) {
+      tokens = GT_SPLITTER.split(str);
+      if (tokens.length == 2) {
+        String val1 = tokens[0].trim().toLowerCase(Locale.US);
+        String val2 = tokens[1].trim().toLowerCase(Locale.US);
+        return (getVariableValue(val1, variables) > getVariableValue(val2, variables)) ? 1 : 0;
+      }
+      GameLog.e(TAG, "Could not parse statement fragment GT:" + str);
+      return 0;
+    }
+    // <
+    if (str.contains("<")) {
+      tokens = LT_SPLITTER.split(str);
+      if (tokens.length == 2) {
+        String val1 = tokens[0].trim().toLowerCase(Locale.US);
+        String val2 = tokens[1].trim().toLowerCase(Locale.US);
+        return (getVariableValue(val1, variables) < getVariableValue(val2, variables)) ? 1 : 0;
+      }
+      GameLog.e(TAG, "Could not parse statement fragment LT:" + str);
+      return 0;
+    }
+    // Set Last, as it will otherwise take precedence over all the others.
+    // =
+    if (str.contains("=")) {
+      tokens = EQ_SPLITTER.split(str);
+      if (tokens.length == 2) {
+        String val1 = tokens[0].trim().toLowerCase(Locale.US);
+        String val2 = tokens[1].trim().toLowerCase(Locale.US);
+        return (getVariableValue(val1, variables) == getVariableValue(val2, variables)) ? 1 : 0;
+      }
+      GameLog.e(TAG, "Could not parse statement fragment " + str);
+      return 0;
+    }
+    // Retrieve
+    return getVariableValue(str, variables);
+  }
+
+  @SuppressWarnings({"ChainOfInstanceofChecks", "MethodWithMultipleReturnPoints", "OverlyComplexMethod"})
+  private static int getVariableValue(String key, AbstractMap<String, Object> variables) {
+    String str = key.trim().toLowerCase(Locale.US);
+    if (str.isEmpty()) return 0;
+    if (str.charAt(0) != VAR_CHAR) {
+      try {
+        return Integer.parseInt(str);
+      } catch (NumberFormatException e) {
+        GameLog.logException(e);
+        return 0;
+      }
+    }
+    String[] tokens = DOT_SPLITTER.split(str, 2);
+    if (tokens.length > 2) {
+      GameLog.e(TAG, "Failed to get variable value for object " + str);
+      return 0;
+    }
+    if (variables == null)
+      return 0;
+    Object obj = variables.get(tokens[0]);
+    if (obj == null) {
+      return 0;
+    }
+    if (obj instanceof Boolean) {
+      return (Boolean) obj ? 1 : 0;
+    }
+    if (obj instanceof Integer)
+      return (Integer) obj;
+    if (obj instanceof Double)
+      return ((Double) obj).intValue();
+    if (obj instanceof String)
+      return 1;
+    BaseObject gObj = (BaseObject) obj;
+    if (tokens.length == 1) {
+      return gObj.getValue();
+    }
+    return gObj.getInteger(tokens[1]);
   }
 }
