@@ -39,9 +39,9 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
-import com.micabyte.android.app.LinearListView;
+import com.micabytes.gui.LinearListView;
 import com.micabytes.util.GameLog;
-import com.micabyte.android.util.StringHandler;
+import com.micabytes.util.StringHandler;
 
 import org.jetbrains.annotations.NonNls;
 

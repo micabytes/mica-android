@@ -17,7 +17,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-import com.micabyte.android.BaseObject;
+import com.micabytes.BaseObject;
 import com.micabytes.gfx.ImageHandler;
 
 /**

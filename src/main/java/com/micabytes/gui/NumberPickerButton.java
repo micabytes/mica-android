@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.micabyte.android.app;
+package com.micabytes.gui;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

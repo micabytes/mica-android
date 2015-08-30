@@ -18,7 +18,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 
-import com.micabyte.android.BaseObject;
+import com.micabytes.BaseObject;
 import com.micabytes.gfx.SurfaceRenderer;
 
 /**

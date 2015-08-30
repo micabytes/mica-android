@@ -10,19 +10,19 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.micabyte.android.util;
+package com.micabytes.util;
 
-public class GameObjectNotFoundException extends Exception {
+public class GamePathNotFoundException extends Exception {
 
-  public GameObjectNotFoundException(String message) {
+  public GamePathNotFoundException(String message) {
     super(message);
   }
 
-  public GameObjectNotFoundException(Throwable throwable) {
+  public GamePathNotFoundException(Throwable throwable) {
     super(throwable);
   }
 
-  public GameObjectNotFoundException(String message, Throwable throwable) {
+  public GamePathNotFoundException(String message, Throwable throwable) {
     super(message, throwable);
   }
 

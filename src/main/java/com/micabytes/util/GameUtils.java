@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.micabyte.android.util;
+package com.micabytes.util;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;

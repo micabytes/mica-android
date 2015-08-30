@@ -49,8 +49,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import com.micabyte.android.util.StringHandler;
-
 import java.util.ArrayList;
 
 @SuppressWarnings("ALL")

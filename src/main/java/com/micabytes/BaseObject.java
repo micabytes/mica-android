@@ -10,12 +10,13 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.micabyte.android;
+package com.micabytes;
 
 import android.support.annotation.NonNull;
 
 import com.micabytes.util.GameConstants;
 import com.micabytes.util.GameLog;
+import com.micabytes.util.StringHandler;
 
 import org.jetbrains.annotations.NonNls;
 
@@ -59,6 +60,11 @@ public class BaseObject {
     id = oid;
     name = nam;
     value = val;
+  }
+
+  @Override
+  public String toString() {
+    return StringHandler.HASH_MARK + id;
   }
 
   public String getId() {

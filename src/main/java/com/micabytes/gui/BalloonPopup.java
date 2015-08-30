@@ -1,4 +1,4 @@
-package com.micabyte.android.app;
+package com.micabytes.gui;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.micabyte.android.util.StringHandler;
+import com.micabytes.util.StringHandler;
 import com.micabytes.R;
 import com.micabytes.util.GameLog;
 

@@ -10,15 +10,13 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.micabyte.android.util;
+package com.micabytes.util;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import com.micabyte.android.BaseObject;
+import com.micabytes.BaseObject;
 import com.micabytes.R;
-import com.micabytes.util.GameConstants;
-import com.micabytes.util.GameLog;
 
 import org.jetbrains.annotations.NonNls;
 

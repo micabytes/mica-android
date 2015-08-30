@@ -1,4 +1,4 @@
-package com.micabyte.android.app;
+package com.micabytes.gui;
 
 import android.content.Context;
 import android.content.res.TypedArray;

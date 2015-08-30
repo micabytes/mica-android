@@ -10,7 +10,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.micabyte.android.media;
+package com.micabytes.media;
 
 import android.content.Context;
 import android.media.MediaPlayer;

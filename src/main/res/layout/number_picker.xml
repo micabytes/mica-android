@@ -12,7 +12,7 @@
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <com.micabyte.android.app.NumberPickerButton
+  <com.micabytes.gui.NumberPickerButton
       android:id="@+id/increment"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
       android:textSize="30sp"
       android:inputType="number"/>
 
-  <com.micabyte.android.app.NumberPickerButton
+  <com.micabytes.gui.NumberPickerButton
       android:id="@+id/decrement"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
