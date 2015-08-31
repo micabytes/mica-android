@@ -305,9 +305,9 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
   /**
    * Performs setup on this GameHelper object. Call this from the onCreate() method of your
    * Activity. This will create the clients and do a few other initialization tasks. Next, call
-   * @link{#onStart} from the onStart() method of your Activity.
    *
    * @param listener The listener to be notified of sign-in events.
+   * @link{#onStart} from the onStart() method of your Activity.
    */
   public void setup(GameHelperListener listener) {
     if (mSetupDone) {
@@ -330,6 +330,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
 
   /**
    * Returns the GoogleApiClient object. In order to call this method, you must have called
+   *
    * @link{setup}.
    */
   public GoogleApiClient getApiClient() {

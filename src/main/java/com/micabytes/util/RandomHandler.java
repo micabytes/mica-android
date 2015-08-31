@@ -68,7 +68,7 @@ public final class RandomHandler {
    *
    * @return Number of dice that beat the Hit number
    */
-  @SuppressWarnings("MethodWithMultipleLoops")
+  @SuppressWarnings({"MethodWithMultipleLoops", "StaticMethodOnlyUsedInOneClass"})
   public static int wRoll(int nDice, int dSize, int toHit) {
     if (nDice == 0) return 0;
     int ret = 0;

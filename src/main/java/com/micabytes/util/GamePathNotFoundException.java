@@ -18,12 +18,4 @@ public class GamePathNotFoundException extends Exception {
     super(message);
   }
 
-  public GamePathNotFoundException(Throwable throwable) {
-    super(throwable);
-  }
-
-  public GamePathNotFoundException(String message, Throwable throwable) {
-    super(message, throwable);
-  }
-
 }

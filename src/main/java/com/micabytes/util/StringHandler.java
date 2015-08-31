@@ -144,7 +144,7 @@ public class StringHandler {
     }
     if (tokens.length == 1)
       return obj.toString();
-    StoryObject sObj = (StoryObject) obj;
+    ObjectAttributes sObj = (ObjectAttributes) obj;
     return sObj.getString(tokens[1]);
   }
 
@@ -348,7 +348,7 @@ public class StringHandler {
       return ((Double) obj).intValue();
     if (obj instanceof String)
       return 1;
-    StoryObject gObj = (StoryObject) obj;
+    ObjectAttributes gObj = (ObjectAttributes) obj;
     //if (tokens.length == 1) {
     //  return gObj.getValue();
     //}

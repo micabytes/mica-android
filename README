@@ -1,4 +1,4 @@
-The MicaByte Game Library (micabyte/android_game) is an Android library that
+The MicaBytes Game Library (micabytes/lib_game) is an Android library that
 encapsulates some of the logic required for creating a simple 2D game using
 the native Android graphics library.
 
