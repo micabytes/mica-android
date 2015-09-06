@@ -46,7 +46,6 @@ public class StringHandler {
   public static final char PERCENT = '%';
   @NonNls
   public static final char EOL = '\n';
-  private static final char VAR_CHAR = '$';
   private static final Pattern AND_SPLITTER = Pattern.compile("[&]");
   private static final Pattern GEQ_SPLITTER = Pattern.compile("[>=]+");
   private static final Pattern LEQ_SPLITTER = Pattern.compile("[<=]+");
@@ -113,7 +112,8 @@ public class StringHandler {
         if (end != NOT_FOUND) {
           String variable = ret.substring(start + 1, end);
           String stringToReplace = ret.substring(start, end + 1);
-          ret.replace(stringToReplace, getStringValue(variable, variables));
+          String replaceWith = getStringValue(variable, variables);
+          ret = ret.replace(stringToReplace, replaceWith);
           start = ret.indexOf('{');
         } else
           start = NOT_FOUND;
@@ -320,13 +320,10 @@ public class StringHandler {
   private static int getVariableValue(String key, AbstractMap<String, Object> variables) {
     String str = key.trim().toLowerCase(Locale.US);
     if (str.isEmpty()) return 0;
-    if (str.charAt(0) != VAR_CHAR) {
-      try {
-        return Integer.parseInt(str);
-      } catch (NumberFormatException e) {
-        GameLog.logException(e);
-        return 0;
-      }
+    try {
+      return Integer.parseInt(str);
+    } catch (NumberFormatException ignored) {
+      // NOOP
     }
     String[] tokens = DOT_SPLITTER.split(str, 2);
     if (tokens.length > 2) {
