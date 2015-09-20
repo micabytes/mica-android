@@ -18,6 +18,7 @@ public final class GameConstants {
   @NonNls public static final String ALL = "ALL";
   @NonNls public static final String ERROR = "ERROR";
   @NonNls public static final String OBJECT = "object";
+  @NonNls public static final String NUMBER = "number";
   // Constants
   public static final double HALF = 0.5;
   public static final float TEN = 10;

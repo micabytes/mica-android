@@ -1,23 +1,4 @@
-/*
- * Copyright (C) 2013 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.micabytes.util;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.games.GamesActivityResultCodes;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,11 +7,17 @@ import android.content.pm.Signature;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.games.GamesActivityResultCodes;
+
 import com.micabytes.R;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Created by btco on 2/10/14.
+ */
 @SuppressWarnings("ALL")
 class GameHelperUtils {
   public static final int R_UNKNOWN_ERROR = 0;
@@ -38,14 +25,14 @@ class GameHelperUtils {
   public static final int R_APP_MISCONFIGURED = 2;
   public static final int R_LICENSE_FAILED = 3;
 
-  private static final String[] FALLBACK_STRINGS = {
-      "*Unknown ERROR.",
+  private final static String[] FALLBACK_STRINGS = {
+      "*Unknown error.",
       "*Failed to sign in. Please check your network connection and try again.",
       "*The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.",
       "*License check failed."
   };
 
-  private static final int[] RES_IDS = {
+  private final static int[] RES_IDS = {
       R.string.gamehelper_unknown_error, R.string.gamehelper_sign_in_failed,
       R.string.gamehelper_app_misconfigured, R.string.gamehelper_license_failed
   };
@@ -98,11 +85,10 @@ class GameHelperUtils {
       case ConnectionResult.SUCCESS:
         return "SUCCESS(" + errorCode + ")";
       default:
-        return "Unknown ERROR code " + errorCode;
+        return "Unknown error code " + errorCode;
     }
   }
 
-  @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
   static void printMisconfiguredDebugInfo(Context ctx) {
     Log.w("GameHelper", "****");
     Log.w("GameHelper", "****");
@@ -148,15 +134,14 @@ class GameHelperUtils {
 
   static String getSHA1CertFingerprint(Context ctx) {
     try {
-      Signature[] sig = ctx.getPackageManager().getPackageInfo(
+      Signature[] sigs = ctx.getPackageManager().getPackageInfo(
           ctx.getPackageName(), PackageManager.GET_SIGNATURES).signatures;
-      if (sig.length == 0) {
+      if (sigs.length == 0) {
         return "ERROR: NO SIGNATURE.";
-      }
-      if (sig.length > 1) {
+      } else if (sigs.length > 1) {
         return "ERROR: MULTIPLE SIGNATURES";
       }
-      byte[] digest = MessageDigest.getInstance("SHA1").digest(sig[0].toByteArray());
+      byte[] digest = MessageDigest.getInstance("SHA1").digest(sigs[0].toByteArray());
       StringBuilder hexString = new StringBuilder();
       for (int i = 0; i < digest.length; ++i) {
         if (i > 0) {
@@ -175,9 +160,8 @@ class GameHelperUtils {
     }
   }
 
-  @SuppressWarnings("MagicNumber")
   static void byteToString(StringBuilder sb, byte b) {
-    int unsigned_byte = (b < 0) ? (b + 256) : b;
+    int unsigned_byte = b < 0 ? b + 256 : b;
     int hi = unsigned_byte / 16;
     int lo = unsigned_byte % 16;
     sb.append("0123456789ABCDEF".substring(hi, hi + 1));

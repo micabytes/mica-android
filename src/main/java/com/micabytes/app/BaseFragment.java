@@ -18,7 +18,6 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -40,10 +39,6 @@ import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
 import com.micabytes.gui.LinearListView;
-import com.micabytes.util.GameLog;
-import com.micabytes.util.StringHandler;
-
-import org.jetbrains.annotations.NonNls;
 
 /**
  * Convenience class to replace Fragment
@@ -139,7 +134,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     assert root != null;
     if (img == null)
-      throw new IllegalArgumentException("setting image view " + resId + " with no/null bitmap");
+      throw new IllegalArgumentException("setting image view " + resId + " with no or null bitmap");
     ImageView v = (ImageView) root.findViewById(resId);
     if (v == null)
       throw new Resources.NotFoundException("setImageView(int, Bitmap)");
@@ -167,10 +162,10 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
   protected ImageButton getImageButton(int resId) {
     View root = getView();
     assert root != null;
-    ImageButton b = (ImageButton) root.findViewById(resId);
-    if (b == null)
+    ImageButton button = (ImageButton) root.findViewById(resId);
+    if (button == null)
       throw new Resources.NotFoundException("getImageButton");
-    return b;
+    return button;
   }
 
   @NonNull
@@ -233,10 +228,10 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
   protected Button getButton(int resId) {
     View root = getView();
     assert root != null;
-    Button b = (Button) root.findViewById(resId);
-    if (b == null)
+    Button button = (Button) root.findViewById(resId);
+    if (button == null)
       throw new Resources.NotFoundException("getButton");
-    return b;
+    return button;
   }
 
   @NonNull
@@ -278,10 +273,10 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
   protected Spinner getSpinner(int resId) {
     View root = getView();
     assert root != null;
-    Spinner s = (Spinner) root.findViewById(resId);
-    if (s == null)
+    Spinner spinner = (Spinner) root.findViewById(resId);
+    if (spinner == null)
       throw new Resources.NotFoundException("getSpinner");
-    return s;
+    return spinner;
   }
 
   @NonNull
@@ -376,39 +371,17 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     return v;
   }
 
-  // TODO: Remove error in fragment
-  protected void error(String tag, String message) {
-    GameLog.e(tag, message);
-    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-  }
-
-  public static void debug(String tag, String message) {
-    Log.d(tag, message);
-  }
-
-  public void toast(@NonNls String message) {
-    toast(message, Toast.LENGTH_SHORT);
-  }
-
-  private void toast(String message, int length) {
-    Toast.makeText(getActivity(), message, length).show();
-  }
-
-  @SuppressWarnings("PublicInnerClass")
   public class ContentDescriptionClickListener implements View.OnClickListener {
+
+    private void toast(String message, int length) {
+      Toast.makeText(getActivity(), message, length).show();
+    }
+
     @Override
     public void onClick(View v) {
       toast((String) v.getContentDescription(), Toast.LENGTH_SHORT);
     }
-  }
 
-  protected String text(int id) {
-    return StringHandler.get(getActivity(), id);
-  }
-
-  @SuppressWarnings("OverloadedVarargsMethod")
-  protected String text(int id, Object... args) {
-    return StringHandler.get(getActivity(), id, args);
   }
 
 }

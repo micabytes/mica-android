@@ -142,6 +142,8 @@ public class StringHandler {
     if (obj == null) {
       return GameConstants.ERROR;
     }
+    if (obj instanceof  String)
+      return (String) obj;
     if (tokens.length == 1)
       return obj.toString();
     ObjectAttributes sObj = (ObjectAttributes) obj;

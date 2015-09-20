@@ -20,11 +20,12 @@ import com.crashlytics.android.Crashlytics;
 import org.jetbrains.annotations.NonNls;
 
 import io.fabric.sdk.android.Fabric;
+import io.fabric.sdk.android.services.common.Crash;
 
 @SuppressWarnings({"StaticMethodNamingConvention", "SameParameterValue"})
 @NonNls
 public final class GameLog {
-  private static final boolean LOG = true; //BuildConfig.DEBUG;
+  private static final boolean LOG = true;
 
   private GameLog() {
     // NOOP
@@ -43,22 +44,24 @@ public final class GameLog {
   }
 
   public static void w(String tag, String s) {
-    if (LOG) Log.w(tag, s);
-    else if (Fabric.isInitialized())
+    if (LOG)
+      Log.w(tag, s);
+    if (Fabric.isInitialized())
       Crashlytics.log(Log.WARN, tag, s);
   }
 
   public static void e(String tag, String s) {
-    if (LOG) Log.e(tag, s);
-    else if (Fabric.isInitialized())
+    if (LOG)
+      Log.e(tag, s);
+    if (Fabric.isInitialized())
       Crashlytics.log(Log.ERROR, tag, s);
   }
 
   public static void logException(Exception e) {
-    //if (Fabric.isInitialized())
-    //    Fabric.logException(e);
-    if (LOG) //noinspection CallToPrintStackTrace
+    if (LOG)
       e.printStackTrace();
+    if (Fabric.isInitialized())
+      Crashlytics.logException(e);
   }
 
 
