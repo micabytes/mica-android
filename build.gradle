@@ -57,6 +57,7 @@ dependencies {
     // Google Play
     compile 'com.google.android.gms:play-services-ads:7.8.0'
     compile 'com.google.android.gms:play-services-appstate:7.8.0'
+    compile 'com.google.android.gms:play-services-analytics:7.8.0'
     compile 'com.google.android.gms:play-services-drive:7.8.0'
     compile 'com.google.android.gms:play-services-games:7.8.0'
     compile 'com.google.android.gms:play-services-plus:7.8.0'
