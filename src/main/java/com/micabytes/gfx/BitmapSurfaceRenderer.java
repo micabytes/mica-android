@@ -20,6 +20,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 
 import com.micabytes.util.GameLog;
 
@@ -34,6 +35,7 @@ import java.io.InputStream;
  * memory. The game should subclass the renderer and extend the drawing methods to add other game
  * elements.
  */
+@SuppressWarnings({"MethodOnlyUsedFromInnerClass", "FieldAccessedSynchronizedAndUnsynchronized"})
 public class BitmapSurfaceRenderer extends SurfaceRenderer {
   private static final String TAG = BitmapSurfaceRenderer.class.getName();
   // Default Settings
@@ -81,6 +83,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     lowResThreshold = DEFAULT_THRESHOLD;
   }
 
+  @SuppressWarnings("UnusedParameters")
   protected BitmapSurfaceRenderer(Context con, Bitmap.Config config, int sample, int memUse, float threshold) {
     super(con);
     options.inPreferredConfig = Bitmap.Config.RGB_565;
@@ -281,7 +284,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
   }
 
   /**
-   * The cached bitmap object. This object is continually kept onTouchUp to date by CacheThread. If
+   * The cached bitmap object. This object is continually kept up to date by CacheThread. If
    * the object is locked, the background is updated using the low resolution background image
    * instead
    */
@@ -298,21 +301,21 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     /**
      * The currently cached bitmap
      */
-    Bitmap bitmap;
+    @Nullable Bitmap bitmap;
     /**
      * The cache bitmap loading thread
      */
     private CacheThread cacheThread;
 
-    synchronized CacheState getState() {
+    CacheState getState() {
       return state;
     }
 
-    synchronized void setState(CacheState newState) {
+    void setState(CacheState newState) {
       state = newState;
     }
 
-    synchronized void start() {
+    void start() {
       if (cacheThread != null) {
         cacheThread.setRunning(false);
         cacheThread.interrupt();
@@ -323,7 +326,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
       cacheThread.start();
     }
 
-    synchronized void stop() {
+    void stop() {
       cacheThread.setRunning(false);
       cacheThread.interrupt();
       boolean retry = true;
@@ -339,18 +342,18 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     }
 
     synchronized void invalidate() {
-      setState(CacheState.IS_INITIALIZED);
+      state = CacheState.IS_INITIALIZED;
       cacheThread.interrupt();
     }
 
     public synchronized void suspend() {
-      setState(CacheState.DISABLED);
+      state = CacheState.DISABLED;
     }
 
     public void resume() {
-      if (getState() == CacheState.DISABLED) {
+      if (state == CacheState.DISABLED) {
         synchronized (this) {
-          setState(CacheState.IS_INITIALIZED);
+          state = CacheState.IS_INITIALIZED;
         }
       }
     }
@@ -358,17 +361,17 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     /**
      * Draw the CacheBitmap on the viewport
      */
-    void draw(ViewPort p) {
+    void draw(SurfaceRenderer.ViewPort p) {
       Bitmap bmp = null;
       synchronized (this) {
-        switch (getState()) {
+        switch (state) {
           case NOT_INITIALIZED:
             // Error
             GameLog.e(TAG, "Attempting to update an uninitialized CacheBitmap");
             return;
           case IS_INITIALIZED:
             // Start data caching
-            setState(CacheState.BEGIN_UPDATE);
+            state = CacheState.BEGIN_UPDATE;
             cacheThread.interrupt();
             break;
           case BEGIN_UPDATE:
@@ -381,7 +384,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
           case READY:
             if ((bitmap == null) || !cacheWindow.contains(p.getWindow())) {
               // No data loaded OR No cached data available
-              setState(CacheState.BEGIN_UPDATE);
+              state = CacheState.BEGIN_UPDATE;
               cacheThread.interrupt();
             } else {
               bmp = bitmap;
@@ -428,7 +431,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     }
 
     void drawLowResolution() {
-      if (getState() != CacheState.NOT_INITIALIZED) {
+      if (state != CacheState.NOT_INITIALIZED) {
         synchronized (viewPort) {
           drawLowResolutionBackground(viewPort.getBitmap(), viewPort.getWindow());
         }
@@ -444,7 +447,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
    * locks {@link CacheBitmap} in order to ensure the smoothest possible performance (loading can
    * take a while).
    */
-  @SuppressWarnings("SameParameterValue")
+  @SuppressWarnings({"SameParameterValue", "ClassExplicitlyExtendsThread"})
   class CacheThread extends Thread {
     private boolean isRunning;
     // The CacheBitmap
@@ -525,6 +528,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
       }
     }
 
+    @SuppressWarnings("SuspiciousGetterSetter")
     public void setRunning(boolean running) {
       isRunning = running;
     }
