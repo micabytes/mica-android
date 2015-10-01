@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NonNls;
 
 public final class GameConstants {
   @NonNls public static final String THIS = "this";
+  @NonNls public static final String VERSION = "version";
   @NonNls public static final String ID = "id";
   @NonNls public static final String NAME = "name";
   @NonNls public static final String DESCRIPTION = "description";

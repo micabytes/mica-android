@@ -49,25 +49,16 @@ public class BaseActivity extends AppCompatActivity implements GameHelper.GameHe
 
   // We expose these constants here because we don't want users of this class
   // to have to know about gameHelper at all.
-  @SuppressWarnings("unused")
-  private static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
-  @SuppressWarnings("unused")
-  public static final int CLIENT_APPSTATE = GameHelper.CLIENT_APPSTATE;
-  @SuppressWarnings("unused")
+  public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
   public static final int CLIENT_PLUS = GameHelper.CLIENT_PLUS;
-  @SuppressWarnings("unused")
-  private static final int CLIENT_SAVES = GameHelper.CLIENT_SNAPSHOT;
-  protected static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
-
-  // Requested clients. By default, that's just the games client.
+  public static final int CLIENT_SAVES = GameHelper.CLIENT_SNAPSHOT;
+  public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
   private int requestedClients;
-
   private boolean debugLog;
 
   /**
    * Constructs a BaseGameActivity with default client (GamesClient).
    */
-  @SuppressWarnings("unused")
   protected BaseActivity() {
     // NOOP
   }
@@ -76,9 +67,8 @@ public class BaseActivity extends AppCompatActivity implements GameHelper.GameHe
    * Constructs a BaseGameActivity with the requested clients.
    *
    * @param requestClients The requested clients (a combination of CLIENT_GAMES, CLIENT_PLUS and
-   *                       CLIENT_APPSTATE).
+   *                       CLIENT_SAVES).
    */
-  @SuppressWarnings("unused")
   protected BaseActivity(int requestClients) {
     requestedClients = requestClients;
   }

@@ -54,14 +54,9 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
   }
 
   @Override
-  public void onStart() {
-    super.onStart();
-    createFragment();
-  }
-
-  @Override
   public void onResume() {
     super.onResume();
+    createFragment();
     updateFragment();
   }
 

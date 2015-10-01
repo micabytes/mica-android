@@ -45,6 +45,7 @@ public class RadialLayout extends ViewGroup {
   private View mMotionTarget;
   private Bitmap mDrawingCache;
   private final Set<View> mDirtyViews = new HashSet<>();
+  private boolean mCached = false;
 
   public RadialLayout(Context context) {
     this(context, null);
@@ -296,88 +297,6 @@ public class RadialLayout extends ViewGroup {
     return p instanceof LayoutParams;
   }
 
-  @Override
-  public boolean dispatchTouchEvent(@NonNull MotionEvent ev) {
-    //if(mLayoutMode == LAYOUT_NORMAL) {
-    return super.dispatchTouchEvent(ev);
-    //}
-        /*
-        final int action = ev.getAction();
-        final float x = ev.getX() - getWidth()/2f;
-        final float y = ev.getY() - getHeight()/2f;
-
-        if(action == MotionEvent.ACTION_DOWN) {
-
-            if(mMotionTarget != null) {
-                MotionEvent cancelEvent = MotionEvent.obtain(ev);
-                cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
-
-                cancelEvent.offsetLocation(-mMotionTarget.getLeft(), -mMotionTarget.getTop());
-
-                mMotionTarget.dispatchTouchEvent(cancelEvent);
-                cancelEvent.recycle();
-
-                mMotionTarget = null;
-            }
-
-            final float radius = (float) Math.sqrt(x*x + y*y);
-
-            if(radius < mInnerRadius || radius > getWidth()/2f || radius > getHeight()/2f) {
-                return false;
-            }
-
-            float angle = (float) Math.toDegrees(Math.atan2(y, x));
-
-            if(angle < 0) angle += mAngleRange;
-
-            final int childs = getChildCount();
-
-            for(int i=0; i<childs; i++) {
-                final View child = getChildAt(i);
-                final LayoutParams lp = layoutParams(child);
-
-                float startAngle = lp.startAngle % mAngleRange;
-                float endAngle = lp.endAngle % mAngleRange;
-                float touchAngle = angle;
-
-                if(startAngle > endAngle) {
-                    if(touchAngle < startAngle && touchAngle < endAngle) {
-                        touchAngle += mAngleRange;
-                    }
-
-                    endAngle += mAngleRange;
-                }
-
-                if(startAngle <= touchAngle && endAngle >= touchAngle) {
-                    ev.offsetLocation(-child.getLeft(), -child.getTop());
-
-                    boolean dispatched = child.dispatchTouchEvent(ev);
-
-                    if(dispatched) {
-                        mMotionTarget = child;
-
-                        return true;
-                    } else {
-                        ev.setLocation(0f, 0f);
-
-                        return onTouchEvent(ev);
-                    }
-                }
-            }
-        } else if(mMotionTarget != null) {
-            ev.offsetLocation(-mMotionTarget.getLeft(), -mMotionTarget.getTop());
-
-            mMotionTarget.dispatchTouchEvent(ev);
-
-            if(action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-                mMotionTarget = null;
-            }
-        }
-
-        return onTouchEvent(ev);
-        */
-  }
-
   private void drawChild(Canvas canvas, View child, LayoutParams lp) {
     mSrcCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
     mDstCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
@@ -456,68 +375,6 @@ public class RadialLayout extends ViewGroup {
         mInnerCircle.draw(canvas);
       }
     }
-  }
-
-  @Override
-  protected void dispatchDraw(@NonNull Canvas canvas) {
-    //if(mLayoutMode == LAYOUT_NORMAL) {
-    super.dispatchDraw(canvas);
-    //}
-        /*
-        if(mSrc == null || mDst == null || mSrc.isRecycled() || mDst.isRecycled()) {
-            return;
-        }
-
-        final int childs = getChildCount();
-
-        final float halfWidth = getWidth()/2f;
-        final float halfHeight = getHeight()/2f;
-
-        final float radius = halfWidth > halfHeight ? halfHeight : halfWidth;
-
-        if(mCached && mDrawingCache != null && !mDrawingCache.isRecycled() && mDirtyViews.size() < childs/2) {
-            canvas.drawBitmap(mDrawingCache, 0f, 0f, null);
-
-            redrawDirty(canvas);
-
-            drawDividers(canvas, halfWidth, halfHeight, radius);
-
-            drawInnerCircle(canvas, halfWidth, halfHeight);
-
-            return;
-        } else {
-            mCached = false;
-        }
-
-        Canvas sCanvas = null;
-
-        if(mCachedCanvas != null) {
-            sCanvas = canvas;
-            canvas = mCachedCanvas;
-        }
-
-        Drawable bkg = getBackground();
-        if(bkg != null) {
-            bkg.draw(canvas);
-        }
-
-        for(int i=0; i<childs; i++) {
-            final View child = getChildAt(i);
-            LayoutParams lp = layoutParams(child);
-
-            drawChild(canvas, child, lp);
-        }
-
-        drawDividers(canvas, halfWidth, halfHeight, radius);
-
-        drawInnerCircle(canvas, halfWidth, halfHeight);
-
-        if(mCachedCanvas != null) {
-            sCanvas.drawBitmap(mDrawingCache, 0f, 0f, null);
-            mDirtyViews.clear();
-            mCached = true;
-        }
-        */
   }
 
   public static class LayoutParams extends ViewGroup.LayoutParams {

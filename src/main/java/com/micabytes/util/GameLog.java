@@ -33,6 +33,8 @@ public final class GameLog {
 
   public static void i(String tag, String s) {
     if (LOG) Log.i(tag, s);
+    if (Fabric.isInitialized())
+      Crashlytics.log(Log.INFO, tag, s);
   }
 
   public static void v(String tag, String s) {

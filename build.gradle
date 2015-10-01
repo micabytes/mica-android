@@ -51,14 +51,14 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.1'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.1'
     // Fabric
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.1@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
         transitive = true;
     }
     // Google Play
-    compile 'com.google.android.gms:play-services-ads:7.8.0'
-    compile 'com.google.android.gms:play-services-appstate:7.8.0'
-    compile 'com.google.android.gms:play-services-analytics:7.8.0'
-    compile 'com.google.android.gms:play-services-drive:7.8.0'
-    compile 'com.google.android.gms:play-services-games:7.8.0'
-    compile 'com.google.android.gms:play-services-plus:7.8.0'
+    compile 'com.google.android.gms:play-services-ads:8.1.0'
+    compile 'com.google.android.gms:play-services-appstate:8.1.0'
+    compile 'com.google.android.gms:play-services-analytics:8.1.0'
+    compile 'com.google.android.gms:play-services-drive:8.1.0'
+    compile 'com.google.android.gms:play-services-games:8.1.0'
+    compile 'com.google.android.gms:play-services-plus:8.1.0'
 }
