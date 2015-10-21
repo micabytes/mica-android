@@ -2,6 +2,7 @@ package com.micabytes.util;
 
 import org.jetbrains.annotations.NonNls;
 
+@SuppressWarnings("UtilityClass")
 public final class GameConstants {
   @NonNls public static final String THIS = "this";
   @NonNls public static final String VERSION = "version";
@@ -22,6 +23,7 @@ public final class GameConstants {
   @NonNls public static final String NUMBER = "number";
   // Constants
   public static final double HALF = 0.5;
+  public static final int FIVE = 5;
   public static final float TEN = 10;
   public static final int FIFTY = 50;
   public static final int HUNDRED = 100;

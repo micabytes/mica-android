@@ -20,9 +20,9 @@ import java.util.Random;
  *
  * @author micabyte
  */
+@SuppressWarnings("UtilityClass")
 public final class RandomHandler {
   // Random Generator
-  @SuppressWarnings("RedundantFieldInitialization")
   private static final Random RANDOM = new Random();
 
   private RandomHandler() {

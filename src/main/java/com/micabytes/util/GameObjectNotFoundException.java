@@ -12,6 +12,7 @@
  */
 package com.micabytes.util;
 
+@SuppressWarnings({"ClassIndependentOfModule", "ClassUnconnectedToPackage"})
 public class GameObjectNotFoundException extends Exception {
 
   public GameObjectNotFoundException(String message) {

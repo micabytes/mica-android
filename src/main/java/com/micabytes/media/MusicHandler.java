@@ -26,12 +26,13 @@ import com.micabytes.util.GameLog;
  *
  * @author micabyte
  */
+@SuppressWarnings({"UtilityClass", "ClassUnconnectedToPackage"})
 public final class MusicHandler {
   private static final String TAG = MusicHandler.class.getName();
   private static final int INVALID_NUMBER = 0;
   private static final SparseArray<MediaPlayer> PLAYERS = new SparseArray<>();
   public static final float VOLUME_MAX = 1.0f;
-  private static int nextMusic = 0;
+  private static int nextMusic = INVALID_NUMBER;
   private static int currentMusic = 0;
 
   private MusicHandler() {
@@ -41,13 +42,12 @@ public final class MusicHandler {
   /**
    * Start playing a music resource
    *
-   * @param force   Force-start playing this file
    * @param context The context (application or activity)
    * @param music   The resource id of the music file
    */
   @SuppressWarnings({"MethodWithMoreThanThreeNegations", "OverlyComplexMethod"})
-  private static void start(Context context, int music) {
-    if (!false && (currentMusic != INVALID_NUMBER)) {
+  private static void start(Context context, int music, boolean forced) {
+    if (!forced && (currentMusic != INVALID_NUMBER)) {
       // already playing some music and not forced to change immediately
       if (music != INVALID_NUMBER) {
         nextMusic = music;

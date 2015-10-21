@@ -28,7 +28,7 @@ import com.micabytes.util.GameLog;
  *
  * @author micabyte
  */
-@SuppressWarnings({"AbstractClassExtendsConcreteClass", "unused"})
+@SuppressWarnings({"unused"})
 public abstract class HexMap {
   private static final String TAG = HexMap.class.getName();
   private static boolean standardOrientation = true;

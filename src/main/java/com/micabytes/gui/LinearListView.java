@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 
 // android:orientation
+@SuppressWarnings({"ClassUnconnectedToPackage"})
 public class LinearListView extends LinearLayout
 {
     private Adapter adapter;
@@ -45,10 +46,6 @@ public class LinearListView extends LinearLayout
         observer.onChanged();
     }
 
-    private Adapter getAdapter() {
-        return adapter;
-    }
-
     private static final class Observer extends DataSetObserver
     {
         final LinearListView listView;
@@ -71,10 +68,10 @@ public class LinearListView extends LinearLayout
 
             listView.removeAllViews();
 
-            for (int i = 0; i < listView.getAdapter().getCount(); i++)
+            for (int i = 0; i < listView.adapter.getCount(); i++)
             {
                 View convertView = itr.hasNext() ? itr.next() : null;
-                listView.addView(listView.getAdapter().getView(i, convertView, listView));
+                listView.addView(listView.adapter.getView(i, convertView, listView));
             }
             super.onChanged();
         }

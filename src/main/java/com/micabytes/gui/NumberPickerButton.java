@@ -30,7 +30,7 @@ import com.micabytes.R;
  */
 public class NumberPickerButton extends ImageButton {
 
-    private NumberPicker mNumberPicker;
+    private NumberPicker numberPicker;
     
     public NumberPickerButton(Context context, AttributeSet attrs,
             int defStyle) {
@@ -46,7 +46,7 @@ public class NumberPickerButton extends ImageButton {
     }
     
     public void setNumberPicker(NumberPicker picker) {
-        mNumberPicker = picker;
+        numberPicker = picker;
     }
     
     @Override
@@ -80,9 +80,9 @@ public class NumberPickerButton extends ImageButton {
     @SuppressWarnings("MethodNamesDifferingOnlyByCase")
     private void cancelLongpress() {
         if (R.id.increment == getId()) {
-            mNumberPicker.cancelIncrement();
+            numberPicker.cancelIncrement();
         } else if (R.id.decrement == getId()) {
-            mNumberPicker.cancelDecrement();
+            numberPicker.cancelDecrement();
         }
     }
 }

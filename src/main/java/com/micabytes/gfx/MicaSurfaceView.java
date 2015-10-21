@@ -39,8 +39,7 @@ import org.jetbrains.annotations.NonNls;
 @SuppressWarnings("MethodReturnAlwaysConstant")
 public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callback, GestureDetector.OnGestureListener {
   private static final String TAG = MicaSurfaceView.class.getName();
-  @NonNls
-  private static final String DRAW_THREAD = "drawThread";
+  @NonNls private static final String DRAW_THREAD = "drawThread";
   private static final int SCALE_MOVE_GUARD = 500;
   /**
    * The Game Controller. This where we send UI events other than scroll and pinch-zoom in order to be handled
@@ -215,8 +214,10 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
   /**
    * The Rendering thread for the MicaSurfaceView
    */
+  @SuppressWarnings("ClassExplicitlyExtendsThread")
   class GameSurfaceViewThread extends Thread {
-    private static final int BUG_DELAY = 475;
+    private static final int BUG_DELAY = 500;
+    private final int delay;
     private final SurfaceHolder surfaceHolder;
     private boolean running;
     private boolean hasFocus;
@@ -224,6 +225,20 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     GameSurfaceViewThread(SurfaceHolder surface) {
       setName(GameSurfaceViewThread.class.getName());
       surfaceHolder = surface;
+      if (android.os.Build.BRAND.equalsIgnoreCase("google") &&
+          android.os.Build.MANUFACTURER.equalsIgnoreCase("asus") &&
+          android.os.Build.MODEL.equalsIgnoreCase("Nexus 7")) {
+        GameLog.w(TAG, "Sleep 500ms (Device: Asus Nexus 7)");
+        delay = BUG_DELAY;
+      }
+      else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        GameLog.w(TAG, "Sleep 500ms (Handle issue 58385 in Android 4.3)");
+        //
+        delay = BUG_DELAY;
+      }
+      else {
+        delay = 5;
+      }
     }
 
     public void setRunning(boolean run) {
@@ -233,15 +248,12 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     @SuppressWarnings({"RefusedBequest", "WhileLoopSpinsOnField", "BusyWait"})
     @Override
     public void run() {
-      // Handle issue 58385 in Android 4.3
-      int delayMillis = 5;
-      if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN_MR2)
-        delayMillis = BUG_DELAY;
       try {
-        Thread.sleep(delayMillis);
+        Thread.sleep(delay);
       } catch (InterruptedException ignored) {
         // NOOP
       }
+      Canvas canvas = null;
       // This is the rendering loop; it goes until asked to quit.
       while (running) {
         try {
@@ -249,7 +261,6 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         } catch (InterruptedException ignored) {
           // NOOP
         }
-        Canvas canvas = null;
         try {
           canvas = surfaceHolder.lockCanvas();
           if (canvas != null) {
@@ -258,19 +269,17 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             }
           }
         } finally {
-          if (canvas != null) {
+          if (canvas != null && surfaceHolder != null) {
             surfaceHolder.unlockCanvasAndPost(canvas);
           }
         }
       }
     }
 
-    public void onWindowFocusChanged(boolean focus) {
-      synchronized (this) {
-        hasFocus = focus;
-        if (hasFocus == true) {
-          notify();
-        }
+    public synchronized void onWindowFocusChanged(boolean focus) {
+      hasFocus = focus;
+      if (hasFocus == true) {
+        notifyAll();
       }
     }
 
@@ -407,7 +416,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     @SuppressWarnings("AssignmentToNull")
     void stop() {
-      touchThread.isRunning = false;
+      touchThread.running = false;
       touchThread.interrupt();
       boolean retry = true;
       while (retry) {
@@ -461,7 +470,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     /**
      * Handle an onTouchUp event
      */
-    @SuppressWarnings({"BooleanMethodNameMustStartWithQuestion", "UnusedParameters"})
+    @SuppressWarnings({"BooleanMethodNameMustStartWithQuestion", "UnusedParameters", "SameReturnValue"})
     boolean onTouchUp(MotionEvent event) {
       if (getState() == TouchState.IN_TOUCH) {
         setState(TouchState.NO_TOUCH);
@@ -480,7 +489,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
       return true;
     }
 
-    @SuppressWarnings({"UnusedParameters", "BooleanMethodNameMustStartWithQuestion", "NumericCastThatLosesPrecision"})
+    @SuppressWarnings({"UnusedParameters", "BooleanMethodNameMustStartWithQuestion", "NumericCastThatLosesPrecision", "SameReturnValue"})
     boolean fling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
       renderer.getViewPosition(viewCenterAtFling);
       renderer.getViewSize(viewSizeAtFling);
@@ -497,10 +506,10 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     /**
      * Touch Handler Thread
      */
-    @SuppressWarnings("InnerClassTooDeeplyNested")
+    @SuppressWarnings({"InnerClassTooDeeplyNested", "ClassExplicitlyExtendsThread"})
     class TouchHandlerThread extends Thread {
       private final TouchHandler touchHandler;
-      boolean isRunning;
+      boolean running;
 
       TouchHandlerThread(TouchHandler t) {
         touchHandler = t;
@@ -510,15 +519,15 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
       @SuppressWarnings({"MethodWithMultipleLoops", "RefusedBequest", "WhileLoopSpinsOnField", "BusyWait"})
       @Override
       public void run() {
-        isRunning = true;
-        while (isRunning) {
+        running = true;
+        while (running) {
           while ((touchHandler.getState() != TouchState.ON_FLING) && (touchHandler.getState() != TouchState.IN_FLING)) {
             try {
               Thread.sleep(Integer.MAX_VALUE);
             } catch (InterruptedException ignored) {
               // NOOP
             }
-            if (!isRunning) return;
+            if (!running) return;
           }
           synchronized (touchHandler) {
             if (touchHandler.getState() == TouchState.ON_FLING) {
@@ -545,7 +554,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
       }
 
       public void setRunning(boolean run) {
-        isRunning = run;
+        running = run;
       }
 
     }

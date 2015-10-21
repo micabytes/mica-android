@@ -76,7 +76,6 @@ public final class ImageHandler {
     System.gc();
   }
 
-  @SuppressWarnings("BooleanParameter")
   @NonNull
   public Bitmap get(int key) {
     return get(key, DEFAULT_CONFIG, true);

@@ -25,7 +25,7 @@ import com.micabytes.gfx.SurfaceRenderer;
  *
  * @author micabyte
  */
-@SuppressWarnings({"unused", "AbstractClassExtendsConcreteClass", "AbstractClassNeverImplemented"})
+@SuppressWarnings({"unused", "AbstractClassNeverImplemented"})
 public abstract class TileMap {
     private static int mapWidth;
     private static int mapHeight;

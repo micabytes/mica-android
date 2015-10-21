@@ -35,7 +35,6 @@ import java.io.InputStream;
  * memory. The game should subclass the renderer and extend the drawing methods to add other game
  * elements.
  */
-@SuppressWarnings({"MethodOnlyUsedFromInnerClass", "FieldAccessedSynchronizedAndUnsynchronized"})
 public class BitmapSurfaceRenderer extends SurfaceRenderer {
   private static final String TAG = BitmapSurfaceRenderer.class.getName();
   // Default Settings
@@ -79,17 +78,16 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     super(con);
     options.inPreferredConfig = DEFAULT_CONFIG;
     sampleSize = DEFAULT_SAMPLE_SIZE;
-    memUsage = DEFAULT_MEM_USAGE;
+    setMemUsage(DEFAULT_MEM_USAGE);
     lowResThreshold = DEFAULT_THRESHOLD;
   }
 
-  @SuppressWarnings("UnusedParameters")
   protected BitmapSurfaceRenderer(Context con, Bitmap.Config config, int sample, int memUse, float threshold) {
     super(con);
-    options.inPreferredConfig = Bitmap.Config.RGB_565;
-    sampleSize = 2;
-    memUsage = 5;
-    lowResThreshold = 0.75f;
+    options.inPreferredConfig = config;
+    sampleSize = sample;
+    setMemUsage(memUse);
+    lowResThreshold = threshold;
   }
 
   /**
@@ -108,18 +106,27 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     BitmapFactory.decodeStream(inputStream, null, opt);
     inputStream.reset();
     backgroundSize.set(opt.outWidth, opt.outHeight);
-    GameLog.i(TAG, "Background Image: w=" + opt.outWidth + " h=" + opt.outHeight);
+    GameLog.d(TAG, "Background Image: w=" + opt.outWidth + " h=" + opt.outHeight);
     // Create the low resolution background
     opt.inJustDecodeBounds = false;
     opt.inSampleSize = 1 << sampleSize;
     lowResBitmap = BitmapFactory.decodeStream(inputStream, null, opt);
-    GameLog.i(TAG, "Low Res Image: w=" + lowResBitmap.getWidth() + " h=" + lowResBitmap.getHeight());
+    GameLog.d(TAG, "Low Res Image: w=" + lowResBitmap.getWidth() + " h=" + lowResBitmap.getHeight());
     // Initialize cache
     if (cachedBitmap.getState() == CacheState.NOT_INITIALIZED) {
       synchronized (cachedBitmap) {
         cachedBitmap.setState(CacheState.IS_INITIALIZED);
       }
     }
+  }
+
+  @SuppressWarnings("MethodOnlyUsedFromInnerClass")
+  private synchronized int getMemUsage() {
+    return memUsage;
+  }
+
+  private synchronized void setMemUsage(int i) {
+    memUsage = i;
   }
 
   @Override
@@ -176,106 +183,6 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     cachedBitmap.invalidate();
   }
 
-
-  /**
-   * Loads the relevant slice of the background bitmap that needs to be kept in memory. <p/> The
-   * loading can take a long time depending on the size.
-   *
-   * @param rect The portion of the background bitmap to be cached
-   * @return The bitmap representing the requested area of the background
-   */
-  private Bitmap loadCachedBitmap(Rect rect) {
-    return decoder.decodeRegion(rect, options);
-  }
-
-  /**
-   * This function tries to recover from an OutOfMemoryError in the CacheThread.
-   */
-  private void cacheBitmapOutOfMemoryError() {
-    if (memUsage > 0) memUsage -= 1;
-    GameLog.e(TAG, "OutOfMemory caught; reducing cache size to " + memUsage + " percent.");
-  }
-
-  /**
-   * This method fills the passed-in bitmap with sample data. This function must return data fast;
-   * this is our fall back solution in all the cases where the user is moving too fast for us to
-   * load the actual bitmap data from memory. The quality of the user experience rests on the speed
-   * of this function.
-   */
-  private void drawLowResolutionBackground(Bitmap bitmap, Rect rect) {
-    int left = rect.left >> sampleSize;
-    int top = rect.top >> sampleSize;
-    int right = rect.right >> sampleSize;
-    int bottom = rect.bottom >> sampleSize;
-    Rect srcRect = new Rect(left, top, right, bottom);
-    Rect dstRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-    // Draw to Canvas
-    Canvas canvas = new Canvas(bitmap);
-    canvas.drawBitmap(lowResBitmap, srcRect, dstRect, null);
-  }
-
-  /**
-   * Determine the dimensions of the CacheBitmap based on the current ViewPort. <p/> Minimum size is
-   * equal to the viewport; otherwise it is dimensioned relative to the available memory. {@link
-   * CacheBitmap} is locked while the calculation is done, so this has to be fast.
-   *
-   * @param rect The dimensions of the current viewport
-   * @return The dimensions of the cache
-   */
-  @SuppressWarnings({"OverlyComplexMethod", "OverlyLongMethod"})
-  private Rect calculateCacheDimensions(Rect rect) {
-    long bytesToUse = (Runtime.getRuntime().maxMemory() * memUsage) / 100;
-    Point sz = getBackgroundSize();
-    int vw = rect.width();
-    int vh = rect.height();
-    GameLog.d(TAG, "old cache.originRect = " + rect.toShortString());
-    // Calculate the margins within the memory budget
-    int tw = 0;
-    int th = 0;
-    int mw = tw;
-    int mh = th;
-    int bytesPerPixel = 4;
-    while (((vw + tw) * (vh + th) * bytesPerPixel) < bytesToUse) {
-      tw++;
-      mw = tw;
-      th++;
-      mh = th;
-    }
-    // Trim margins to image size
-    if ((vw + mw) > sz.x) mw = Math.max(0, sz.x - vw);
-    if ((vh + mh) > sz.y) mh = Math.max(0, sz.y - vh);
-    // Figure out the left & right based on the margin.
-    // LATER: THe logic here assumes that the viewport is <= our size.
-    // If that's not the case, then this logic breaks.
-    int left = rect.left - (mw >> 1);
-    int right = rect.right + (mw >> 1);
-    if (left < 0) {
-      right -= left; // Adds the overage on the left side back to the right
-      left = 0;
-    }
-    if (right > sz.x) {
-      left -= right - sz.x; // Adds overage on right side back to left
-      right = sz.x;
-    }
-    // Figure out the top & bottom based on the margin. We assume our viewport
-    // is <= our size. If that's not the case, then this logic breaks.
-    int top = rect.top - (mh >> 1);
-    int bottom = rect.bottom + (mh >> 1);
-    if (top < 0) {
-      bottom -= top; // Adds the overage on the top back to the bottom
-      top = 0;
-    }
-    if (bottom > sz.y) {
-      top -= bottom - sz.y; // Adds overage on bottom back to top
-      bottom = sz.y;
-    }
-    // Set the origin based on our new calculated values.
-    calculatedCacheWindowRect.set(left, top, right, bottom);
-    GameLog.d(TAG, "new cache.originRect = " + calculatedCacheWindowRect.toShortString() + " size=" + sz);
-    return calculatedCacheWindowRect;
-  }
-
-
   /**
    * The current state of the cached bitmap
    */
@@ -307,11 +214,11 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      */
     private CacheThread cacheThread;
 
-    CacheState getState() {
+    synchronized CacheState getState() {
       return state;
     }
 
-    void setState(CacheState newState) {
+    synchronized void setState(CacheState newState) {
       state = newState;
     }
 
@@ -341,20 +248,18 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
       cacheThread = null;
     }
 
-    synchronized void invalidate() {
-      state = CacheState.IS_INITIALIZED;
+    void invalidate() {
+      setState(CacheState.IS_INITIALIZED);
       cacheThread.interrupt();
     }
 
-    public synchronized void suspend() {
-      state = CacheState.DISABLED;
+    public void suspend() {
+      setState(CacheState.DISABLED);
     }
 
     public void resume() {
-      if (state == CacheState.DISABLED) {
-        synchronized (this) {
-          state = CacheState.IS_INITIALIZED;
-        }
+      if (getState() == CacheState.DISABLED) {
+        setState(CacheState.IS_INITIALIZED);
       }
     }
 
@@ -363,34 +268,32 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      */
     void draw(SurfaceRenderer.ViewPort p) {
       Bitmap bmp = null;
-      synchronized (this) {
-        switch (state) {
-          case NOT_INITIALIZED:
-            // Error
-            GameLog.e(TAG, "Attempting to update an uninitialized CacheBitmap");
-            return;
-          case IS_INITIALIZED:
-            // Start data caching
-            state = CacheState.BEGIN_UPDATE;
+      switch (getState()) {
+        case NOT_INITIALIZED:
+          // Error
+          GameLog.e(TAG, "Attempting to update an uninitialized CacheBitmap");
+          return;
+        case IS_INITIALIZED:
+          // Start data caching
+          setState(CacheState.BEGIN_UPDATE);
+          cacheThread.interrupt();
+          break;
+        case BEGIN_UPDATE:
+        case IS_UPDATING:
+          // Currently updating; low resolution version used
+          break;
+        case DISABLED:
+          // Use of high resolution version disabled
+          break;
+        case READY:
+          if ((bitmap == null) || !cacheWindow.contains(p.getWindow())) {
+            // No data loaded OR No cached data available
+            setState(CacheState.BEGIN_UPDATE);
             cacheThread.interrupt();
-            break;
-          case BEGIN_UPDATE:
-          case IS_UPDATING:
-            // Currently updating; low resolution version used
-            break;
-          case DISABLED:
-            // Use of high resolution version disabled
-            break;
-          case READY:
-            if ((bitmap == null) || !cacheWindow.contains(p.getWindow())) {
-              // No data loaded OR No cached data available
-              state = CacheState.BEGIN_UPDATE;
-              cacheThread.interrupt();
-            } else {
-              bmp = bitmap;
-            }
-            break;
-        }
+          } else {
+            bmp = bitmap;
+          }
+          break;
       }
       // Use the low resolution version if the cache is empty or scale factor is < threshold
       if ((bmp == null) || (getZoom() < lowResThreshold))
@@ -431,11 +334,29 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     }
 
     void drawLowResolution() {
-      if (state != CacheState.NOT_INITIALIZED) {
-        synchronized (viewPort) {
-          drawLowResolutionBackground(viewPort.getBitmap(), viewPort.getWindow());
-        }
+      if (getState() != CacheState.NOT_INITIALIZED) {
+        drawLowResolutionBackground();
       }
+    }
+
+    /**
+     * This method fills the passed-in bitmap with sample data. This function must return data fast;
+     * this is our fall back solution in all the cases where the user is moving too fast for us to
+     * load the actual bitmap data from memory. The quality of the user experience rests on the speed
+     * of this function.
+     */
+    private void drawLowResolutionBackground() {
+      if (viewPort.getBitmap() == null) return;
+      Rect rect = viewPort.getWindow();
+      int left = rect.left >> sampleSize;
+      int top = rect.top >> sampleSize;
+      int right = rect.right >> sampleSize;
+      int bottom = rect.bottom >> sampleSize;
+      Rect sRect = new Rect(left, top, right, bottom);
+      Rect dRect = new Rect(0, 0, viewPort.getBitmap().getWidth(), viewPort.getBitmap().getHeight());
+      // Draw to Canvas
+      Canvas canvas = new Canvas(viewPort.getBitmap());
+      canvas.drawBitmap(lowResBitmap, sRect, dRect, null);
     }
 
   }
@@ -447,7 +368,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
    * locks {@link CacheBitmap} in order to ensure the smoothest possible performance (loading can
    * take a while).
    */
-  @SuppressWarnings({"SameParameterValue", "ClassExplicitlyExtendsThread"})
+  @SuppressWarnings({"ClassExplicitlyExtendsThread"})
   class CacheThread extends Thread {
     private boolean isRunning;
     // The CacheBitmap
@@ -516,8 +437,8 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
             } catch (OutOfMemoryError ignored) {
               GameLog.d(TAG, "CacheThread out of memory");
               // Out of memory ERROR detected. Lower the memory allocation
+              cacheBitmapOutOfMemoryError();
               synchronized (cache) {
-                cacheBitmapOutOfMemoryError();
                 if (cache.getState() == CacheState.IS_UPDATING) {
                   cache.setState(CacheState.BEGIN_UPDATE);
                 }
@@ -528,9 +449,87 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
       }
     }
 
+    /**
+     * Determine the dimensions of the CacheBitmap based on the current ViewPort. <p/> Minimum size is
+     * equal to the viewport; otherwise it is dimensioned relative to the available memory. {@link
+     * CacheBitmap} is locked while the calculation is done, so this has to be fast.
+     *
+     * @param rect The dimensions of the current viewport
+     * @return The dimensions of the cache
+     */
+    @SuppressWarnings({"OverlyLongMethod"})
+    private Rect calculateCacheDimensions(Rect rect) {
+      long bytesToUse = (Runtime.getRuntime().maxMemory() * getMemUsage()) / 100;
+      Point sz = getBackgroundSize();
+      int vw = rect.width();
+      int vh = rect.height();
+      // Calculate the margins within the memory budget
+      int tw = 0;
+      int th = 0;
+      int mw = tw;
+      int mh = th;
+      int bytesPerPixel = 4;
+      while (((vw + tw) * (vh + th) * bytesPerPixel) < bytesToUse) {
+        tw++;
+        mw = tw;
+        th++;
+        mh = th;
+      }
+      // Trim margins to image size
+      if ((vw + mw) > sz.x) mw = Math.max(0, sz.x - vw);
+      if ((vh + mh) > sz.y) mh = Math.max(0, sz.y - vh);
+      // Figure out the left & right based on the margin.
+      // LATER: THe logic here assumes that the viewport is <= our size.
+      // If that's not the case, then this logic breaks.
+      int left = rect.left - (mw >> 1);
+      int right = rect.right + (mw >> 1);
+      if (left < 0) {
+        right -= left; // Adds the overage on the left side back to the right
+        left = 0;
+      }
+      if (right > sz.x) {
+        left -= right - sz.x; // Adds overage on right side back to left
+        right = sz.x;
+      }
+      // Figure out the top & bottom based on the margin. We assume our viewport
+      // is <= our size. If that's not the case, then this logic breaks.
+      int top = rect.top - (mh >> 1);
+      int bottom = rect.bottom + (mh >> 1);
+      if (top < 0) {
+        bottom -= top; // Adds the overage on the top back to the bottom
+        top = 0;
+      }
+      if (bottom > sz.y) {
+        top -= bottom - sz.y; // Adds overage on bottom back to top
+        bottom = sz.y;
+      }
+      // Set the origin based on our new calculated values.
+      calculatedCacheWindowRect.set(left, top, right, bottom);
+      return calculatedCacheWindowRect;
+    }
+
     @SuppressWarnings("SuspiciousGetterSetter")
     public void setRunning(boolean running) {
       isRunning = running;
+    }
+
+    /**
+     * Loads the relevant slice of the background bitmap that needs to be kept in memory. <p/> The
+     * loading can take a long time depending on the size.
+     *
+     * @param rect The portion of the background bitmap to be cached
+     * @return The bitmap representing the requested area of the background
+     */
+    private Bitmap loadCachedBitmap(Rect rect) {
+      return decoder.decodeRegion(rect, options);
+    }
+
+    /**
+     * This function tries to recover from an OutOfMemoryError in the CacheThread.
+     */
+    private void cacheBitmapOutOfMemoryError() {
+      if (getMemUsage() > 0) setMemUsage(getMemUsage() - 1);
+      GameLog.e(TAG, "OutOfMemory caught; reducing cache size to " + getMemUsage() + " percent.");
     }
 
   }

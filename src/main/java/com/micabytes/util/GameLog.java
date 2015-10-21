@@ -20,9 +20,8 @@ import com.crashlytics.android.Crashlytics;
 import org.jetbrains.annotations.NonNls;
 
 import io.fabric.sdk.android.Fabric;
-import io.fabric.sdk.android.services.common.Crash;
 
-@SuppressWarnings({"StaticMethodNamingConvention", "SameParameterValue"})
+@SuppressWarnings({"StaticMethodNamingConvention", "UtilityClass"})
 @NonNls
 public final class GameLog {
   private static final boolean LOG = true;
@@ -60,8 +59,10 @@ public final class GameLog {
   }
 
   public static void logException(Exception e) {
-    if (LOG)
+    if (LOG) {
+      //noinspection CallToPrintStackTrace
       e.printStackTrace();
+    }
     if (Fabric.isInitialized())
       Crashlytics.logException(e);
   }

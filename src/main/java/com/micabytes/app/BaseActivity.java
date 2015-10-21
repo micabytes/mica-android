@@ -346,7 +346,6 @@ public class BaseActivity extends AppCompatActivity implements GameHelper.GameHe
    * @param msg   the message to display.
    * @param error true if an ERROR occurred, false otherwise.
    */
-  @SuppressWarnings("BooleanParameter")
   public void showMessage(String msg, boolean error) {
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
   }

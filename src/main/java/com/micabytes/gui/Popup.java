@@ -23,8 +23,7 @@ class Popup {
     View rootView;
     final PopupWindow window;
     final WindowManager windowManager;
-    @Nullable
-    private Drawable background;
+    @Nullable private Drawable background;
 
     Popup(Context con) {
         context = con;
@@ -93,7 +92,7 @@ class Popup {
     /**
      * Set background drawable.
      */
-    public void setBackgroundDrawable(Drawable bkg) {
+    public void setBackground(@Nullable Drawable bkg) {
         background = bkg;
     }
 

@@ -16,7 +16,7 @@ package com.micabytes.math;
  * Minimal Polygon class for Android. <p/> Basic polygon wrapper to handle simple point in polygon
  * problems.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "ClassIndependentOfModule", "ClassUnconnectedToPackage"})
 public class Polygon {
   // Polygon coordinates.
   private final int[] polyX;
