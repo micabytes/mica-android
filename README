@@ -78,7 +78,7 @@ may still be many subtle (and not so subtle) bugs in the code.
 Integrating lib_base in another Android Project
 
 1. From your projects root directory (assuming it is version controlled in Git), run:
-> git submodule add git@github.com:micabyte/lib_base.git
+> git submodule add git@github.com:micabytes/lib_game.git
 
 2. In settings.gradle, add:
 include ':lib_base'

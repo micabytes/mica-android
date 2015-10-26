@@ -185,8 +185,8 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
     incrementSize = n;
   }
 
-  public void setCurrent() {
-    current = 1;
+  public void setCurrent(int val) {
+    current = val;
     updateView();
   }
 
@@ -243,10 +243,11 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
     * current number else find the correct value in the
     * displayed values for the current number.
     */
+    text.getText().clear();
     if (displayedValues == null) {
-      text.setText(formatNumber(current));
+      text.append(formatNumber(current));
     } else {
-      text.setText(displayedValues[current - start]);
+      text.append(displayedValues[current - start]);
     }
     text.setSelection(text.getText().length());
   }
