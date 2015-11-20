@@ -25,16 +25,14 @@ import com.micabytes.util.GameLog;
 /**
  * HexMap superclass <p/> This implementation works for pointy-side up HexMaps. Needs to be adjusted
  * if it is going to be used for flat-side up maps.
- *
- * @author micabyte
  */
-@SuppressWarnings({"unused"})
+@SuppressWarnings("unused")
 public abstract class HexMap {
   private static final String TAG = HexMap.class.getName();
   private static boolean standardOrientation = true;
-  private static int mapWidth;
-  private static int mapHeight;
-  private static int tileSlope;
+  private static int mapWidth = 0;
+  private static int mapHeight = 0;
+  private static int tileSlope = 0;
   private static Rect tileRect = new Rect();
   protected TileMapZone[][] zones;
   protected float scaleFactor;

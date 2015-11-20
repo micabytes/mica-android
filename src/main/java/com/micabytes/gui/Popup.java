@@ -78,7 +78,7 @@ class Popup {
             throw new IllegalStateException("setContentView was not called with a view to display.");
         onShow();
         if (background == null)
-            window.setBackgroundDrawable(new BitmapDrawable(context.getResources(), ImageHandler.getInstance(context).get(R.drawable.ic_blank)));
+            window.setBackgroundDrawable(new BitmapDrawable(context.getResources(), ImageHandler.get(R.drawable.ic_blank)));
         else
             window.setBackgroundDrawable(background);
         window.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);

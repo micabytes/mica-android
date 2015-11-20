@@ -38,8 +38,6 @@ import java.text.DecimalFormat;
  * Base class for Game Activities. <p/> This implementation now also implements the GamesClient
  * object from Google Play Games services and manages its lifecycle. Subclasses should override the
  * onSignInSucceeded
- *
- * @author micabyte
  */
 @SuppressWarnings({"ClassWithTooManyMethods", "unused"})
 @SuppressLint("Registered")
@@ -213,7 +211,7 @@ public class BaseActivity extends AppCompatActivity implements GameHelper.GameHe
     }
   }
 
-  @SuppressWarnings({"ChainOfInstanceofChecks", "OverlyComplexMethod", "OverlyLongMethod"})
+  @SuppressWarnings({"ChainOfInstanceofChecks", "OverlyComplexMethod"})
   private static void unbindViewReferences(View view) {
     // set all listeners to null
     try {

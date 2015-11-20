@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NonNls;
 
 @SuppressWarnings("UtilityClass")
 public final class GameConstants {
-  @NonNls public static final String THIS = "this";
   @NonNls public static final String VERSION = "version";
   @NonNls public static final String ID = "id";
   @NonNls public static final String NAME = "name";
@@ -21,9 +20,9 @@ public final class GameConstants {
   @NonNls public static final String ERROR = "ERROR";
   @NonNls public static final String OBJECT = "object";
   @NonNls public static final String NUMBER = "number";
+  @NonNls public static final String UTF_8 = "UTF-8";
   // Constants
   public static final double HALF = 0.5;
-  public static final int FIVE = 5;
   public static final float TEN = 10;
   public static final int FIFTY = 50;
   public static final int HUNDRED = 100;

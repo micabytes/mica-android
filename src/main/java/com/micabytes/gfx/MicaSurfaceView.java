@@ -33,14 +33,15 @@ import org.jetbrains.annotations.NonNls;
 /**
  * MicaSurfaceView encapsulates all of the logic for handling 2D game maps. Pass it a
  * SurfaceListener to receive touch events and a SurfaceRenderer to handle the drawing.
- *
- * @author micabyte
  */
 @SuppressWarnings("MethodReturnAlwaysConstant")
 public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callback, GestureDetector.OnGestureListener {
   private static final String TAG = MicaSurfaceView.class.getName();
   @NonNls private static final String DRAW_THREAD = "drawThread";
   private static final int SCALE_MOVE_GUARD = 500;
+  @NonNls public static final String GOOGLE = "google";
+  @NonNls public static final String ASUS = "asus";
+  @NonNls public static final String NEXUS_7 = "Nexus 7";
   /**
    * The Game Controller. This where we send UI events other than scroll and pinch-zoom in order to be handled
    */
@@ -114,6 +115,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     return ret;
   }
 
+  @SuppressWarnings("unused")
   public void setViewPort(int w, int h) {
     renderer.setViewSize(w, h);
   }
@@ -122,10 +124,12 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     renderer.setViewPosition(p.x, p.y);
   }
 
+  @SuppressWarnings("unused")
   public void setMapPosition(Point p) {
     renderer.setMapPosition(p.x, p.y);
   }
 
+  @SuppressWarnings("unused")
   public void centerViewPosition() {
     Point viewportSize = new Point();
     Point sceneSize = renderer.getBackgroundSize();
@@ -136,6 +140,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     renderer.setViewPosition(x, y);
   }
 
+  @SuppressWarnings("unused")
   public Point getViewSize() {
     Point ret = new Point();
     renderer.getViewPosition(ret);
@@ -225,9 +230,9 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     GameSurfaceViewThread(SurfaceHolder surface) {
       setName(GameSurfaceViewThread.class.getName());
       surfaceHolder = surface;
-      if (android.os.Build.BRAND.equalsIgnoreCase("google") &&
-          android.os.Build.MANUFACTURER.equalsIgnoreCase("asus") &&
-          android.os.Build.MODEL.equalsIgnoreCase("Nexus 7")) {
+      if (Build.BRAND.equalsIgnoreCase(GOOGLE) &&
+          Build.MANUFACTURER.equalsIgnoreCase(ASUS) &&
+          Build.MODEL.equalsIgnoreCase(NEXUS_7)) {
         GameLog.w(TAG, "Sleep 500ms (Device: Asus Nexus 7)");
         delay = BUG_DELAY;
       }
@@ -269,7 +274,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             }
           }
         } finally {
-          if (canvas != null && surfaceHolder != null) {
+          if (canvas != null) {
             surfaceHolder.unlockCanvasAndPost(canvas);
           }
         }
@@ -278,7 +283,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
     public synchronized void onWindowFocusChanged(boolean focus) {
       hasFocus = focus;
-      if (hasFocus == true) {
+      if (hasFocus) {
         notifyAll();
       }
     }

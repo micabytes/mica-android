@@ -15,6 +15,7 @@ package com.micabytes.util;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
+import com.micabytes.GameApplication;
 import com.micabytes.R;
 
 import org.jetbrains.annotations.NonNls;
@@ -31,21 +32,18 @@ import java.util.regex.Pattern;
 
 /**
  * StringHandler is a wrapper around the standard Android getString functionality. It is primarily
- * used for formatting magic on strings using BaseObject code.
- *
- * @author micabyte
+ * used for formatting magic on strings using the AttributeInterface.
  */
-@SuppressWarnings("ALL")
-public class StringHandler {
+@SuppressWarnings({"OverlyComplexClass", "UtilityClass", "unused"})
+public final class StringHandler {
   private static final String TAG = StringHandler.class.getName();
   private static final int NOT_FOUND = -1;
-  private static final String punctuation = "(),;.!?\"";
   @NonNls public static final String WHITESPACE = " ";
   public static final char CHAR_WHITESPACE = ' ';
   public static final char HASH_MARK = '#';
   public static final char PERCENT = '%';
-  @NonNls
-  public static final char EOL = '\n';
+  @NonNls public static final String LINE_SEPARATOR = "line.separator";
+  @NonNls public static final String EOL = System.getProperty(LINE_SEPARATOR);
   private static final Pattern AND_SPLITTER = Pattern.compile("[&]");
   private static final Pattern GEQ_SPLITTER = Pattern.compile("[>=]+");
   private static final Pattern LEQ_SPLITTER = Pattern.compile("[<=]+");
@@ -53,6 +51,19 @@ public class StringHandler {
   private static final Pattern LT_SPLITTER = Pattern.compile("[<]+");
   private static final Pattern EQ_SPLITTER = Pattern.compile("[=]+");
   private static final Pattern DOT_SPLITTER = Pattern.compile("[.]");
+  public static final char SQUARE_BRACE_LEFT = '[';
+  public static final char SQUARE_BRACE_RIGHT = ']';
+  public static final char BRACKET_LEFT = '(';
+  public static final char BRACKET_RIGHT = ')';
+  public static final char WAVY_BRACE_LEFT = '{';
+  public static final char WAVY_BRACE_RIGHT = '}';
+  @SuppressWarnings("HardcodedLineSeparator")
+  @NonNls public static final String SLASH_N = "\\n";
+  public static final char PLUS = '+';
+
+  private StringHandler() {
+    // NOOP
+  }
 
   /**
    * This is the workhorse function of the class. It takes a string and strips out the formatting
@@ -66,24 +77,24 @@ public class StringHandler {
    * using the getString methods. Dot notation is used (e.g., $MyObject.MyString - MyString is
    * passed to the getString function).
    *
-   * @param c         Context object (usually an Application or Activity)
    * @param text      The text to be formatted
    * @param variables A hash map containing variables
    * @return String with all of the scripting code replaced appropriately
    */
-  public static String format(Context c, String text, @Nullable HashMap<String, Object> variables) {
+  @SuppressWarnings({"MethodWithMoreThanThreeNegations", "OverlyComplexMethod"})
+  public static String format(String text, @Nullable HashMap<String, Object> variables) {
     String ret = resolveLineBreaks(text);
     // Markup Link Notation
-    int start;
+    int start = ret.indexOf(SQUARE_BRACE_LEFT);
     int end;
-    start = ret.indexOf('[');
     while (start != NOT_FOUND) {
-      end = ret.indexOf(']', start);
-      if (end != NOT_FOUND) {
+      end = ret.indexOf(SQUARE_BRACE_RIGHT, start);
+      if (end == NOT_FOUND) start = NOT_FOUND;
+      else {
         String opt = ret.substring(start + 1, end);
-        String condition = null;
-        if (ret.charAt(end + 1) == '(') {
-          int i = ret.indexOf(')', end);
+        @NonNls String condition = null;
+        if (ret.charAt(end + 1) == BRACKET_LEFT) {
+          int i = ret.indexOf(BRACKET_RIGHT, end);
           condition = ret.substring(end + 2, i).trim();
           if (i != NOT_FOUND) end = i;
         }
@@ -93,37 +104,36 @@ public class StringHandler {
           ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
         else if ("?".equals(condition)) {
           ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
-        } else {
+        } else if (condition != null){
           condition = condition.replace("?", "");
           int nInt = evaluate(condition, variables);
           if (nInt > (tokens.length - 1)) nInt = tokens.length - 1;
           if (nInt < 0) nInt = 0;
           ret = ret.replace(replace, tokens[nInt]);
         }
-        start = ret.indexOf("[");
-      } else
-        start = NOT_FOUND;
+        start = ret.indexOf(SQUARE_BRACE_LEFT);
+      }
     }
     // Game variable substitution
     if (variables != null) {
-      start = ret.indexOf('{');
-      while (start != NOT_FOUND) {
-        end = ret.indexOf('}', start);
-        if (end != NOT_FOUND) {
-          String variable = ret.substring(start + 1, end);
-          String stringToReplace = ret.substring(start, end + 1);
+      int startV = ret.indexOf(WAVY_BRACE_LEFT);
+      while (startV != NOT_FOUND) {
+        end = ret.indexOf(WAVY_BRACE_RIGHT, startV);
+        if (end == NOT_FOUND) startV = NOT_FOUND;
+        else {
+          String variable = ret.substring(startV + 1, end);
+          String stringToReplace = ret.substring(startV, end + 1);
           String replaceWith = getStringValue(variable, variables);
           ret = ret.replace(stringToReplace, replaceWith);
-          start = ret.indexOf('{');
-        } else
-          start = NOT_FOUND;
+          startV = ret.indexOf(WAVY_BRACE_LEFT);
+        }
       }
     }
     return ret;
   }
 
   private static String resolveLineBreaks(String text) {
-    return text.replace("\\n", System.getProperty("line.separator"));
+    return text.replace(SLASH_N, System.getProperty(LINE_SEPARATOR));
   }
 
   private static String getStringValue(String key, AbstractMap<String, Object> variables) {
@@ -135,7 +145,7 @@ public class StringHandler {
       return GameConstants.ERROR;
     String[] tokens = DOT_SPLITTER.split(str, 2);
     if (tokens.length > 2) {
-      GameLog.e(TAG, "Failed to get variable value for object " + str);
+      GameLog.e(TAG, "Failed to getStringValue variable value for object " + str);
       return GameConstants.ERROR;
     }
     Object obj = variables.get(tokens[0]);
@@ -146,15 +156,16 @@ public class StringHandler {
       return (String) obj;
     if (tokens.length == 1)
       return obj.toString();
-    ObjectAttributes sObj = (ObjectAttributes) obj;
-    return sObj.getString(tokens[1]);
+    AttributeInterface sObj = (AttributeInterface) obj;
+    Object res = sObj.getAttribute(tokens[1]);
+    if (res instanceof String) return (String) res;
+    return res.toString();
   }
 
   @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
   public static String randomSplit(String str, String divisor) {
     if (str.contains(divisor)) {
-      String[] tokens;
-      tokens = str.split("[" + divisor + "]");
+      String[] tokens = str.split(SQUARE_BRACE_LEFT + divisor + SQUARE_BRACE_RIGHT);
       if (tokens.length > 0) {
         return tokens[RandomHandler.random(tokens.length)];
       }
@@ -162,30 +173,32 @@ public class StringHandler {
     return str;
   }
 
-  public static String list(Context c, ArrayList<String> list) {
+  public static String list(ArrayList<String> list) {
+    Context c = GameApplication.getInstance();
     if (list.isEmpty()) return "";
     if (list.size() == 1) {
       return list.get(0);
     }
-    if (list.size() == 2) {
-      return new StringBuilder(list.get(0)).append(StringHandler.WHITESPACE).append(c.getString(R.string.stringhandler_and1)).append(' ').append(list.get(1)).toString();
-    }
+    if (list.size() == 2)
+      return list.get(0) + WHITESPACE + c.getString(R.string.stringhandler_and1) + WHITESPACE + list.get(1);
     StringBuilder ret = new StringBuilder();
     for (int i = 0; i < (list.size() - 1); i++) {
       ret.append(list.get(i));
       if (i < (list.size() - 2)) {
         ret.append(c.getString(R.string.stringhandler_comma));
-        ret.append(' ');
+        ret.append(WHITESPACE);
       } else {
         ret.append(c.getString(R.string.stringhandler_and2));
-        ret.append(' ');
+        ret.append(WHITESPACE);
       }
     }
     ret.append(list.get(list.size() - 1));
     return ret.toString();
   }
 
-  public static String listString(Context context, ArrayList<String> list) {
+  @SuppressWarnings("StringContatenationInLoop")
+  public static String listString(ArrayList<String> list) {
+    Context c = GameApplication.getInstance();
     String ret = "";
     if (list.isEmpty()) return ret;
     if (list.size() == 1) {
@@ -193,12 +206,12 @@ public class StringHandler {
       return ret;
     }
     if (list.size() == 2) {
-      ret = list.get(0) + context.getString(R.string.stringhandler_and1) + list.get(1);
+      ret = list.get(0) + c.getString(R.string.stringhandler_and1) + list.get(1);
       return ret;
     }
     for (int i = 0; i < (list.size() - 1); i++) {
       ret += list.get(i);
-      ret += i < (list.size() - 2) ? context.getString(R.string.stringhandler_comma) : context.getString(R.string.stringhandler_and2);
+      ret += i < (list.size() - 2) ? c.getString(R.string.stringhandler_comma) : c.getString(R.string.stringhandler_and2);
     }
     ret += list.get(list.size() - 1);
     return ret;
@@ -206,33 +219,45 @@ public class StringHandler {
 
   public static String signedString(int i) {
     if (i < 0) return Integer.toString(i);
-    return "+" + Integer.toString(i);
+    return PLUS + Integer.toString(i);
   }
 
-  public static String get(Context c, int id) {
-    return format(c, c.getString(id), null);
+  public static String get(int id) {
+    Context c = GameApplication.getInstance();
+    return format(c.getString(id), null);
   }
 
-  public static String get(Context c, int id, Object... args) {
-    return format(c, c.getString(id, args), null);
+  public static String get(int id, Object... args) {
+    Context c = GameApplication.getInstance();
+    return format(c.getString(id, args), null);
   }
 
-  public static String get(Context c, int id, HashMap<String, Object> variables, Object... args) {
-    return format(c, c.getString(id, args), variables);
+  public static String get(int id, HashMap<String, Object> variables, Object... args) {
+    Context c = GameApplication.getInstance();
+    return format(c.getString(id, args), variables);
   }
 
   public static String getString(InputStream is) {
-    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+    BufferedReader reader = null;
     StringBuilder sb = new StringBuilder();
-
-    String line;
     try {
+      //noinspection IOResourceOpenedButNotSafelyClosed
+      reader = new  BufferedReader(new InputStreamReader(is, GameConstants.UTF_8));
+      String line;
+      //noinspection NestedAssignment
       while ((line = reader.readLine()) != null) {
-        sb.append(line).append("\n");
+        sb.append(line).append(EOL);
       }
     } catch (IOException e) {
       GameLog.logException(e);
     } finally {
+      try {
+        if (reader != null) {
+          reader.close();
+        }
+      } catch (IOException e) {
+        GameLog.logException(e);
+      }
       try {
         is.close();
       } catch (IOException e) {
@@ -254,7 +279,7 @@ public class StringHandler {
     return ret ? 1 : 0;
   }
 
-  @SuppressWarnings({"MethodWithMultipleReturnPoints", "OverlyComplexMethod", "OverlyLongMethod", "FeatureEnvy"})
+  @SuppressWarnings({"MethodWithMultipleReturnPoints", "OverlyComplexMethod", "FeatureEnvy"})
   private static int evaluateStatement(String str, AbstractMap<String, Object> variables) {
     String[] tokens;
     // Random Value
@@ -329,7 +354,7 @@ public class StringHandler {
     }
     String[] tokens = DOT_SPLITTER.split(str, 2);
     if (tokens.length > 2) {
-      GameLog.e(TAG, "Failed to get variable value for object " + str);
+      GameLog.e(TAG, "Failed to getVariableValue for object " + str);
       return 0;
     }
     if (variables == null)
@@ -347,10 +372,21 @@ public class StringHandler {
       return ((Double) obj).intValue();
     if (obj instanceof String)
       return 1;
-    ObjectAttributes gObj = (ObjectAttributes) obj;
-    //if (tokens.length == 1) {
-    //  return gObj.getValue();
-    //}
-    return gObj.getInteger(tokens[1]);
+    AttributeInterface gObj = (AttributeInterface) obj;
+    Object attribute = gObj.getAttribute(tokens[1]);
+    if (attribute instanceof Boolean) {
+      return (Boolean) attribute ? 1 : 0;
+    }
+    if (attribute instanceof Integer)
+      return (Integer) attribute;
+    if (attribute instanceof Double)
+      return ((Double) attribute).intValue();
+    if (attribute instanceof String)
+      return 1;
+    return 0;
   }
+
+
+
+
 }

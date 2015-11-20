@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.micabytes">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.micabytes">
 
     <application
         android:label="@string/lib_base"/>

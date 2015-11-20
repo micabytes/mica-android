@@ -26,8 +26,6 @@ import android.graphics.RectF;
  * - BitmapSurfaceRenderer can be extended for apps that require background images
  * - TileMapSurfaceRenderer can be extended for apps that need to display TileMaps (not currently onTouchUp to date)
  * - HexMapSurfaceRenderer can be extended for apps that need to display HexMaps
- *
- * @author micabyte
  */
 public abstract class SurfaceRenderer {
   // View Size Minimum
@@ -246,7 +244,6 @@ public abstract class SurfaceRenderer {
       zoom = f;
     }
 
-    @SuppressWarnings("OverlyLongMethod")
     public void zoom(float factor, PointF screenFocus) {
       if (getBitmap() == null) return;
       PointF screenSize = new PointF(getBitmap().getWidth(), getBitmap().getHeight());

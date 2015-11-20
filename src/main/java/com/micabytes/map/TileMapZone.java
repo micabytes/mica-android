@@ -21,8 +21,6 @@ import com.micabytes.gfx.ImageHandler;
 
 /**
  * Zone superclass for TileMap and HexMap
- *
- * @author micabyte
  */
 public class TileMapZone {
   int value;
@@ -31,21 +29,21 @@ public class TileMapZone {
    * Get the width of a tile
    */
   public int getWidth(Context context) {
-    return ImageHandler.getInstance(context).get(value).getWidth();
+    return ImageHandler.get(value).getWidth();
   }
 
   /**
    * Get the height of a tile
    */
   public int getHeight(Context context) {
-    return ImageHandler.getInstance(context).get(value).getHeight();
+    return ImageHandler.get(value).getHeight();
   }
 
   /**
    * Draw the base bitmap of the tile on a canvas
    */
   public void drawBase(Context context, Canvas canvas, Rect tileRect, Rect destRect, Paint paint) {
-    canvas.drawBitmap(ImageHandler.getInstance(context).get(value), tileRect, destRect, paint);
+    canvas.drawBitmap(ImageHandler.get(value), tileRect, destRect, paint);
   }
 
 

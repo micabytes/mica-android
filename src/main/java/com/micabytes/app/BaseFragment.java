@@ -42,8 +42,6 @@ import com.micabytes.gui.LinearListView;
 
 /**
  * Convenience class to replace Fragment
- *
- * @author micabyte
  */
 @SuppressWarnings({"unused", "ClassWithTooManyMethods"})
 public class BaseFragment extends Fragment implements View.OnClickListener {
@@ -366,7 +364,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     return v;
   }
 
-  public class ContentDescriptionClickListener implements View.OnClickListener {
+  protected class ContentDescriptionClickListener implements View.OnClickListener {
 
     private void toast(String message, int length) {
       Toast.makeText(getActivity(), message, length).show();

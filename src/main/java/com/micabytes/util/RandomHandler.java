@@ -15,10 +15,10 @@ package com.micabytes.util;
 import java.util.Random;
 
 /**
- * Game Utility Class <p/> This class provides a number of simple static utility functions. This
- * includes the RANDOM number generator, a dice roller, and a "wild dice" roller.
+ * Game Utility Class
  *
- * @author micabyte
+ * This class provides a number of simple static utility functions. This
+ * includes the RANDOM number generator, a dice roller, and a "wild dice" roller.
  */
 @SuppressWarnings("UtilityClass")
 public final class RandomHandler {
@@ -30,15 +30,16 @@ public final class RandomHandler {
   }
 
   /**
-   * Returns a RANDOM double
+   * Returns a random double
    */
   public static double random() {
     return RANDOM.nextDouble();
   }
 
   /**
-   * Returns a RANDOM integer between 0 and i-1 inclusive <p/> Returns 0 if the input is less than
-   * or equal to 0 (this would otherwise be an ERROR).
+   * Returns a random integer between 0 and i-1 inclusive
+   *
+   * Returns 0 if the input is less than or equal to 0 (this would otherwise be an exception).
    */
   public static int random(int i) {
     if (i <= 0) return 0;
@@ -48,7 +49,7 @@ public final class RandomHandler {
   /**
    * Roll a number of dice of a given size, with a given toHit number
    *
-   * @return Number of dice that beat the Hit number
+   * @return Number of dice that beat (or equalled) the Hit number
    */
   public static int roll(int nDice, int dSize, int toHit) {
     if (nDice == 0) return 0;
@@ -66,7 +67,7 @@ public final class RandomHandler {
    * Roll a number of "wild" dice of a given size, with a given toHit number. Wild dice means that
    * the maximum roll counts as a hit and is rerolled (and can generate further hits).
    *
-   * @return Number of dice that beat the Hit number
+   * @return Number of dice that beat (or equalled) he Hit number
    */
   @SuppressWarnings({"MethodWithMultipleLoops", "StaticMethodOnlyUsedInOneClass"})
   public static int wRoll(int nDice, int dSize, int toHit) {

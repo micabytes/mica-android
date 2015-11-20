@@ -69,10 +69,10 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
     @Override
     public void run() {
       if (increment) {
-        changeCurrent(current + incrementSize);
+        changeCurrent(currentValue + incrementSize);
         handler.postDelayed(this, speed);
       } else if (decrement) {
-        changeCurrent(current - incrementSize);
+        changeCurrent(currentValue - incrementSize);
         handler.postDelayed(this, speed);
       }
     }
@@ -82,9 +82,9 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
   private final InputFilter numberInputFilter;
 
   private String[] displayedValues;
-  private int start;
-  private int end;
-  private int current;
+  private int startValue;
+  private int endValue;
+  private int currentValue;
   private int previous;
   private OnChangedListener listener;
   @SuppressWarnings("unused")
@@ -103,10 +103,8 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
     this(context, attrs, 0);
   }
 
-  /**
-   * @param defStyle Default style. Not used.
-   */
-  public NumberPicker(Context context, AttributeSet attrs, int defStyle) {
+  @SuppressWarnings("ThisEscapedInObjectConstruction")
+  public NumberPicker(Context context, AttributeSet attrs, @SuppressWarnings("UnusedParameters") int defStyle) {
     super(context, attrs);
     setOrientation(VERTICAL);
     LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -132,8 +130,8 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
       setEnabled(false);
     }
 
-    start = DEFAULT_MIN;
-    end = DEFAULT_MAX;
+    startValue = DEFAULT_MIN;
+    endValue = DEFAULT_MAX;
   }
 
   @Override
@@ -145,38 +143,39 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
   }
 
   @SuppressWarnings("unused")
-  public void setListener(OnChangedListener listener) {
-    this.listener = listener;
+  public void setListener(OnChangedListener l) {
+    listener = l;
   }
 
   /**
-   * Set the range of numbers allowed for the number picker. The current value will be automatically
-   * set to the start.
+   * Set the range of numbers allowed for the number picker. The currentValue value will be automatically
+   * set to the startValue.
    *
-   * @param end the end of the range (inclusive)
+   * @param i the i of the range (inclusive)
    */
-  public void setRange(int end) {
-    GameLog.d(TAG, "Set range of dialog " + 1 + " to " + end);
-    start = 1;
-    this.end = end;
-    current = 1;
+  @SuppressWarnings("unused")
+  public void setRange(int i) {
+    GameLog.d(TAG, "Set range of dialog " + 1 + " to " + i);
+    startValue = 1;
+    endValue = i;
+    currentValue = 1;
     updateView();
   }
 
   /**
-   * Set the range of numbers allowed for the number picker. The current value will be automatically
-   * set to the start. Also provide a mapping for values used to display to the user.
+   * Set the range of numbers allowed for the number picker. The currentValue value will be automatically
+   * set to the startValue. Also provide a mapping for values used to display to the user.
    *
-   * @param start           the start of the range (inclusive)
-   * @param end             the end of the range (inclusive)
-   * @param displayedValues the values displayed to the user.
+   * @param st           the startValue of the range (inclusive)
+   * @param ed             the endValue of the range (inclusive)
+   * @param dv the values displayed to the user.
    */
   @SuppressWarnings({"unused", "MethodCanBeVariableArityMethod"})
-  public void setRange(int start, int end, String[] displayedValues) {
-    this.displayedValues = displayedValues;
-    this.start = start;
-    this.end = end;
-    current = start;
+  public void setRange(int st, int ed, String[] dv) {
+    displayedValues = dv;
+    startValue = st;
+    endValue = ed;
+    currentValue = st;
     updateView();
   }
 
@@ -185,8 +184,8 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
     incrementSize = n;
   }
 
-  public void setCurrent(int val) {
-    current = val;
+  public void setCurrentValue(int val) {
+    currentValue = val;
     updateView();
   }
 
@@ -204,9 +203,9 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
     if (!text.hasFocus()) text.requestFocus();
     // now perform the increment/decrement
     if (R.id.increment == v.getId()) {
-      changeCurrent(current + incrementSize);
+      changeCurrent(currentValue + incrementSize);
     } else if (R.id.decrement == v.getId()) {
-      changeCurrent(current - incrementSize);
+      changeCurrent(currentValue - incrementSize);
     }
   }
 
@@ -216,16 +215,16 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
         : String.valueOf(value);
   }
 
-  private void changeCurrent(int current) {
-    int cur = current;
-    // Wrap around the values if we go past the start or end
-    if (cur > end) {
-      cur = start;
-    } else if (cur < start) {
-      cur = end;
+  private void changeCurrent(int c) {
+    int cur = c;
+    // Wrap around the values if we go past the startValue or endValue
+    if (cur > endValue) {
+      cur = startValue;
+    } else if (cur < startValue) {
+      cur = endValue;
     }
-    previous = this.current;
-    this.current = cur;
+    previous = currentValue;
+    currentValue = cur;
 
     notifyChange();
     updateView();
@@ -233,31 +232,31 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
 
   private void notifyChange() {
     if (listener != null) {
-      listener.onChanged(this, previous, current);
+      listener.onChanged(this, previous, currentValue);
     }
   }
 
   private void updateView() {
 
     /* If we don't have displayed values then use the
-    * current number else find the correct value in the
-    * displayed values for the current number.
+    * currentValue number else find the correct value in the
+    * displayed values for the currentValue number.
     */
     text.getText().clear();
     if (displayedValues == null) {
-      text.append(formatNumber(current));
+      text.append(formatNumber(currentValue));
     } else {
-      text.append(displayedValues[current - start]);
+      text.append(displayedValues[currentValue - startValue]);
     }
     text.setSelection(text.getText().length());
   }
 
   private void validateCurrentView(CharSequence str) {
     int val = getSelectedPos(str.toString());
-    if ((val >= start) && (val <= end)) {
-      if (current != val) {
-        previous = current;
-        current = val;
+    if ((val >= startValue) && (val <= endValue)) {
+      if (currentValue != val) {
+        previous = currentValue;
+        currentValue = val;
         notifyChange();
       }
     }
@@ -289,7 +288,7 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
   }
 
   /**
-   * We start the long click here but rely on the {@link NumberPickerButton} to inform us when the
+   * We startValue the long click here but rely on the {@link NumberPickerButton} to inform us when the
    * long click has ended.
    */
   @Override
@@ -386,7 +385,7 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
              * as the user might want to delete some numbers
              * and then type a new number.
              */
-      if (val > NumberPicker.this.end) {
+      if (val > endValue) {
         return "";
       }
       return filtered;
@@ -401,7 +400,7 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
         /* Don't force the user to type in jan when ja will do */
       String stl = str.toLowerCase(Locale.US);
       if (displayedValues[i].toLowerCase(Locale.US).startsWith(stl)) {
-        return start + i;
+        return startValue + i;
       }
     }
 
@@ -414,19 +413,19 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
 
     /* Ignore as if it's not a number we don't care */
     }
-    return start;
+    return startValue;
   }
 
   /**
-   * @return the current value.
+   * @return the currentValue value.
    */
-  public int getCurrent() {
+  public int getCurrentValue() {
     try {
-      current = Integer.parseInt(String.valueOf(((TextView) findViewById(R.id.timepicker_input)).getText()));
+      currentValue = Integer.parseInt(String.valueOf(((TextView) findViewById(R.id.timepicker_input)).getText()));
     } catch (NumberFormatException ignored) {
       return 0;
     }
-    return current;
+    return currentValue;
   }
 
 }

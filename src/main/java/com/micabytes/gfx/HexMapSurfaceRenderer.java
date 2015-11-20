@@ -22,6 +22,7 @@ import com.micabytes.map.HexMap;
  * (hexagonal) map to the screen. The game should subclass the renderer and
  * extend the drawing methods to add other game elements.
  */
+@SuppressWarnings("unused")
 public class HexMapSurfaceRenderer extends SurfaceRenderer {
     // The HexMap object
     private HexMap gameSurfaceTileMap;

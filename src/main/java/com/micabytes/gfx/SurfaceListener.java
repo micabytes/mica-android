@@ -14,8 +14,6 @@ package com.micabytes.gfx;
 
 /**
  * Interface for SurfaceListener. Is used to return touch information to the game controller
- *
- * @author micabyte
  */
 public interface SurfaceListener {
     void onTouchDown(int x, int y);

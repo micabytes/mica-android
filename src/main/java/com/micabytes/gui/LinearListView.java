@@ -14,11 +14,11 @@ import java.util.Iterator;
 import java.util.List;
 
 // android:orientation
-@SuppressWarnings({"ClassUnconnectedToPackage"})
+@SuppressWarnings("ClassUnconnectedToPackage")
 public class LinearListView extends LinearLayout
 {
     private Adapter adapter;
-    private final Observer observer = new Observer(this);
+    @SuppressWarnings("ThisEscapedInObjectConstruction") private final Observer observer = new Observer(this);
 
     public LinearListView(Context context)
     {

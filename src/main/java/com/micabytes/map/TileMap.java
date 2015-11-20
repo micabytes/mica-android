@@ -22,8 +22,6 @@ import com.micabytes.gfx.SurfaceRenderer;
 
 /**
  * TileMap superclass
- *
- * @author micabyte
  */
 @SuppressWarnings({"unused", "AbstractClassNeverImplemented"})
 public abstract class TileMap {
@@ -61,7 +59,7 @@ public abstract class TileMap {
         return tileRect.width();
     }
 
-    @SuppressWarnings({"MethodWithMultipleLoops", "NumericCastThatLosesPrecision", "OverlyLongMethod"})
+    @SuppressWarnings({"MethodWithMultipleLoops", "NumericCastThatLosesPrecision"})
     public void drawBase(Context context, SurfaceRenderer.ViewPort p) {
         Canvas canvas = new Canvas(p.getBitmap());
         Paint paint = new Paint();

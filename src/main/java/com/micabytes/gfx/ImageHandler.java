@@ -27,6 +27,7 @@ import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
 
+import com.micabytes.GameApplication;
 import com.micabytes.util.GameLog;
 
 import java.lang.ref.SoftReference;
@@ -37,66 +38,58 @@ import java.lang.ref.SoftReference;
  * cache, we avoid the problem of leaking bitmaps in the code (assuming one doesn't copy them) and
  * reuse bitmaps where possible. Bitmaps are also placed in a SoftReference so that - at least in
  * theory - they are purged when memory runs low.
- *
- * @author micabyte
  */
-@SuppressWarnings("Singleton")
+@SuppressWarnings("UtilityClass")
 public final class ImageHandler {
   private static final String TAG = ImageHandler.class.getName();
-  // Default Config for Bitmap Retrieval
   private static final Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.ARGB_8888;
   private static final int COLOR_RED = 0xff424242;
   private static final int PIXEL_ROUNDING = 12;
-  // Application context
-  private final Resources resources;
-  // Shortcut to the Display Density
+  public static final float DENSITY_MINIMUM = 0.1f;
   private static float density = 1.0f;
   // Bitmap cache
-  private final SparseArray<SoftReference<Bitmap>> cachedBitmaps = new SparseArray<>();
-  private final SparseArray<Bitmap> persistBitmaps = new SparseArray<>();
+  private static final SparseArray<SoftReference<Bitmap>> CACHED_BITMAPS = new SparseArray<>();
+  private static final SparseArray<Bitmap> PERSIST_BITMAPS = new SparseArray<>();
 
-  private ImageHandler(Context con) {
-    resources = con.getResources();
-    DisplayMetrics metrics = resources.getDisplayMetrics();
-    //noinspection AssignmentToStaticFieldFromInstanceMethod
-    density = metrics.density;
+  private ImageHandler() {
+    // NOOP
   }
 
   public static float getDensity() {
+    setDensity();
     return density;
   }
 
-  public static void setDensity(float den) {
-    density = den;
-  }
-
-  @SuppressWarnings("CallToSystemGC")
-  public void release() {
-    cachedBitmaps.clear();
-    System.gc();
+  private static void setDensity() {
+    if (density < DENSITY_MINIMUM) {
+      Context context = GameApplication.getInstance();
+      Resources resources = context.getResources();
+      DisplayMetrics metrics = resources.getDisplayMetrics();
+      density = metrics.density;
+    }
   }
 
   @NonNull
-  public Bitmap get(int key) {
+  public static Bitmap get(int key) {
     return get(key, DEFAULT_CONFIG, true);
   }
 
   @NonNull
-  public Bitmap get(int key, Bitmap.Config config) {
+  public static Bitmap get(int key, Bitmap.Config config) {
     return get(key, config, false);
   }
 
   @SuppressWarnings("MethodWithMultipleReturnPoints")
   @NonNull
-  private Bitmap get(int key, Bitmap.Config config, boolean persist) {
+  private static Bitmap get(int key, Bitmap.Config config, boolean persist) {
     if (key == 0)
       GameLog.d(TAG, "Null resource sent to get()");
     Bitmap ret;
     if (persist) {
-      ret = persistBitmaps.get(key);
+      ret = PERSIST_BITMAPS.get(key);
       if (ret != null) return ret;
     }
-    SoftReference<Bitmap> ref = cachedBitmaps.get(key);
+    SoftReference<Bitmap> ref = CACHED_BITMAPS.get(key);
     if (ref != null) {
       ret = ref.get();
       if (ret != null) {
@@ -109,21 +102,22 @@ public final class ImageHandler {
       return Bitmap.createBitmap(1, 1, conf);
     }
     if (persist)
-      persistBitmaps.put(key, ret);
+      PERSIST_BITMAPS.put(key, ret);
     else
-      cachedBitmaps.put(key, new SoftReference<>(ret));
+      CACHED_BITMAPS.put(key, new SoftReference<>(ret));
     return ret;
   }
 
   @Nullable
-  private Bitmap loadBitmap(int key, Bitmap.Config bitmapConfig) {
+  private static Bitmap loadBitmap(int key, Bitmap.Config bitmapConfig) {
     BitmapFactory.Options opts = new BitmapFactory.Options();
     opts.inPreferredConfig = bitmapConfig;
-    return BitmapFactory.decodeResource(resources, key, opts);
+    return BitmapFactory.decodeResource(GameApplication.getInstance().getResources(), key, opts);
   }
 
+  @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
   @Nullable
-  public Bitmap getSceneBitmap(int bkg, int left, int right) {
+  public static Bitmap getSceneBitmap(int bkg, int left, int right) {
     Bitmap bitmap = get(bkg);
     Bitmap output =
         Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -150,23 +144,12 @@ public final class ImageHandler {
   }
 
   @NonNull
-  public BitmapFactory.Options getDimensions(int key) {
+  public static BitmapFactory.Options getDimensions(int key) {
     BitmapFactory.Options opt = new BitmapFactory.Options();
     opt.inPreferredConfig = BitmapSurfaceRenderer.DEFAULT_CONFIG;
     opt.inJustDecodeBounds = true;
-    BitmapFactory.decodeResource(resources, key, opt);
+    BitmapFactory.decodeResource(GameApplication.getInstance().getResources(), key, opt);
     return opt;
-  }
-
-  // Instance Code
-  @SuppressWarnings("RedundantFieldInitialization")
-  private static ImageHandler instance = null;
-
-  @SuppressWarnings("NonThreadSafeLazyInitialization")
-  @NonNull
-  public static ImageHandler getInstance(Context con) {
-    if (instance == null) instance = new ImageHandler(con);
-    return instance;
   }
 
 }

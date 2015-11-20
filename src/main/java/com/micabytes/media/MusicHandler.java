@@ -23,10 +23,8 @@ import com.micabytes.util.GameLog;
  * placed in the raw resource directory. <p/> General usage: Start it in the onResume of an
  * activity, and stop the music in the onPause. release should be called in onDestroy of the root
  * activity.
- *
- * @author micabyte
  */
-@SuppressWarnings({"UtilityClass", "ClassUnconnectedToPackage"})
+@SuppressWarnings({"UtilityClass", "ClassUnconnectedToPackage", "unused"})
 public final class MusicHandler {
   private static final String TAG = MusicHandler.class.getName();
   private static final int INVALID_NUMBER = 0;

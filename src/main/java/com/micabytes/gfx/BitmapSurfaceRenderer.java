@@ -368,9 +368,9 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
    * locks {@link CacheBitmap} in order to ensure the smoothest possible performance (loading can
    * take a while).
    */
-  @SuppressWarnings({"ClassExplicitlyExtendsThread"})
+  @SuppressWarnings("ClassExplicitlyExtendsThread")
   class CacheThread extends Thread {
-    private boolean isRunning;
+    private boolean running;
     // The CacheBitmap
     private final CacheBitmap cache;
 
@@ -379,14 +379,14 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
       cache = cached;
     }
 
-    @SuppressWarnings({"MethodWithMultipleLoops", "OverlyComplexMethod", "OverlyNestedMethod", "WhileLoopSpinsOnField", "RefusedBequest", "OverlyLongMethod"})
+    @SuppressWarnings({"MethodWithMultipleLoops", "OverlyComplexMethod", "OverlyNestedMethod", "WhileLoopSpinsOnField", "RefusedBequest"})
     @Override
     public void run() {
-      isRunning = true;
+      running = true;
       Rect viewportRect = new Rect(0, 0, 0, 0);
-      while (isRunning) {
+      while (running) {
         // Wait until we are ready to go
-        while (isRunning && (cache.getState() != CacheState.BEGIN_UPDATE)) {
+        while (running && (cache.getState() != CacheState.BEGIN_UPDATE)) {
           try {
             //noinspection BusyWait
             Thread.sleep(Integer.MAX_VALUE);
@@ -394,7 +394,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
             // NOOP
           }
         }
-        if (!isRunning) return;
+        if (!running) return;
         // Start Loading Timer
         long startTime = System.currentTimeMillis();
         // Load Data
@@ -457,7 +457,6 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      * @param rect The dimensions of the current viewport
      * @return The dimensions of the cache
      */
-    @SuppressWarnings({"OverlyLongMethod"})
     private Rect calculateCacheDimensions(Rect rect) {
       long bytesToUse = (Runtime.getRuntime().maxMemory() * getMemUsage()) / 100;
       Point sz = getBackgroundSize();
@@ -508,9 +507,8 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
       return calculatedCacheWindowRect;
     }
 
-    @SuppressWarnings("SuspiciousGetterSetter")
-    public void setRunning(boolean running) {
-      isRunning = running;
+    public void setRunning(boolean r) {
+      running = r;
     }
 
     /**
