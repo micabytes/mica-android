@@ -46,7 +46,7 @@ public final class ImageHandler {
   private static final int COLOR_RED = 0xff424242;
   private static final int PIXEL_ROUNDING = 12;
   public static final float DENSITY_MINIMUM = 0.1f;
-  private static float density = 1.0f;
+  private static float density = 0.0f;
   // Bitmap cache
   private static final SparseArray<SoftReference<Bitmap>> CACHED_BITMAPS = new SparseArray<>();
   private static final SparseArray<Bitmap> PERSIST_BITMAPS = new SparseArray<>();

@@ -364,7 +364,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     return v;
   }
 
-  protected class ContentDescriptionClickListener implements View.OnClickListener {
+  public class ContentDescriptionClickListener implements View.OnClickListener {
 
     private void toast(String message, int length) {
       Toast.makeText(getActivity(), message, length).show();

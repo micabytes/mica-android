@@ -27,7 +27,7 @@ import io.fabric.sdk.android.Fabric;
 @SuppressWarnings("UtilityClass")
 @NonNls
 public final class GameLog {
-  public static final boolean DEBUG = false;
+  public static boolean DEBUG = false;
 
   private GameLog() {
     // NOOP
