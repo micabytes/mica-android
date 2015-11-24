@@ -51,7 +51,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.3'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
     // Fabric
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.3@aar') {
         transitive = true;
     }
     // Google Play
