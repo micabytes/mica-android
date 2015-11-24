@@ -27,6 +27,10 @@ public final class GameConstants {
   public static final int FIFTY = 50;
   public static final int HUNDRED = 100;
   public static final int THOUSAND = 1000;
+  @NonNls public static final String TRAITS = "traits";
+  @NonNls public static final String EFFECTS = "effects";
+  @NonNls public static final String EFFECT_IDS = "effectIds";
+  @NonNls public static final String EFFECT_VALUES = "effectValues";
 
   private GameConstants() {
     // NOOP

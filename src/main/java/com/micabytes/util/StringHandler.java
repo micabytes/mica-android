@@ -60,6 +60,7 @@ public final class StringHandler {
   @SuppressWarnings("HardcodedLineSeparator")
   @NonNls public static final String SLASH_N = "\\n";
   public static final char PLUS = '+';
+  @NonNls public static final String NUMBER_STRING = "%d";
 
   private StringHandler() {
     // NOOP
