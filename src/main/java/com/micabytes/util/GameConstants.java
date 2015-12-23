@@ -31,6 +31,7 @@ public final class GameConstants {
   @NonNls public static final String EFFECTS = "effects";
   @NonNls public static final String EFFECT_IDS = "effectIds";
   @NonNls public static final String EFFECT_VALUES = "effectValues";
+  @NonNls public static final String DECIMAL = "%d";
 
   private GameConstants() {
     // NOOP

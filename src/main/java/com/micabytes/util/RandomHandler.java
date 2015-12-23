@@ -91,4 +91,10 @@ public final class RandomHandler {
     return ret;
   }
 
+  public static boolean rollD100(int toHit) {
+    if (random(GameConstants.HUNDRED) < toHit)
+      return true;
+    else
+      return false;
+  }
 }
