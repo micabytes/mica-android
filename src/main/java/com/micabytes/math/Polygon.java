@@ -35,7 +35,7 @@ public class Polygon {
   /**
    * Checks if the Polygon contains the point x, y
    */
-  @SuppressWarnings({"ValueOfIncrementOrDecrementUsed", "OverlyComplexBooleanExpression", "OverlyComplexArithmeticExpression"})
+  @SuppressWarnings({"ValueOfIncrementOrDecrementUsed", "OverlyComplexArithmeticExpression"})
   public boolean contains(int x, int y) {
     boolean oddTransitions = false;
     for (int i = 0, j = polyN - 1; i < polyN; j = i++) {

@@ -38,12 +38,23 @@ import java.util.regex.Pattern;
 public final class StringHandler {
   private static final String TAG = StringHandler.class.getName();
   private static final int NOT_FOUND = -1;
-  @NonNls public static final String WHITESPACE = " ";
-  public static final char CHAR_WHITESPACE = ' ';
+  public static final char AT = '@';
   public static final char HASH_MARK = '#';
   public static final char PERCENT = '%';
+  public static final char PLUS = '+';
+  public static final char UNDERSCORE = '_';
+  public static final char WHITESPACE = ' ';
+  public static final char SQUARE_BRACE_LEFT = '[';
+  public static final char SQUARE_BRACE_RIGHT = ']';
+  public static final char BRACKET_LEFT = '(';
+  public static final char BRACKET_RIGHT = ')';
+  public static final char WAVY_BRACE_LEFT = '{';
+  public static final char WAVY_BRACE_RIGHT = '}';
   @NonNls public static final String LINE_SEPARATOR = "line.separator";
   @NonNls public static final String EOL = System.getProperty(LINE_SEPARATOR);
+  @SuppressWarnings("HardcodedLineSeparator")
+  @NonNls public static final String SLASH_N = "\\n";
+  @NonNls public static final String NUMBER_STRING = "%d";
   private static final Pattern AND_SPLITTER = Pattern.compile("[&]");
   private static final Pattern GEQ_SPLITTER = Pattern.compile("[>=]+");
   private static final Pattern LEQ_SPLITTER = Pattern.compile("[<=]+");
@@ -51,16 +62,6 @@ public final class StringHandler {
   private static final Pattern LT_SPLITTER = Pattern.compile("[<]+");
   private static final Pattern EQ_SPLITTER = Pattern.compile("[=]+");
   private static final Pattern DOT_SPLITTER = Pattern.compile("[.]");
-  public static final char SQUARE_BRACE_LEFT = '[';
-  public static final char SQUARE_BRACE_RIGHT = ']';
-  public static final char BRACKET_LEFT = '(';
-  public static final char BRACKET_RIGHT = ')';
-  public static final char WAVY_BRACE_LEFT = '{';
-  public static final char WAVY_BRACE_RIGHT = '}';
-  @SuppressWarnings("HardcodedLineSeparator")
-  @NonNls public static final String SLASH_N = "\\n";
-  public static final char PLUS = '+';
-  @NonNls public static final String NUMBER_STRING = "%d";
 
   private StringHandler() {
     // NOOP
