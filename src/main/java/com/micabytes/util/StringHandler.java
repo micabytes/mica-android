@@ -41,9 +41,10 @@ public final class StringHandler {
   public static final char AT = '@';
   public static final char HASH_MARK = '#';
   public static final char PERCENT = '%';
+  public static final String NULL = "null";
   public static final char PLUS = '+';
   public static final char UNDERSCORE = '_';
-  public static final char WHITESPACE = ' ';
+  @NonNls public static final char WHITESPACE = ' ';
   public static final char SQUARE_BRACE_LEFT = '[';
   public static final char SQUARE_BRACE_RIGHT = ']';
   public static final char BRACKET_LEFT = '(';

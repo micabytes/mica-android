@@ -8,6 +8,7 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
+-keepattributes SourceFile,LineNumberTable
 
 -keep class * extends java.util.ListResourceBundle {
     protected Object[][] getContents();
@@ -27,21 +28,15 @@
 }
 
 # Jackson
--libraryjars ../lib_base/libs/jackson-annotations-2.5.3.jar
--libraryjars ../lib_base/libs/jackson-core-2.5.3.jar
--libraryjars ../lib_base/libs/jackson-databind-2.5.3.jar
-
 -dontskipnonpubliclibraryclassmembers
-
--keepnames class com.fasterxml.jackson.** { *; }
-
 -keepattributes *Annotation*,EnclosingMethod,Signature
-
--dontwarn javax.xml.**
--dontwarn javax.xml.stream.events.**
+-keepnames class com.fasterxml.jackson.** { *; }
 -dontwarn com.fasterxml.jackson.databind.**
 
--keep public class com.micabyte.android.** {
-  public void set*(***);
-  public *** get*();
+# Keep anything annotated with @JsonCreator
+-keepclassmembers public class * {
+    @com.fasterxml.jackson.annotation.JsonCreator *;
 }
+
+-keep public class com.google.android.gms.**
+-dontwarn com.google.android.gms.**

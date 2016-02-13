@@ -33,6 +33,7 @@
     <color name="Fuchsia" tools:ignore="UnusedResources">#FF00FF</color>
     <color name="Magenta" tools:ignore="UnusedResources">#FF00FF</color>
     <color name="Red" tools:ignore="UnusedResources">#FF0000</color>
+    <color name="ScrollWhite" tools:ignore="UnusedResources">#f9f3d0</color>
     <color name="OldLace" tools:ignore="UnusedResources">#FDF5E6</color>
     <color name="LightGoldenrodYellow" tools:ignore="UnusedResources">#FAFAD2</color>
     <color name="Linen" tools:ignore="UnusedResources">#FAF0E6</color>

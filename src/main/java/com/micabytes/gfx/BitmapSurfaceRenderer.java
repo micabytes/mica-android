@@ -267,6 +267,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      * Draw the CacheBitmap on the viewport
      */
     void draw(SurfaceRenderer.ViewPort p) {
+      if (cacheThread == null) return;
       Bitmap bmp = null;
       switch (getState()) {
         case NOT_INITIALIZED:

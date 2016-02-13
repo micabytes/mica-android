@@ -38,6 +38,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.micabytes.gui.LinearListView;
 
 /**
@@ -68,9 +69,31 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     // NOOP
   }
 
+  public void resetFragment() {
+    getBaseActivity().setFragment();
+  }
 
+  @NonNull
   protected BaseActivity getBaseActivity() {
     return (BaseActivity) getActivity();
+  }
+
+  protected View getView(int resId) {
+    View root = getView();
+    assert root != null;
+    View v = root.findViewById(resId);
+    if (v == null)
+      throw new Resources.NotFoundException("getView(int)");
+    return v;
+  }
+
+  protected void setView(int resId) {
+    View root = getView();
+    assert root != null;
+    View v = root.findViewById(resId);
+    if (v == null)
+      throw new Resources.NotFoundException("setView(int)");
+    v.setOnClickListener(this);
   }
 
   protected TextView getTextView(int resId) {
@@ -132,6 +155,15 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     if (v == null)
       throw new Resources.NotFoundException("setImageView(int, Bitmap)");
     v.setImageBitmap(img);
+    return v;
+  }
+
+  protected RoundedImageView getRoundedImageView(int resId) {
+    View root = getView();
+    assert root != null;
+    RoundedImageView v = (RoundedImageView) root.findViewById(resId);
+    if (v == null)
+      throw new Resources.NotFoundException("getRoundedImageView");
     return v;
   }
 
