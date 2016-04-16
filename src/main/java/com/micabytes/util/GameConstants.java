@@ -32,6 +32,9 @@ public final class GameConstants {
   @NonNls public static final String EFFECT_IDS = "effectIds";
   @NonNls public static final String EFFECT_VALUES = "effectValues";
   @NonNls public static final String DECIMAL = "%d";
+  @NonNls public static final String FILE = "file";
+  @NonNls public static final String CONDITION = "condition";
+  @NonNls public static final String TIMEOUT = "timeout";
 
   private GameConstants() {
     // NOOP
