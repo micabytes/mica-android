@@ -14,7 +14,7 @@ the specific language governing permissions and * limitations under the License.
               android:orientation="vertical"
               android:padding="10dip">
 
-  <com.micabyte.android.base.gui.NumberPicker
+  <com.micabytes.gui.NumberPicker
       android:id="@+id/pref_num_picker"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"/>

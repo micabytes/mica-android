@@ -1,6 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.micabytes">
+<manifest package="com.micabytes"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <application android:label="@string/lib_base" />
+  <application android:label="@string/lib_game"/>
 
 </manifest>

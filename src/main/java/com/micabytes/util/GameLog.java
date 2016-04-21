@@ -66,8 +66,10 @@ public final class GameLog {
       //noinspection CallToPrintStackTrace
       e.printStackTrace();
     }
-    if (Fabric.isInitialized())
+    if (Fabric.isInitialized()) {
+      Crashlytics.log(Log.ERROR, "Err", e.getMessage());
       Crashlytics.logException(e);
+    }
   }
 
 }

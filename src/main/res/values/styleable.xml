@@ -14,20 +14,17 @@ Copyright dmitry.zaicew@gmail.com Dmitry Zaitsev
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
 <resources>
-    
-    <declare-styleable name="CircleLayout">
-        <attr name="innerRadius" format="dimension" />
-        <attr name="sliceDivider" format="reference|color" />
-        <attr name="innerCircle" format="reference|color" />
-        <attr name="angleOffset" format="float" />
-        <attr name="angleRange" format="float" />
-        <attr name="layoutMode">
-            <enum name="normal" value="1" />
-            <enum name="pie" value="2" />
-        </attr>
-        <attr name="dividerWidth" format="dimension" />
-    </declare-styleable>
-    
+  <declare-styleable name="CircleLayout">
+    <attr name="innerRadius" format="dimension"/>
+    <attr name="sliceDivider" format="reference|color"/>
+    <attr name="innerCircle" format="reference|color"/>
+    <attr name="angleOffset" format="float"/>
+    <attr name="angleRange" format="float"/>
+    <attr name="layoutMode">
+      <enum name="normal" value="1"/>
+      <enum name="pie" value="2"/>
+    </attr>
+    <attr name="dividerWidth" format="dimension"/>
+  </declare-styleable>
 </resources>

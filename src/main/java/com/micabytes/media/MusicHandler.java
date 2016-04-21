@@ -16,6 +16,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.util.SparseArray;
 
+import com.micabytes.GameApplication;
 import com.micabytes.util.GameLog;
 
 /**
@@ -24,14 +25,17 @@ import com.micabytes.util.GameLog;
  * activity, and stop the music in the onPause. release should be called in onDestroy of the root
  * activity.
  */
-@SuppressWarnings({"UtilityClass", "ClassUnconnectedToPackage", "unused"})
+@SuppressWarnings("UtilityClass")
 public final class MusicHandler {
   private static final String TAG = MusicHandler.class.getName();
   private static final int INVALID_NUMBER = 0;
   private static final SparseArray<MediaPlayer> PLAYERS = new SparseArray<>();
-  public static final float VOLUME_MAX = 1.0f;
+  private static final float VOLUME_MAX = 1.0f;
+  private static float volume = 0.25f;
+  private static int currentMusic = INVALID_NUMBER;
   private static int nextMusic = INVALID_NUMBER;
-  private static int currentMusic = 0;
+  private static int pausedMusic = INVALID_NUMBER;
+  private static boolean mutedMusic = false;
 
   private MusicHandler() {
     // NOOP
@@ -40,34 +44,25 @@ public final class MusicHandler {
   /**
    * Start playing a music resource
    *
+   * @param music   The resource id of the music file
+   */
+  public static void start(int music) {
+    start(music, false);
+  }
+
+  /**
+   * Start playing a music resource
+   *
    * @param context The context (application or activity)
    * @param music   The resource id of the music file
    */
-  @SuppressWarnings({"MethodWithMoreThanThreeNegations", "OverlyComplexMethod"})
-  private static void start(Context context, int music, boolean forced) {
-    if (!forced && (currentMusic != INVALID_NUMBER)) {
-      // already playing some music and not forced to change immediately
-      if (music != INVALID_NUMBER) {
-        nextMusic = music;
-        MediaPlayer mp = PLAYERS.get(music);
-        if (mp == null) {
-          PLAYERS.put(music, MediaPlayer.create(context, music));
-        }
-        MediaPlayer cp = PLAYERS.get(currentMusic);
-        if (cp != null) {
-          cp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-              next();
-            }
-          });
-          cp.setLooping(false);
-        }
-      }
-      return;
-    }
+  public static void start(int music, boolean forced) {
     if (currentMusic == music) {
       // already playing this music
+      return;
+    }
+    if (shouldQueue(forced)) {
+      queueMusic(music);
       return;
     }
     if (currentMusic != INVALID_NUMBER) {
@@ -84,7 +79,9 @@ public final class MusicHandler {
         mp.start();
       }
     } else {
+      Context context = GameApplication.getInstance();
       MediaPlayer mediaPlayer = MediaPlayer.create(context, music);
+      mediaPlayer.setVolume(mutedMusic ? 0f : volume, mutedMusic ? 0f : volume);
       PLAYERS.put(music, mediaPlayer);
       if (mediaPlayer == null) {
         // Log an ERROR, but don't do anything (we do not want to risk f/context the app)
@@ -97,17 +94,64 @@ public final class MusicHandler {
     }
   }
 
+  // already playing some music and not forced to change immediately
+  private static void queueMusic(int music) {
+    if (music != INVALID_NUMBER) {
+      nextMusic = music;
+      MediaPlayer mp = PLAYERS.get(music);
+      if (mp == null) {
+        Context context = GameApplication.getInstance();
+        PLAYERS.put(music, MediaPlayer.create(context, music));
+      }
+      MediaPlayer cp = PLAYERS.get(currentMusic);
+      if (cp != null) {
+        cp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+          @Override
+          public void onCompletion(MediaPlayer mp) {
+            next();
+          }
+        });
+        cp.setLooping(false);
+      }
+    }
+  }
+
+  public static boolean shouldQueue(boolean forced) {
+    return !forced && currentMusic != INVALID_NUMBER;
+  }
+
   /**
    * Pause all media PLAYERS
    */
-  private static void pause() {
+  public static void pause() {
     for (int i = 0; i < PLAYERS.size(); i++) {
       MediaPlayer p = PLAYERS.valueAt(i);
       if (p.isPlaying()) {
         p.pause();
       }
     }
-    nextMusic = currentMusic;
+    pausedMusic = currentMusic;
+    currentMusic = INVALID_NUMBER;
+  }
+
+  /**
+   * Pause all media PLAYERS
+   */
+  public static void resume() {
+    start(pausedMusic);
+    pausedMusic = INVALID_NUMBER;
+  }
+
+  /**
+   * Resume media PLAYERS
+   */
+  private static void stop() {
+    for (int i = 0; i < PLAYERS.size(); i++) {
+      MediaPlayer p = PLAYERS.valueAt(i);
+      if (p.isPlaying()) {
+        p.stop();
+      }
+    }
     currentMusic = INVALID_NUMBER;
   }
 
@@ -125,6 +169,7 @@ public final class MusicHandler {
       if (!p.isPlaying()) {
         p.setLooping(true);
         p.setOnCompletionListener(null);
+        p.setVolume(mutedMusic ? 0f : volume, mutedMusic ? 0f : volume);
         p.start();
       }
     }
@@ -146,9 +191,32 @@ public final class MusicHandler {
   }
 
   public static void setVolume(float v) {
+    volume = v >= VOLUME_MAX ? VOLUME_MAX : v;
+    if (mutedMusic) return;
     for (int i = 0; i < PLAYERS.size(); i++) {
       MediaPlayer p = PLAYERS.valueAt(i);
-      p.setVolume(v, v);
+      p.setVolume(volume, volume);
     }
   }
+
+  public static void mute(boolean isChecked) {
+    mutedMusic = isChecked;
+    if (mutedMusic) {
+      for (int i = 0; i < PLAYERS.size(); i++) {
+        MediaPlayer p = PLAYERS.valueAt(i);
+        p.setVolume(0f, 0f);
+      }
+    }
+    else {
+      for (int i = 0; i < PLAYERS.size(); i++) {
+        MediaPlayer p = PLAYERS.valueAt(i);
+        p.setVolume(volume, volume);
+      }
+    }
+  }
+
+  public static int getCurrentMusic() {
+    return currentMusic;
+  }
+
 }
