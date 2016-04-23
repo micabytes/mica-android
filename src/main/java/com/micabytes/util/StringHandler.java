@@ -160,9 +160,10 @@ public final class StringHandler {
     if (tokens.length == 1)
       return obj.toString();
     AttributeInterface sObj = (AttributeInterface) obj;
-    Object res = sObj.getAttribute(tokens[1]);
-    if (res instanceof String) return (String) res;
-    return res.toString();
+    //Object res = sObj.getAttribute(tokens[1]);
+    //if (res instanceof String) return (String) res;
+    //return res.toString();
+    return "";
   }
 
   @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
@@ -376,7 +377,7 @@ public final class StringHandler {
     if (obj instanceof String)
       return 1;
     AttributeInterface gObj = (AttributeInterface) obj;
-    Object attribute = gObj.getAttribute(tokens[1]);
+    /*Object attribute = gObj.getAttribute(tokens[1]);
     if (attribute instanceof Boolean) {
       return (Boolean) attribute ? 1 : 0;
     }
@@ -386,6 +387,7 @@ public final class StringHandler {
       return ((Double) attribute).intValue();
     if (attribute instanceof String)
       return 1;
+      */
     return 0;
   }
 

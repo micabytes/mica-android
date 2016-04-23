@@ -614,8 +614,11 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
           + GameHelperUtils
           .activityResponseCodeToString(responseCode)
           + ", so giving up.");
-      giveUp(new SignInFailureReason(mConnectionResult.getErrorCode(),
-          responseCode));
+      // NPE when mConnectionResult was null
+      int errorCode = -1;
+      if (mConnectionResult != null)
+        errorCode = mConnectionResult.getErrorCode();
+      giveUp(new SignInFailureReason(errorCode, responseCode));
     }
   }
 
