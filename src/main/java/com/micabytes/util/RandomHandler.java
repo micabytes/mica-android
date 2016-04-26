@@ -18,7 +18,7 @@ import java.util.Random;
  * Game Utility Class
  *
  * This class provides a number of simple static utility functions. This
- * includes the RANDOM number generator, a dice roller, and a "wild dice" roller.
+ * includes the RANDOM number generator, a dice pool roller, and a "wild dice" pool roller.
  */
 @SuppressWarnings("UtilityClass")
 public final class RandomHandler {
@@ -91,10 +91,4 @@ public final class RandomHandler {
     return ret;
   }
 
-  public static boolean rollD100(int toHit) {
-    if (random(GameConstants.HUNDRED) < toHit)
-      return true;
-    else
-      return false;
-  }
 }

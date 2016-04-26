@@ -38,15 +38,20 @@ public class LinearListView extends LinearLayout
 
     public void setAdapter(Adapter adp)
     {
-        if (adapter != null)
-            adapter.unregisterDataSetObserver(observer);
+        if (adapter != null) {
+          adapter.unregisterDataSetObserver(observer);
+        }
 
         adapter = adp;
-        adp.registerDataSetObserver(observer);
-        observer.onChanged();
+      adp.registerDataSetObserver(observer);
+      observer.onChanged();
     }
 
-    private static final class Observer extends DataSetObserver
+  Adapter getAdapter() {
+    return adapter;
+  }
+
+  private static final class Observer extends DataSetObserver
     {
         final LinearListView listView;
 
@@ -68,10 +73,10 @@ public class LinearListView extends LinearLayout
 
             listView.removeAllViews();
 
-            for (int i = 0; i < listView.adapter.getCount(); i++)
+            for (int i = 0; i < listView.getAdapter().getCount(); i++)
             {
                 View convertView = itr.hasNext() ? itr.next() : null;
-                listView.addView(listView.adapter.getView(i, convertView, listView));
+                listView.addView(listView.getAdapter().getView(i, convertView, listView));
             }
             super.onChanged();
         }

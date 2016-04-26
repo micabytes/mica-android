@@ -19,6 +19,7 @@ package com.micabytes.gui;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
@@ -99,12 +100,12 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
     this(context, null);
   }
 
-  public NumberPicker(Context context, AttributeSet attrs) {
+  public NumberPicker(Context context, @Nullable AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
   @SuppressWarnings("ThisEscapedInObjectConstruction")
-  public NumberPicker(Context context, AttributeSet attrs, @SuppressWarnings("UnusedParameters") int defStyle) {
+  public NumberPicker(Context context, @Nullable AttributeSet attrs, @SuppressWarnings("UnusedParameters") int defStyle) {
     super(context, attrs);
     setOrientation(VERTICAL);
     LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -166,11 +167,11 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
    * Set the range of numbers allowed for the number picker. The currentValue value will be automatically
    * set to the startValue. Also provide a mapping for values used to display to the user.
    *
-   * @param st           the startValue of the range (inclusive)
-   * @param ed             the endValue of the range (inclusive)
-   * @param dv the values displayed to the user.
+   * @param st    the startValue of the range (inclusive)
+   * @param ed    the endValue of the range (inclusive)
+   * @param dv    the values displayed to the user.
    */
-  @SuppressWarnings({"unused", "MethodCanBeVariableArityMethod"})
+  @SuppressWarnings({"unused", "MethodCanBeVariableArityMethod", "AssignmentToCollectionOrArrayFieldFromParameter"})
   public void setRange(int st, int ed, String[] dv) {
     displayedValues = dv;
     startValue = st;
@@ -277,13 +278,12 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
   private void validateInput(View v) {
     @NonNls String str = String.valueOf(((TextView) v).getText());
     if (str != null && str.isEmpty()) {
-
       // Restore to the old value as we don't allow empty values
       updateView();
     } else {
-
       // Check the new value and ensure it's in range
-      validateCurrentView(str);
+      if (str != null)
+        validateCurrentView(str);
     }
   }
 

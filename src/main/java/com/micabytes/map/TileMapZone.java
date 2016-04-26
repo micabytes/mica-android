@@ -12,7 +12,6 @@
  */
 package com.micabytes.map;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -28,21 +27,21 @@ public class TileMapZone {
   /**
    * Get the width of a tile
    */
-  public int getWidth(Context context) {
+  public int getWidth() {
     return ImageHandler.get(value).getWidth();
   }
 
   /**
    * Get the height of a tile
    */
-  public int getHeight(Context context) {
+  public int getHeight() {
     return ImageHandler.get(value).getHeight();
   }
 
   /**
    * Draw the base bitmap of the tile on a canvas
    */
-  public void drawBase(Context context, Canvas canvas, Rect tileRect, Rect destRect, Paint paint) {
+  public void drawBase(Canvas canvas, Rect tileRect, Rect destRect, Paint paint) {
     canvas.drawBitmap(ImageHandler.get(value), tileRect, destRect, paint);
   }
 

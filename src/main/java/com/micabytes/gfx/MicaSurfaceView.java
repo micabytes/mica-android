@@ -558,10 +558,6 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         }
       }
 
-      public void setRunning(boolean run) {
-        running = run;
-      }
-
     }
 
     private synchronized TouchState getState() {

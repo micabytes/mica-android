@@ -115,7 +115,7 @@ public final class ImageHandler {
     return BitmapFactory.decodeResource(GameApplication.getInstance().getResources(), key, opts);
   }
 
-  @SuppressWarnings("StaticMethodOnlyUsedInOneClass")
+  @SuppressWarnings("unused")
   @Nullable
   public static Bitmap getSceneBitmap(int bkg, int left, int right) {
     Bitmap bitmap = get(bkg);

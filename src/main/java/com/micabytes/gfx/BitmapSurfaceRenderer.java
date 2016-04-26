@@ -266,6 +266,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     /**
      * Draw the CacheBitmap on the viewport
      */
+    @SuppressWarnings("OverlyComplexMethod")
     void draw(SurfaceRenderer.ViewPort p) {
       if (cacheThread == null) return;
       Bitmap bmp = null;
@@ -371,7 +372,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
    */
   @SuppressWarnings("ClassExplicitlyExtendsThread")
   class CacheThread extends Thread {
-    private boolean running;
+    @SuppressWarnings("FieldAccessedSynchronizedAndUnsynchronized") private boolean running;
     // The CacheBitmap
     private final CacheBitmap cache;
 

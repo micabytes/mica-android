@@ -12,11 +12,19 @@
  */
 package com.micabytes.util;
 
-@SuppressWarnings({"ClassIndependentOfModule", "ClassUnconnectedToPackage"})
+@SuppressWarnings({"ClassIndependentOfModule", "ClassUnconnectedToPackage", "unused"})
 public class GamePathNotFoundException extends Exception {
 
   public GamePathNotFoundException(String message) {
     super(message);
+  }
+
+  public GamePathNotFoundException(Throwable throwable) {
+    super(throwable);
+  }
+
+  public GamePathNotFoundException(String message, Throwable throwable) {
+    super(message, throwable);
   }
 
 }

@@ -30,9 +30,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+/** TODO: Deprecate most of this functionality. */
 /**
  * StringHandler is a wrapper around the standard Android getString functionality. It is primarily
- * used for formatting magic on strings using the AttributeInterface.
+ * used for formatting magic on strings using the GameObjectInterface.
  */
 @SuppressWarnings({"OverlyComplexClass", "UtilityClass", "unused"})
 public final class StringHandler {
@@ -159,7 +160,7 @@ public final class StringHandler {
       return (String) obj;
     if (tokens.length == 1)
       return obj.toString();
-    AttributeInterface sObj = (AttributeInterface) obj;
+    GameObjectInterface sObj = (GameObjectInterface) obj;
     //Object res = sObj.getAttribute(tokens[1]);
     //if (res instanceof String) return (String) res;
     //return res.toString();
@@ -376,7 +377,7 @@ public final class StringHandler {
       return ((Double) obj).intValue();
     if (obj instanceof String)
       return 1;
-    AttributeInterface gObj = (AttributeInterface) obj;
+    GameObjectInterface gObj = (GameObjectInterface) obj;
     /*Object attribute = gObj.getAttribute(tokens[1]);
     if (attribute instanceof Boolean) {
       return (Boolean) attribute ? 1 : 0;

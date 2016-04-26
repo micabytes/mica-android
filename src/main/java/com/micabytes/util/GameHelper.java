@@ -27,6 +27,7 @@ import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
@@ -298,7 +299,7 @@ public class GameHelper implements GoogleApiClient.ConnectionCallbacks,
    *
    * @param listener The listener to be notified of sign-in events.
    */
-  public void setup(GameHelperListener listener, View popupView) {
+  public void setup(GameHelperListener listener, @Nullable View popupView) {
     if (mSetupDone) {
       String error = "GameHelper: you cannot call GameHelper.setup() more than once!";
       logError(error);

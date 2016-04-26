@@ -33,14 +33,14 @@ public abstract class TileMap {
     private final Point viewPortSize = new Point();
 
     @SuppressWarnings("AssignmentToStaticFieldFromInstanceMethod")
-    public void setTileMap(Context con, TileMapZone[][] map) {
+    public void setTileMap(TileMapZone[][] map) {
         zones = new TileMapZone[map.length][map[0].length];
         for (int i = 0; i < map.length; i++) {
             System.arraycopy(map[i], 0, zones[i], 0, map[i].length);
         }
         mapHeight = map[0].length;
         mapWidth = map.length;
-        tileRect = new Rect(0, 0, map[0][0].getWidth(con), map[0][0].getHeight(con));
+        tileRect = new Rect(0, 0, map[0][0].getWidth(), map[0][0].getHeight());
     }
 
     public int getRenderHeight() {
@@ -92,7 +92,7 @@ public abstract class TileMap {
                     destRect.top = (int) (((j * tileSize) - windowTop) / scaleFactor);
                     destRect.right = (int) ((((i * tileSize) + tileSize) - windowLeft) / scaleFactor);
                     destRect.bottom = (int) ((((j * tileSize) + tileSize) - windowTop) / scaleFactor);
-                    zones[i][j].drawBase(context, canvas, tileRect, destRect, paint);
+                    zones[i][j].drawBase(canvas, tileRect, destRect, paint);
                 }
             }
         }

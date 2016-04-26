@@ -60,14 +60,14 @@ public abstract class HexMap {
   }
 
   @SuppressWarnings("AssignmentToStaticFieldFromInstanceMethod")
-  protected void setHexMap(Context con, TileMapZone[][] map) {
+  protected void setHexMap(TileMapZone[][] map) {
     zones = new TileMapZone[map.length][map[0].length];
     for (int i = 0; i < map.length; i++) {
       System.arraycopy(map[i], 0, zones[i], 0, map[i].length);
     }
     mapHeight = map[0].length;
     mapWidth = map.length;
-    tileRect = new Rect(0, 0, map[0][0].getWidth(con), map[0][0].getHeight(con));
+    tileRect = new Rect(0, 0, map[0][0].getWidth(), map[0][0].getHeight());
     tileSlope = tileRect.height() / 4;
   }
 
@@ -106,7 +106,7 @@ public abstract class HexMap {
             destRect.top = (int) (((j * (tileRect.height() - tileSlope)) - windowTop - yOffset) / scaleFactor);
             destRect.right = (int) ((((i * tileRect.width()) + tileRect.width()) - windowLeft - xOffset) / scaleFactor);
             destRect.bottom = (int) ((((j * (tileRect.height() - tileSlope)) + tileRect.height()) - windowTop - yOffset) / scaleFactor);
-            zones[i][j].drawBase(con, canvas, tileRect, destRect, tilePaint);
+            zones[i][j].drawBase(canvas, tileRect, destRect, tilePaint);
           }
         }
       }
@@ -129,7 +129,7 @@ public abstract class HexMap {
             destRect.top = (int) ((((mapHeight - j - 1) * (tileRect.height() - tileSlope)) - windowTop - yOffset) / scaleFactor);
             destRect.right = (int) (((((mapWidth - i - 1) * tileRect.width()) + tileRect.width()) - windowLeft - xOffset) / scaleFactor);
             destRect.bottom = (int) (((((mapHeight - j - 1) * (tileRect.height() - tileSlope)) + tileRect.height()) - windowTop - yOffset) / scaleFactor);
-            zones[i][j].drawBase(con, canvas, tileRect, destRect, tilePaint);
+            zones[i][j].drawBase(canvas, tileRect, destRect, tilePaint);
           }
         }
       }

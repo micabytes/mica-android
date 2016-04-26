@@ -17,7 +17,6 @@ import android.media.MediaPlayer;
 import android.util.SparseArray;
 
 import com.micabytes.GameApplication;
-import com.micabytes.util.GameLog;
 
 /**
  * MusicHandler is a simple, dumb wrapper around the Android MediaPlayer. It plays music files
@@ -25,13 +24,13 @@ import com.micabytes.util.GameLog;
  * activity, and stop the music in the onPause. release should be called in onDestroy of the root
  * activity.
  */
-@SuppressWarnings("UtilityClass")
+@SuppressWarnings({"UtilityClass", "unused"})
 public final class MusicHandler {
-  private static final String TAG = MusicHandler.class.getName();
   private static final int INVALID_NUMBER = 0;
   private static final SparseArray<MediaPlayer> PLAYERS = new SparseArray<>();
   private static final float VOLUME_MAX = 1.0f;
-  private static float volume = 0.25f;
+  public static final float DEFAULT_VOLUME = 0.25f;
+  private static float volume = DEFAULT_VOLUME;
   private static int currentMusic = INVALID_NUMBER;
   private static int nextMusic = INVALID_NUMBER;
   private static int pausedMusic = INVALID_NUMBER;
@@ -81,16 +80,11 @@ public final class MusicHandler {
     } else {
       Context context = GameApplication.getInstance();
       MediaPlayer mediaPlayer = MediaPlayer.create(context, music);
-      mediaPlayer.setVolume(mutedMusic ? 0f : volume, mutedMusic ? 0f : volume);
+      mediaPlayer.setVolume(mutedMusic ? 0.0f : volume, mutedMusic ? 0.0f : volume);
       PLAYERS.put(music, mediaPlayer);
-      if (mediaPlayer == null) {
-        // Log an ERROR, but don't do anything (we do not want to risk f/context the app)
-        GameLog.e(TAG, "player was not created successfully");
-      } else {
-        mediaPlayer.setLooping(true);
-        mediaPlayer.setOnCompletionListener(null);
-        mediaPlayer.start();
-      }
+      mediaPlayer.setLooping(true);
+      mediaPlayer.setOnCompletionListener(null);
+      mediaPlayer.start();
     }
   }
 
@@ -135,7 +129,7 @@ public final class MusicHandler {
   }
 
   /**
-   * Pause all media PLAYERS
+   * Pause all media players
    */
   public static void resume() {
     start(pausedMusic);
@@ -143,7 +137,7 @@ public final class MusicHandler {
   }
 
   /**
-   * Resume media PLAYERS
+   * Stop all media players
    */
   private static void stop() {
     for (int i = 0; i < PLAYERS.size(); i++) {
@@ -169,14 +163,14 @@ public final class MusicHandler {
       if (!p.isPlaying()) {
         p.setLooping(true);
         p.setOnCompletionListener(null);
-        p.setVolume(mutedMusic ? 0f : volume, mutedMusic ? 0f : volume);
+        p.setVolume(mutedMusic ? 0.0f : volume, mutedMusic ? 0.0f : volume);
         p.start();
       }
     }
   }
 
   /**
-   * Release the media PLAYERS.
+   * Release the media players.
    */
   public static void release() {
     for (int i = 0; i < PLAYERS.size(); i++) {
@@ -204,7 +198,7 @@ public final class MusicHandler {
     if (mutedMusic) {
       for (int i = 0; i < PLAYERS.size(); i++) {
         MediaPlayer p = PLAYERS.valueAt(i);
-        p.setVolume(0f, 0f);
+        p.setVolume(0.0f, 0.0f);
       }
     }
     else {

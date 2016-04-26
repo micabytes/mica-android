@@ -163,11 +163,15 @@ public class BaseActivity extends AppCompatActivity implements GameHelper.GameHe
   }
 
   public void showSpinner() {
-    findViewById(R.id.ProgressLayout).setVisibility(View.VISIBLE);
+    View view = findViewById(R.id.ProgressLayout);
+    if (view != null)
+      view.setVisibility(View.VISIBLE);
   }
 
   public void dismissSpinner() {
-    findViewById(R.id.ProgressLayout).setVisibility(View.GONE);
+    View view = findViewById(R.id.ProgressLayout);
+    if (view != null)
+    view.setVisibility(View.GONE);
   }
 
 

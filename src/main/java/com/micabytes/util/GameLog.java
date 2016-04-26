@@ -27,47 +27,46 @@ import io.fabric.sdk.android.Fabric;
 @SuppressWarnings("UtilityClass")
 @NonNls
 public final class GameLog {
-  public static boolean DEBUG = false;
+  @SuppressWarnings("PublicField") public static boolean debug = false;
 
   private GameLog() {
     // NOOP
   }
 
   public static void i(String tag, String s) {
-    if (DEBUG) Log.i(tag, s);
+    if (debug) Log.i(tag, s);
     if (Fabric.isInitialized())
       Crashlytics.log(Log.INFO, tag, s);
   }
 
   public static void v(String tag, String s) {
-    if (DEBUG) Log.v(tag, s);
+    if (debug) Log.v(tag, s);
   }
 
   public static void d(String tag, String s) {
-    if (DEBUG) Log.d(tag, s);
+    if (debug) Log.d(tag, s);
   }
 
   public static void w(String tag, String s) {
-    if (DEBUG)
+    if (debug)
       Log.w(tag, s);
     if (Fabric.isInitialized())
       Crashlytics.log(Log.WARN, tag, s);
   }
 
   public static void e(String tag, String s) {
-    if (DEBUG)
+    if (debug)
       Log.e(tag, s);
     if (Fabric.isInitialized())
       Crashlytics.log(Log.ERROR, tag, s);
   }
 
   public static void logException(Exception e) {
-    if (DEBUG) {
+    if (debug) {
       //noinspection CallToPrintStackTrace
       e.printStackTrace();
     }
     if (Fabric.isInitialized()) {
-      Crashlytics.log(Log.ERROR, "Err", e.getMessage());
       Crashlytics.logException(e);
     }
   }
