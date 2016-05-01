@@ -110,6 +110,7 @@ public final class ImageHandler {
 
   @Nullable
   private static Bitmap loadBitmap(int key, Bitmap.Config bitmapConfig) {
+    if (key == 0) return null;
     BitmapFactory.Options opts = new BitmapFactory.Options();
     opts.inPreferredConfig = bitmapConfig;
     return BitmapFactory.decodeResource(GameApplication.getInstance().getResources(), key, opts);

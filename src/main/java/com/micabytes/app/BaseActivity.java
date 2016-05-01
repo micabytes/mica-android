@@ -338,7 +338,12 @@ public class BaseActivity extends AppCompatActivity implements GameHelper.GameHe
    */
   protected void dismissProgressDialog() {
     if (progressDialog != null && progressDialog.isShowing()) {
-      progressDialog.dismiss();
+      try {
+        progressDialog.dismiss();
+      }
+      catch (IllegalArgumentException e) {
+        GameLog.logException(e);
+      }
     }
   }
 

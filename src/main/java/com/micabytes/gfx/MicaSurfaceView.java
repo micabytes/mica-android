@@ -235,13 +235,11 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
           Build.MODEL.equalsIgnoreCase(NEXUS_7)) {
         GameLog.w(TAG, "Sleep 500ms (Device: Asus Nexus 7)");
         delay = BUG_DELAY;
-      }
-      else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN_MR2) {
+      } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN_MR2) {
         GameLog.w(TAG, "Sleep 500ms (Handle issue 58385 in Android 4.3)");
         //
         delay = BUG_DELAY;
-      }
-      else {
+      } else {
         delay = 5;
       }
     }
@@ -540,18 +538,28 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             }
           }
           if (touchHandler.getState() == TouchState.IN_FLING) {
-            scroller.computeScrollOffset();
-            renderer.setViewPosition(scroller.getCurrX(), scroller.getCurrY());
-            if (scroller.isFinished()) {
-              renderer.resume();
-              synchronized (touchHandler) {
-                touchHandler.setState(TouchState.NO_TOUCH);
-                try {
-                  //noinspection SleepWhileHoldingLock
-                  Thread.sleep(5);
-                } catch (InterruptedException ignored) {
-                  // NOOP
+            try {
+              scroller.computeScrollOffset();
+              renderer.setViewPosition(scroller.getCurrX(), scroller.getCurrY());
+              if (scroller.isFinished()) {
+                renderer.resume();
+                synchronized (touchHandler) {
+                  touchHandler.setState(TouchState.NO_TOUCH);
+                  try {
+                    //noinspection SleepWhileHoldingLock
+                    Thread.sleep(5);
+                  } catch (InterruptedException ignored) {
+                    // NOOP
+                  }
                 }
+              }
+            }
+            catch (ArrayIndexOutOfBoundsException e) {
+              GameLog.logException(e);
+              try {
+                Thread.sleep(500);
+              } catch (InterruptedException e1) {
+                // NOOP
               }
             }
           }
