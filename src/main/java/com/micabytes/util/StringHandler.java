@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -54,6 +55,7 @@ public final class StringHandler {
   public static final char WAVY_BRACE_RIGHT = '}';
   @NonNls public static final String LINE_SEPARATOR = "line.separator";
   @NonNls public static final String EOL = System.getProperty(LINE_SEPARATOR);
+  @NonNls public static final String SLASH = "/";
   @SuppressWarnings("HardcodedLineSeparator")
   @NonNls public static final String SLASH_N = "\\n";
   @NonNls public static final String NUMBER_STRING = "%d";
@@ -68,6 +70,49 @@ public final class StringHandler {
   private StringHandler() {
     // NOOP
   }
+
+  public static String get(int id) {
+    Context c = GameApplication.getInstance();
+    return c.getString(id);
+  }
+
+  public static String get(int id, Object... args) {
+    Context c = GameApplication.getInstance();
+    return c.getString(id, args);
+  }
+
+  public static String list(List<String> list) {
+    Context c = GameApplication.getInstance();
+    if (list.isEmpty()) return "";
+    if (list.size() == 1)
+      return list.get(0);
+    if (list.size() == 2)
+      return list.get(0) + WHITESPACE + c.getString(R.string.stringhandler_and1) + WHITESPACE + list.get(1);
+    StringBuilder ret = new StringBuilder();
+    for (int i = 0; i < (list.size() - 1); i++) {
+      ret.append(list.get(i));
+      if (i < (list.size() - 2)) {
+        ret.append(c.getString(R.string.stringhandler_comma));
+        ret.append(WHITESPACE);
+      } else {
+        ret.append(c.getString(R.string.stringhandler_and2));
+        ret.append(WHITESPACE);
+      }
+    }
+    ret.append(list.get(list.size() - 1));
+    return ret.toString();
+  }
+
+
+
+
+
+
+
+
+
+
+
 
   /**
    * This is the workhorse function of the class. It takes a string and strips out the formatting
@@ -178,29 +223,6 @@ public final class StringHandler {
     return str;
   }
 
-  public static String list(ArrayList<String> list) {
-    Context c = GameApplication.getInstance();
-    if (list.isEmpty()) return "";
-    if (list.size() == 1) {
-      return list.get(0);
-    }
-    if (list.size() == 2)
-      return list.get(0) + WHITESPACE + c.getString(R.string.stringhandler_and1) + WHITESPACE + list.get(1);
-    StringBuilder ret = new StringBuilder();
-    for (int i = 0; i < (list.size() - 1); i++) {
-      ret.append(list.get(i));
-      if (i < (list.size() - 2)) {
-        ret.append(c.getString(R.string.stringhandler_comma));
-        ret.append(WHITESPACE);
-      } else {
-        ret.append(c.getString(R.string.stringhandler_and2));
-        ret.append(WHITESPACE);
-      }
-    }
-    ret.append(list.get(list.size() - 1));
-    return ret.toString();
-  }
-
   @SuppressWarnings("StringContatenationInLoop")
   public static String listString(ArrayList<String> list) {
     Context c = GameApplication.getInstance();
@@ -225,16 +247,6 @@ public final class StringHandler {
   public static String signedString(int i) {
     if (i < 0) return Integer.toString(i);
     return PLUS + Integer.toString(i);
-  }
-
-  public static String get(int id) {
-    Context c = GameApplication.getInstance();
-    return format(c.getString(id), null);
-  }
-
-  public static String get(int id, Object... args) {
-    Context c = GameApplication.getInstance();
-    return format(c.getString(id, args), null);
   }
 
   public static String get(int id, HashMap<String, Object> variables, Object... args) {

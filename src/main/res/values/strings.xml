@@ -21,6 +21,8 @@
   <string name="gamehelper_sign_in_failed">Failed to sign in. Please check your network connection and try again.</string>
   <string name="gamehelper_sign_out" tools:ignore="UnusedResources">Sign Out</string>
   <string name="gamehelper_unknown_error">Unknown error.</string>
+  <!--  FileNaviationg Strings -->
+  <string name="filenavigation_location">Location: %1$s</string>
   <!--Stringhandler Strings -->
   <string name="stringhandler_comma">,</string>
   <string name="stringhandler_and1">and</string>
