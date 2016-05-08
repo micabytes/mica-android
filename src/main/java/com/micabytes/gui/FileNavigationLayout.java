@@ -27,6 +27,7 @@ public class FileNavigationLayout extends LinearLayout implements AdapterView.On
   private final ListView listView;
   private List<String> path;
   @NonNls private String root = "/";
+  @NonNls private String current = "/";
 
   public FileNavigationLayout(Context ctx, AttributeSet attrs) {
     super(ctx, attrs);
@@ -35,6 +36,7 @@ public class FileNavigationLayout extends LinearLayout implements AdapterView.On
     layoutInflater.inflate(R.layout.view_file_navigation, this);
     pathLabel = (TextView) findViewById(R.id.FileNavigationPath);
     listView = (ListView) findViewById(R.id.FileNavigationList);
+    if (isInEditMode()) return;
     setFolder(root);
   }
 
@@ -47,6 +49,7 @@ public class FileNavigationLayout extends LinearLayout implements AdapterView.On
   }
 
   public void setFolder(String dirPath) {
+    current = dirPath;
     pathLabel.setText(StringHandler.get(R.string.filenavigation_location, dirPath));
     List<String> item = new ArrayList<>();
     path = new ArrayList<>();
@@ -66,6 +69,10 @@ public class FileNavigationLayout extends LinearLayout implements AdapterView.On
         item.add(file.getName());
     }
     setItemList(item);
+  }
+
+  public void refresh() {
+    setFolder(current);
   }
 
   public void setItemList(List<String> item){

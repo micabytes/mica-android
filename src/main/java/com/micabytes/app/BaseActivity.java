@@ -96,25 +96,25 @@ public class BaseActivity extends AppCompatActivity implements GameHelper.GameHe
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    getGameHelper().setup(this, findViewById(android.R.id.content));
+    //getGameHelper().setup(this, findViewById(android.R.id.content));
   }
 
   @Override
   protected void onStart() {
     super.onStart();
-    getGameHelper().onStart(this);
+    //getGameHelper().onStart(this);
   }
 
   @Override
   protected void onStop() {
     super.onStop();
-    getGameHelper().onStop();
+    //getGameHelper().onStop();
   }
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    getGameHelper().onActivityResult(requestCode, resultCode, data);
+    //getGameHelper().onActivityResult(requestCode, resultCode, data);
   }
 
   protected GoogleApiClient getApiClient() {

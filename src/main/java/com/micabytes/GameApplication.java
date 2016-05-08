@@ -6,7 +6,6 @@ public class GameApplication extends Application {
   // Game World
   private WorldInterface world;
   // Instance
-  @SuppressWarnings("RedundantFieldInitialization")
   private static GameApplication instance = null;
 
   public static GameApplication getInstance() {
