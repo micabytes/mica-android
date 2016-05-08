@@ -51,8 +51,9 @@ public final class StringHandler {
   public static final char SQUARE_BRACE_RIGHT = ']';
   public static final char BRACKET_LEFT = '(';
   public static final char BRACKET_RIGHT = ')';
-  public static final char WAVY_BRACE_LEFT = '{';
-  public static final char WAVY_BRACE_RIGHT = '}';
+  @NonNls public static final String DOT = ".";
+  @NonNls public static final String WAVY_BRACE_LEFT = "{";
+  @NonNls public static final String WAVY_BRACE_RIGHT = "}";
   @NonNls public static final String LINE_SEPARATOR = "line.separator";
   @NonNls public static final String EOL = System.getProperty(LINE_SEPARATOR);
   @NonNls public static final String SLASH = "/";
