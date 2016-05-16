@@ -147,7 +147,8 @@ public abstract class SurfaceRenderer {
   @SuppressWarnings({"PublicInnerClass", "NonPrivateFieldAccessedInSynchronizedContext"})
   public class ViewPort {
     // The Bitmap of the current ViewPort
-    protected Bitmap bitmap;
+    @SuppressWarnings("FieldAccessedSynchronizedAndUnsynchronized") protected Bitmap bitmap;
+    // TODO: Bitmap needs checking.
     // The rect defining where the viewport is within the scene
     private final Rect window = new Rect(0, 0, 0, 0);
     // The zoom factor of the viewport
@@ -215,6 +216,7 @@ public abstract class SurfaceRenderer {
     }
 
     public void getPhysicalSize(Point p) {
+      if (bitmap == null) return;
       p.x = getPhysicalWidth();
       p.y = getPhysicalHeight();
     }

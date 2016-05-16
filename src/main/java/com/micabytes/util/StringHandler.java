@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * StringHandler is a wrapper around the standard Android getString functionality. It is primarily
  * used for formatting magic on strings using the GameObjectInterface.
  */
-@SuppressWarnings({"OverlyComplexClass", "UtilityClass", "unused"})
+@SuppressWarnings({"OverlyComplexClass", "UtilityClass", "unused", "NonConstantStringShouldBeStringBuffer"})
 public final class StringHandler {
   private static final String TAG = StringHandler.class.getName();
   private static final int NOT_FOUND = -1;
@@ -47,7 +47,7 @@ public final class StringHandler {
   public static final char PLUS = '+';
   public static final char UNDERSCORE = '_';
   @NonNls public static final char WHITESPACE = ' ';
-  public static final char SQUARE_BRACE_LEFT = '[';
+  @NonNls public static final char SQUARE_BRACE_LEFT = '[';
   public static final char SQUARE_BRACE_RIGHT = ']';
   public static final char BRACKET_LEFT = '(';
   public static final char BRACKET_RIGHT = ')';
@@ -55,6 +55,7 @@ public final class StringHandler {
   @NonNls public static final String WAVY_BRACE_LEFT = "{";
   @NonNls public static final String WAVY_BRACE_RIGHT = "}";
   @NonNls public static final String LINE_SEPARATOR = "line.separator";
+  @SuppressWarnings("AccessOfSystemProperties")
   @NonNls public static final String EOL = System.getProperty(LINE_SEPARATOR);
   @NonNls public static final String SLASH = "/";
   @SuppressWarnings("HardcodedLineSeparator")
@@ -77,6 +78,7 @@ public final class StringHandler {
     return c.getString(id);
   }
 
+  @SuppressWarnings("OverloadedVarargsMethod")
   public static String get(int id, Object... args) {
     Context c = GameApplication.getInstance();
     return c.getString(id, args);
@@ -131,7 +133,7 @@ public final class StringHandler {
    * @param variables A hash map containing variables
    * @return String with all of the scripting code replaced appropriately
    */
-  @SuppressWarnings({"MethodWithMoreThanThreeNegations", "OverlyComplexMethod"})
+  @SuppressWarnings({"MethodWithMoreThanThreeNegations", "OverlyComplexMethod", "ConstantConditions"})
   public static String format(String text, @Nullable HashMap<String, Object> variables) {
     String ret = resolveLineBreaks(text);
     // Markup Link Notation
@@ -183,6 +185,7 @@ public final class StringHandler {
   }
 
   private static String resolveLineBreaks(String text) {
+    //noinspection AccessOfSystemProperties
     return text.replace(SLASH_N, System.getProperty(LINE_SEPARATOR));
   }
 
@@ -227,7 +230,7 @@ public final class StringHandler {
   @SuppressWarnings("StringContatenationInLoop")
   public static String listString(ArrayList<String> list) {
     Context c = GameApplication.getInstance();
-    String ret = "";
+    @NonNls String ret = "";
     if (list.isEmpty()) return ret;
     if (list.size() == 1) {
       ret = list.get(0);
@@ -250,6 +253,7 @@ public final class StringHandler {
     return PLUS + Integer.toString(i);
   }
 
+  @SuppressWarnings("OverloadedVarargsMethod")
   public static String get(int id, HashMap<String, Object> variables, Object... args) {
     Context c = GameApplication.getInstance();
     return format(c.getString(id, args), variables);
@@ -259,7 +263,7 @@ public final class StringHandler {
     BufferedReader reader = null;
     StringBuilder sb = new StringBuilder();
     try {
-      //noinspection IOResourceOpenedButNotSafelyClosed
+      //noinspection IOResourceOpenedButNotSafelyClosed,resource
       reader = new  BufferedReader(new InputStreamReader(is, GameConstants.UTF_8));
       String line;
       //noinspection NestedAssignment
@@ -285,6 +289,7 @@ public final class StringHandler {
     return sb.toString();
   }
 
+  @SuppressWarnings("CollectionDeclaredAsConcreteClass")
   public static int evaluate(String test, HashMap<String, Object> variables) {
     String[] tokens = AND_SPLITTER.split(test);
     if (tokens.length == 1)

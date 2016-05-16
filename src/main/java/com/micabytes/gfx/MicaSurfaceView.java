@@ -519,7 +519,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         setName(TOUCH_THREAD);
       }
 
-      @SuppressWarnings({"MethodWithMultipleLoops", "RefusedBequest", "WhileLoopSpinsOnField", "BusyWait"})
+      @SuppressWarnings({"MethodWithMultipleLoops", "RefusedBequest", "WhileLoopSpinsOnField", "BusyWait", "OverlyComplexMethod", "OverlyNestedMethod"})
       @Override
       public void run() {
         running = true;
@@ -538,6 +538,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
             }
           }
           if (touchHandler.getState() == TouchState.IN_FLING) {
+            //noinspection ProhibitedExceptionCaught
             try {
               scroller.computeScrollOffset();
               renderer.setViewPosition(scroller.getCurrX(), scroller.getCurrY());
@@ -545,6 +546,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
                 renderer.resume();
                 synchronized (touchHandler) {
                   touchHandler.setState(TouchState.NO_TOUCH);
+                  //noinspection NestedTryStatement
                   try {
                     //noinspection SleepWhileHoldingLock
                     Thread.sleep(5);
@@ -554,11 +556,13 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
                 }
               }
             }
+            // Fix for phone error.
             catch (ArrayIndexOutOfBoundsException e) {
               GameLog.logException(e);
               try {
+                //noinspection MagicNumber
                 Thread.sleep(500);
-              } catch (InterruptedException e1) {
+              } catch (InterruptedException ignored) {
                 // NOOP
               }
             }

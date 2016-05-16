@@ -26,6 +26,7 @@ import com.micabytes.util.GameLog;
 
 import org.jetbrains.annotations.NonNls;
 
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -90,27 +91,52 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
     lowResThreshold = threshold;
   }
 
+  static class FlushedInputStream extends FilterInputStream {
+    FlushedInputStream(InputStream inputStream) {
+      super(inputStream);
+    }
+
+    @Override
+    public long skip(long byteCount) throws IOException {
+      long totalBytesSkipped = 0L;
+      while (totalBytesSkipped < byteCount) {
+        long bytesSkipped = in.skip(byteCount - totalBytesSkipped);
+        if (bytesSkipped == 0L) {
+          int bytes = read();
+          if (bytes < 0) {
+            break;  // we reached EOF
+          } else {
+            bytesSkipped = 1; // we read one byte
+          }
+        }
+        totalBytesSkipped += bytesSkipped;
+      }
+      return totalBytesSkipped;
+    }
+  }
+
   /**
    * Set the Background bitmap
    *
    * @param inputStream InputStream to the raw data of the bitmap
    */
   public void setBitmap(InputStream inputStream) throws IOException {
+    FlushedInputStream fixedInput = new FlushedInputStream(inputStream);
     BitmapFactory.Options opt = new BitmapFactory.Options();
-    decoder = BitmapRegionDecoder.newInstance(inputStream, false);
-    inputStream.reset();
+    decoder = BitmapRegionDecoder.newInstance(fixedInput, false);
+    fixedInput.reset();
     // Grab the bounds of the background bitmap
     opt.inPreferredConfig = DEFAULT_CONFIG;
     opt.inJustDecodeBounds = true;
     GameLog.d(TAG, "Decode inputStream for Background Bitmap");
-    BitmapFactory.decodeStream(inputStream, null, opt);
-    inputStream.reset();
+    BitmapFactory.decodeStream(fixedInput, null, opt);
+    fixedInput.reset();
     backgroundSize.set(opt.outWidth, opt.outHeight);
     GameLog.d(TAG, "Background Image: w=" + opt.outWidth + " h=" + opt.outHeight);
     // Create the low resolution background
     opt.inJustDecodeBounds = false;
     opt.inSampleSize = 1 << sampleSize;
-    lowResBitmap = BitmapFactory.decodeStream(inputStream, null, opt);
+    lowResBitmap = BitmapFactory.decodeStream(fixedInput, null, opt);
     GameLog.d(TAG, "Low Res Image: w=" + lowResBitmap.getWidth() + " h=" + lowResBitmap.getHeight());
     // Initialize cache
     if (cachedBitmap.getState() == CacheState.NOT_INITIALIZED) {
