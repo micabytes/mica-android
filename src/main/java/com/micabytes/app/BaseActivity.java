@@ -215,7 +215,7 @@ public class BaseActivity extends AppCompatActivity implements GameHelper.GameHe
     }
   }
 
-  @SuppressWarnings({"ChainOfInstanceofChecks", "OverlyComplexMethod"})
+  @SuppressWarnings({"OverlyComplexMethod"})
   private static void unbindViewReferences(View view) {
     // set all listeners to null
     try {

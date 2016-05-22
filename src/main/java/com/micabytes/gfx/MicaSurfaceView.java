@@ -293,7 +293,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
   /**
    * Handle Touch Events
    */
-  @SuppressWarnings({"MethodWithMultipleReturnPoints", "NumericCastThatLosesPrecision"})
+  @SuppressWarnings({"NumericCastThatLosesPrecision"})
   @Override
   public boolean onTouchEvent(@NonNull MotionEvent event) {
     boolean consumed = gesture.onTouchEvent(event);
@@ -366,7 +366,6 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
   private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
     private final PointF screenFocus = new PointF();
 
-    @SuppressWarnings("RefusedBequest")
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
       float scaleFactor = detector.getScaleFactor();

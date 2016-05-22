@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * StringHandler is a wrapper around the standard Android getString functionality. It is primarily
  * used for formatting magic on strings using the GameObjectInterface.
  */
-@SuppressWarnings({"OverlyComplexClass", "UtilityClass", "unused", "NonConstantStringShouldBeStringBuffer"})
+@SuppressWarnings({"UtilityClass", "unused", "NonConstantStringShouldBeStringBuffer"})
 public final class StringHandler {
   private static final String TAG = StringHandler.class.getName();
   private static final int NOT_FOUND = -1;
@@ -366,7 +366,7 @@ public final class StringHandler {
     return getVariableValue(str, variables);
   }
 
-  @SuppressWarnings({"ChainOfInstanceofChecks", "MethodWithMultipleReturnPoints", "OverlyComplexMethod"})
+  @SuppressWarnings({"MethodWithMultipleReturnPoints", "OverlyComplexMethod"})
   private static int getVariableValue(String key, AbstractMap<String, Object> variables) {
     String str = key.trim().toLowerCase(Locale.US);
     if (str.isEmpty()) return 0;

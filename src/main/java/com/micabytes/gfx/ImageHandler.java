@@ -79,7 +79,6 @@ public final class ImageHandler {
     return get(key, config, false);
   }
 
-  @SuppressWarnings("MethodWithMultipleReturnPoints")
   @NonNull
   private static Bitmap get(int key, Bitmap.Config config, boolean persist) {
     if (key == 0)
