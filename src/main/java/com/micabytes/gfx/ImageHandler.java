@@ -12,6 +12,7 @@
  */
 package com.micabytes.gfx;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -24,13 +25,11 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.LruCache;
 import android.util.DisplayMetrics;
-import android.util.SparseArray;
 
 import com.micabytes.GameApplication;
 import com.micabytes.util.GameLog;
-
-import java.lang.ref.SoftReference;
 
 /**
  * ImageHandler is a singleton class that is used to manage bitmaps resources used programmatically
@@ -46,13 +45,24 @@ public final class ImageHandler {
   private static final int COLOR_RED = 0xff424242;
   private static final int PIXEL_ROUNDING = 12;
   public static final float DENSITY_MINIMUM = 0.1f;
+  public static final int MEGABYTE = 1024;
   private static float density = 0.0f;
   // Bitmap cache
-  private static final SparseArray<SoftReference<Bitmap>> CACHED_BITMAPS = new SparseArray<>();
-  private static final SparseArray<Bitmap> PERSIST_BITMAPS = new SparseArray<>();
+  private static LruCache<Integer, Bitmap> memoryCache = null;
 
   private ImageHandler() {
-    // NOOP
+    initCache();
+  }
+
+  private static void initCache() {
+    int memoryClass = ((ActivityManager) GameApplication.getInstance().getSystemService(Context.ACTIVITY_SERVICE)).getMemoryClass();
+    int memoryCacheSize = MEGABYTE * MEGABYTE * memoryClass / 8;
+    memoryCache = new LruCache<Integer, Bitmap>(memoryCacheSize) {
+      @Override
+      protected int sizeOf(Integer key, Bitmap value) {
+        return value.getRowBytes() * value.getHeight();
+      }
+    };
   }
 
   public static float getDensity() {
@@ -71,39 +81,23 @@ public final class ImageHandler {
 
   @NonNull
   public static Bitmap get(int key) {
-    return get(key, DEFAULT_CONFIG, true);
+    return get(key, DEFAULT_CONFIG);
   }
 
   @NonNull
   public static Bitmap get(int key, Bitmap.Config config) {
-    return get(key, config, false);
-  }
-
-  @NonNull
-  private static Bitmap get(int key, Bitmap.Config config, boolean persist) {
     if (key == 0)
       GameLog.d(TAG, "Null resource sent to get()");
-    Bitmap ret;
-    if (persist) {
-      ret = PERSIST_BITMAPS.get(key);
-      if (ret != null) return ret;
-    }
-    SoftReference<Bitmap> ref = CACHED_BITMAPS.get(key);
-    if (ref != null) {
-      ret = ref.get();
-      if (ret != null) {
-        return ret;
-      }
-    }
-    ret = loadBitmap(key, config);
+    if (memoryCache == null) initCache();
+    Bitmap cached = memoryCache.get(key);
+    if (cached != null)
+      return cached;
+    Bitmap ret = loadBitmap(key, config);
     if (ret == null) {
       Bitmap.Config conf = Bitmap.Config.ARGB_8888;
       return Bitmap.createBitmap(1, 1, conf);
     }
-    if (persist)
-      PERSIST_BITMAPS.put(key, ret);
-    else
-      CACHED_BITMAPS.put(key, new SoftReference<>(ret));
+    memoryCache.put(key, ret);
     return ret;
   }
 

@@ -38,7 +38,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
-import com.makeramen.roundedimageview.RoundedImageView;
+//import com.makeramen.roundedimageview.RoundedImageView;
+import de.hdodenhof.circleimageview.CircleImageView;
 import com.micabytes.gui.LinearListView;
 
 /**
@@ -158,10 +159,20 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     return v;
   }
 
+  /*
   protected RoundedImageView getRoundedImageView(int resId) {
     View root = getView();
     assert root != null;
     RoundedImageView v = (RoundedImageView) root.findViewById(resId);
+    if (v == null)
+      throw new Resources.NotFoundException("getRoundedImageView");
+    return v;
+  }
+  */
+  protected CircleImageView getRoundedImageView(int resId) {
+    View root = getView();
+    assert root != null;
+    CircleImageView v = (CircleImageView) root.findViewById(resId);
     if (v == null)
       throw new Resources.NotFoundException("getRoundedImageView");
     return v;
