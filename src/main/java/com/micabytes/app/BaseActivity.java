@@ -349,11 +349,10 @@ public class BaseActivity extends AppCompatActivity implements GameHelper.GameHe
 
   /**
    * Display a status message for the last operation at the bottom of the screen.
+   *  @param msg   the message to display.
    *
-   * @param msg   the message to display.
-   * @param error true if an ERROR occurred, false otherwise.
    */
-  public void showMessage(String msg, boolean error) {
+  public void showMessage(String msg) {
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
   }
 
