@@ -12,7 +12,6 @@
  */
 package com.micabytes.app;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
@@ -38,15 +37,22 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
-//import com.makeramen.roundedimageview.RoundedImageView;
-import de.hdodenhof.circleimageview.CircleImageView;
 import com.micabytes.gui.LinearListView;
+import com.micabytes.util.UIObjectNotFoundException;
+
+import org.jetbrains.annotations.NonNls;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Convenience class to replace Fragment
  */
-@SuppressWarnings({"unused", "ClassWithTooManyMethods"})
+@SuppressWarnings({"unused", "ClassWithTooManyMethods", "OverlyComplexClass"})
 public class BaseFragment extends Fragment implements View.OnClickListener {
+  @NonNls public static final String COULD_NOT_FIND_THE_ROOT_VIEW = "Could not find the root view";
+  @NonNls public static final String COULD_NOT_FIND_RES_ID = "Could not find resId ";
+  @NonNls public static final String IN_FIND_VIEW_BY_ID = " in findViewById";
+
 
   @Override
   public void onClick(View v) {
@@ -60,16 +66,17 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     updateFragment();
   }
 
-  // Used to set up UI elements
+  // Create Fragment UI
   protected void createFragment() {
     // NOOP
   }
 
-  // Used to update the UI elements
+  // Update Fragment UI
   public void updateFragment() {
     // NOOP
   }
 
+  // Change Fragment
   public void resetFragment() {
     getBaseActivity().setFragment();
   }
@@ -79,225 +86,250 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     return (BaseActivity) getActivity();
   }
 
-  protected View getView(int resId) {
+  @NonNull
+  protected View getView(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     View v = root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("getView(int)");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
   }
 
-  protected void setView(int resId) {
+  protected void setView(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     View v = root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("setView(int)");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     v.setOnClickListener(this);
   }
 
-  protected TextView getTextView(int resId) {
+  @NonNull
+  protected TextView getTextView(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException("No getView in getTextView(int)");
     TextView v = (TextView) root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("getTextView");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
   }
 
   @Nullable
-  protected TextView setTextView(int resId, Typeface font) {
+  protected TextView setTextView(int resId, Typeface font) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException("No getView in setTextView(int)");
     TextView t = (TextView) root.findViewById(resId);
     if (t == null)
-      throw new Resources.NotFoundException("setTextView");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     if (font != null)
       t.setTypeface(font);
     t.setOnClickListener(this);
     return t;
   }
 
-  protected EditText getEditText(int resId) {
+  @NonNull
+  protected EditText getEditText(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     EditText v = (EditText) root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("getEditText");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
   }
 
-  protected ImageView getImageView(int resId) {
+  @NonNull
+  protected ImageView getImageView(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     ImageView v = (ImageView) root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("getImageView");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
   }
 
-  protected ImageView setImageView(int resId) {
+  @NonNull
+  protected ImageView setImageView(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     ImageView v = (ImageView) root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("setImageView");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     v.setOnClickListener(this);
     return v;
   }
 
-  protected ImageView setImageView(int resId, Bitmap img) {
+  @NonNull
+  protected ImageView setImageView(int resId, Bitmap img) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     if (img == null)
       throw new IllegalArgumentException("setting image view " + resId + " with no or null bitmap");
     ImageView v = (ImageView) root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("setImageView(int, Bitmap)");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     v.setImageBitmap(img);
     return v;
   }
 
-  /*
-  protected RoundedImageView getRoundedImageView(int resId) {
+  @NonNull
+  protected CircleImageView getRoundedImageView(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
-    RoundedImageView v = (RoundedImageView) root.findViewById(resId);
-    if (v == null)
-      throw new Resources.NotFoundException("getRoundedImageView");
-    return v;
-  }
-  */
-  protected CircleImageView getRoundedImageView(int resId) {
-    View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     CircleImageView v = (CircleImageView) root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("getRoundedImageView");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
   }
 
-  protected CheckBox getCheckBox(int resId) {
+  @NonNull
+  protected CheckBox getCheckBox(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     CheckBox v = (CheckBox) root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("getCheckBox");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
   }
 
   @Nullable
-  protected RadioButton getRadioButton(int resId) {
+  protected RadioButton getRadioButton(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
-    return (RadioButton) root.findViewById(resId);
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
+    RadioButton v = (RadioButton) root.findViewById(resId);
+    if (v == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
+    return v;
   }
 
   @NonNull
-  protected ImageButton getImageButton(int resId) {
+  protected ImageButton getImageButton(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     ImageButton button = (ImageButton) root.findViewById(resId);
     if (button == null)
-      throw new Resources.NotFoundException("getImageButton");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return button;
   }
 
   @NonNull
-  protected ImageButton setImageButton(int resId) {
+  protected ImageButton setImageButton(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     ImageButton button = (ImageButton) root.findViewById(resId);
     if (button == null)
-      throw new Resources.NotFoundException("setImageButton(int)");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     button.setOnClickListener(this);
     return button;
   }
 
   @NonNull
-  protected ImageButton setImageButton(int resId, Bitmap img) {
+  protected ImageButton setImageButton(int resId, Bitmap img) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     if (img == null)
       throw new IllegalArgumentException("setting image button " + resId + " with null bitmap");
     ImageButton button = (ImageButton) root.findViewById(resId);
     if (button == null)
-      throw new Resources.NotFoundException("setImageButton(int, Bitmap)");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     button.setOnClickListener(this);
     button.setImageBitmap(img);
     return button;
   }
 
   @NonNull
-  protected Button setButton(@NonNull View v, int resId) {
-    Button button = (Button) v.findViewById(resId);
+  protected Button setButton(@NonNull View v, int resId) throws UIObjectNotFoundException {
+    View root = getView();
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
+    Button button = (Button) root.findViewById(resId);
     if (button == null)
-      throw new Resources.NotFoundException("setButton(View, int)");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     button.setOnClickListener(this);
     return button;
   }
 
   @NonNull
-  protected Button setButton(int resId) {
+  protected Button setButton(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException("No getView in setButton(int)");
     Button button = (Button) root.findViewById(resId);
     if (button == null)
-      throw new Resources.NotFoundException("setButton(int)");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     button.setOnClickListener(this);
     return button;
   }
 
   @NonNull
-  protected Button setButton(int resId, Typeface font) {
+  protected Button setButton(int resId, Typeface font) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     Button button = (Button) root.findViewById(resId);
     if (button == null)
-      throw new Resources.NotFoundException("setButton(int, Typeface)");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     if (font != null) button.setTypeface(font);
     button.setOnClickListener(this);
     return button;
   }
 
-  protected Button getButton(int resId) {
+  @NonNull
+  protected Button getButton(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     Button button = (Button) root.findViewById(resId);
     if (button == null)
-      throw new Resources.NotFoundException("getButton");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return button;
   }
 
   @NonNull
-  protected ToggleButton setToggleButton(int resId) {
+  protected ToggleButton setToggleButton(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     ToggleButton button = (ToggleButton) root.findViewById(resId);
     if (button == null)
-      throw new Resources.NotFoundException("setToggleButton");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     button.setOnClickListener(this);
     return button;
   }
 
   @NonNull
-  public ToggleButton getToggleButton(int resId) {
+  public ToggleButton getToggleButton(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     ToggleButton button = (ToggleButton) root.findViewById(resId);
     if (button == null)
-      throw new Resources.NotFoundException("getToggleButton");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return button;
   }
 
   @NonNull
-  protected Spinner setSpinner(int resId, int arrId, int spIt, int spDd) {
+  protected Spinner setSpinner(int resId, int arrId, int spIt, int spDd) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     Spinner spinner = (Spinner) root.findViewById(resId);
     if (spinner == null)
-      throw new Resources.NotFoundException("setSpinner");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     ArrayAdapter<CharSequence> adapter =
         ArrayAdapter.createFromResource(getActivity().getApplicationContext(), arrId, spIt);
     adapter.setDropDownViewResource(spDd);
@@ -306,104 +338,114 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
   }
 
   @NonNull
-  protected Spinner getSpinner(int resId) {
+  protected Spinner getSpinner(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     Spinner spinner = (Spinner) root.findViewById(resId);
     if (spinner == null)
-      throw new Resources.NotFoundException("getSpinner");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return spinner;
   }
 
   @NonNull
-  protected ListView getListView(int resId) {
+  protected ListView getListView(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     ListView listView = (ListView) root.findViewById(resId);
     if (listView == null)
-      throw new Resources.NotFoundException("setListView(int)");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return listView;
   }
 
   @NonNull
-  protected ListView setListView(int resId, BaseAdapter adapter) {
+  protected ListView setListView(int resId, BaseAdapter adapter) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     ListView listView = (ListView) root.findViewById(resId);
     if (listView == null)
-      throw new Resources.NotFoundException("setListView(int, BaseAdapter)");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     listView.setAdapter(adapter);
     return listView;
   }
 
   @NonNull
-  protected LinearListView getLinearListView(int resId) {
+  protected LinearListView getLinearListView(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     LinearListView listView = (LinearListView) root.findViewById(resId);
     if (listView == null)
-      throw new Resources.NotFoundException("getLinearListView()");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return listView;
   }
 
   @NonNull
-  protected LinearListView setLinearListView(int resId, BaseAdapter adapter) {
+  protected LinearListView setLinearListView(int resId, BaseAdapter adapter) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     LinearListView listView = (LinearListView) root.findViewById(resId);
     if (listView == null)
-      throw new Resources.NotFoundException("setLinearListView");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     listView.setAdapter(adapter);
     return listView;
   }
 
   @NonNull
-  protected RelativeLayout getRelativeLayout(int resId) {
+  protected RelativeLayout getRelativeLayout(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     RelativeLayout v = (RelativeLayout) root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("getRelativeLayout");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
   }
 
   @NonNull
-  protected LinearLayout getLinearLayout(int resId) {
+  protected LinearLayout getLinearLayout(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     LinearLayout v = (LinearLayout) root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("getLinearLayout");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
   }
 
   @NonNull
-  protected ProgressBar getProgressBar(int resId) {
+  protected ProgressBar getProgressBar(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     ProgressBar v = (ProgressBar) root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("getProgressBar");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
   }
 
   @NonNull
-  public SeekBar getSeekBar(int resId) {
+  public SeekBar getSeekBar(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     SeekBar v = (SeekBar) root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("getSeekBar");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
   }
 
   @NonNull
-  protected ViewFlipper getViewFlipper(int resId) {
+  protected ViewFlipper getViewFlipper(int resId) throws UIObjectNotFoundException {
     View root = getView();
-    assert root != null;
+    if (root == null)
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     ViewFlipper v = (ViewFlipper) root.findViewById(resId);
     if (v == null)
-      throw new Resources.NotFoundException("getViewFlipper");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
   }
 
