@@ -66,7 +66,7 @@ import com.micabytes.gui.SimpleTooltipUtils;
  * @author Created by douglas on 05/05/16.
  * @see android.widget.PopupWindow
  */
-@SuppressWarnings("SameParameterValue")
+@SuppressWarnings("ALL")
 public class SimpleTooltip implements PopupWindow.OnDismissListener {
 
     private static final String TAG = SimpleTooltip.class.getSimpleName();

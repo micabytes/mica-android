@@ -120,7 +120,7 @@ public final class MusicHandler {
   public static void pause() {
     for (int i = 0; i < PLAYERS.size(); i++) {
       MediaPlayer p = PLAYERS.valueAt(i);
-      if (p.isPlaying()) {
+      if (p != null && p.isPlaying()) {
         p.pause();
       }
     }

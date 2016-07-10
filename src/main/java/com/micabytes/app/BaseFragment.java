@@ -12,11 +12,13 @@
  */
 package com.micabytes.app;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -38,6 +40,7 @@ import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
 import com.micabytes.gui.LinearListView;
+import com.micabytes.util.GameLog;
 import com.micabytes.util.UIObjectNotFoundException;
 
 import org.jetbrains.annotations.NonNls;
@@ -64,6 +67,18 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     super.onResume();
     createFragment();
     updateFragment();
+  }
+
+  @Override
+  public void startActivityForResult(Intent intent, int requestCode) {
+    try {
+      super.startActivityForResult(intent, requestCode);
+    } catch (NullPointerException e) {
+      String pkg = intent.getPackage();
+      if (pkg != null)
+        GameLog.e("BaseFragment", "Ignoring startActivityForResult exception on intent " + pkg);
+      GameLog.logException(e);
+    }
   }
 
   // Create Fragment UI

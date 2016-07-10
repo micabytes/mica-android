@@ -455,7 +455,7 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
                     cache.bitmap = bitmap;
                     cache.setState(CacheState.READY);
                   } else {
-                    GameLog.w(TAG, "Loading of background image cache aborted");
+                    GameLog.d(TAG, "Loading of background image cache aborted");
                   }
                 }
               }

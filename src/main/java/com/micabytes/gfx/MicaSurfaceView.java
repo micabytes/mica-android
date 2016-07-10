@@ -499,9 +499,17 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         backgroundSizeAtFling = renderer.getBackgroundSize();
         setState(TouchState.ON_FLING);
         renderer.suspend();
-        scroller.fling(viewCenterAtFling.x, viewCenterAtFling.y, (int) -velocityX, (int) -velocityY, 0, backgroundSizeAtFling.x - viewSizeAtFling.x, 0, backgroundSizeAtFling.y - viewSizeAtFling.y);
+        scroller.fling(
+            viewCenterAtFling.x,
+            viewCenterAtFling.y,
+            (int) -velocityX,
+            (int) -velocityY,
+            0,
+            backgroundSizeAtFling.x - viewSizeAtFling.x,
+            0,
+            backgroundSizeAtFling.y - viewSizeAtFling.y);
+        touchThread.interrupt();
       }
-      touchThread.interrupt();
       return true;
     }
 
