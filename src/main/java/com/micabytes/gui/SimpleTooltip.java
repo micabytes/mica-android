@@ -55,8 +55,6 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.micabytes.R;
-import com.micabytes.gui.OverlayView;
-import com.micabytes.gui.SimpleTooltipUtils;
 
 
 /**
