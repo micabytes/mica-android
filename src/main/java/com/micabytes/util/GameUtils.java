@@ -44,15 +44,15 @@ public class GameUtils {
   }
 
   /**
-   * Resolve a connection failure from {@link com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener#onConnectionFailed(com.google.android.gms.common.ConnectionResult)}
+   * Resolve a connection failure from
+   * {@link com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener#onConnectionFailed(com.google.android.gms.common.ConnectionResult)}
    *
    * @param activity             the Activity trying to resolve the connection failure.
    * @param client               the GoogleAPIClient instance of the Activity.
    * @param result               the ConnectionResult received by the Activity.
-   * @param requestCode          a request code which the calling Activity can use to identify the
-   *                             result of this resolution in onActivityResult.
-   * @param fallbackErrorMessage a generic ERROR message to display if the failure cannot be
-   *                             resolved.
+   * @param requestCode          a request code which the calling Activity can use to identify the result
+   *                             of this resolution in onActivityResult.
+   * @param fallbackErrorMessage a generic error message to display if the failure cannot be resolved.
    * @return true if the connection failure is resolved, false otherwise.
    */
   public static boolean resolveConnectionFailure(Activity activity,
@@ -70,14 +70,14 @@ public class GameUtils {
         return false;
       }
     } else {
-      // not resolvable... so show an ERROR message
+      // not resolvable... so show an error message
       int errorCode = result.getErrorCode();
       Dialog dialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
           activity, requestCode);
       if (dialog != null) {
         dialog.show();
       } else {
-        // no built-in dialog: show the fallback ERROR message
+        // no built-in dialog: show the fallback error message
         showAlert(activity, fallbackErrorMessage);
       }
       return false;
@@ -85,16 +85,53 @@ public class GameUtils {
   }
 
   /**
-   * Show a {@link android.app.Dialog} with the correct message for a connection ERROR.
+   * For use in sample code only. Checks if the sample was set up correctly,
+   * including changing the package name to a non-Google package name and
+   * replacing the placeholder IDs. Shows alert dialogs to notify about problems.
+   * DO NOT call this method from a production app, it's meant only for samples!
+   *
+   * @param resIds the resource IDs to check for placeholders
+   * @return true if sample is set up correctly; false otherwise.
+   */
+  public static boolean verifySampleSetup(Activity activity, int... resIds) {
+    StringBuilder problems = new StringBuilder();
+    boolean problemFound = false;
+    problems.append("The following set up problems were found:\n\n");
+
+    // Did the developer forget to change the package name?
+    if (activity.getPackageName().startsWith("com.google.example.games")) {
+      problemFound = true;
+      problems.append("- Package name cannot be com.google.*. You need to change the "
+          + "sample's package name to your own package.").append("\n");
+    }
+
+    for (int i : resIds) {
+      if (activity.getString(i).toLowerCase().contains("replaceme")) {
+        problemFound = true;
+        problems.append("- You must replace all " +
+            "placeholder IDs in the ids.xml file by your project's IDs.").append("\n");
+        break;
+      }
+    }
+
+    if (problemFound) {
+      problems.append("\n\nThese problems may prevent the app from working properly.");
+      showAlert(activity, problems.toString());
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Show a {@link android.app.Dialog} with the correct message for a connection error.
    *
    * @param activity         the Activity in which the Dialog should be displayed.
    * @param requestCode      the request code from onActivityResult.
    * @param actResp          the response code from onActivityResult.
-   * @param errorCode        the resource id of a String for an 'Unable to sign in' ERROR message,
-   * @param errorDescription the resource id of a String for a generic ERROR message.
+   * @param errorDescription the resource id of a String for a generic error message.
    */
-  public static void showActivityResultError(Activity activity, int requestCode, int actResp,
-                                             int errorCode, int errorDescription) {
+  public static void showActivityResultError(Activity activity, int requestCode, int actResp, int errorDescription) {
     if (activity == null) {
       Log.e("BaseGameUtils", "*** No Activity. Can't show failure dialog!");
       return;
@@ -104,30 +141,27 @@ public class GameUtils {
     switch (actResp) {
       case GamesActivityResultCodes.RESULT_APP_MISCONFIGURED:
         errorDialog = makeSimpleDialog(activity,
-            activity.getString(R.string.gamehelper_app_misconfigured));
+            activity.getString(R.string.app_misconfigured));
         break;
       case GamesActivityResultCodes.RESULT_SIGN_IN_FAILED:
         errorDialog = makeSimpleDialog(activity,
-            activity.getString(R.string.gamehelper_sign_in_failed));
+            activity.getString(R.string.sign_in_failed));
         break;
       case GamesActivityResultCodes.RESULT_LICENSE_FAILED:
         errorDialog = makeSimpleDialog(activity,
-            activity.getString(R.string.gamehelper_license_failed));
+            activity.getString(R.string.license_failed));
         break;
       default:
         // No meaningful Activity response code, so generate default Google
         // Play services dialog
+        final int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
         errorDialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
             activity, requestCode, null);
         if (errorDialog == null) {
           // get fallback dialog
           Log.e("BaseGamesUtils",
-              "No standard ERROR dialog available. Making fallback dialog.");
-          errorDialog = makeSimpleDialog(
-              activity,
-              activity.getString(errorCode)
-                  + StringHandler.WHITESPACE
-                  + activity.getString(errorDescription));
+              "No standard error dialog available. Making fallback dialog.");
+          errorDialog = makeSimpleDialog(activity, activity.getString(errorDescription));
         }
     }
 

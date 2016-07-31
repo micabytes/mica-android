@@ -40,24 +40,24 @@ dependencies {
   // Annotations
   //noinspection GradleDynamicVersion
   compile 'com.intellij:annotations:+@jar'
-  compile 'com.android.support:support-annotations:24.0.0'
+  compile 'com.android.support:support-annotations:24.1.1'
   // Android Support
-  compile 'com.android.support:appcompat-v7:24.0.0'
-  compile 'com.android.support:design:24.0.0'
+  compile 'com.android.support:appcompat-v7:24.1.1'
+  compile 'com.android.support:design:24.1.1'
   // CircleImageView component
   compile 'de.hdodenhof:circleimageview:2.0.0'
   // JSON Libraries
   // Remember to modify proguard-rules.pro also
-  compile 'com.fasterxml.jackson.core:jackson-core:2.7.4'
-  compile 'com.fasterxml.jackson.core:jackson-annotations:2.7.4'
-  compile 'com.fasterxml.jackson.core:jackson-databind:2.7.4'
+  compile 'com.fasterxml.jackson.core:jackson-core:2.8.1'
+  compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.1'
+  compile 'com.fasterxml.jackson.core:jackson-databind:2.8.1'
   // Fabric
   compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
     transitive = true;
   }
   // Google Play
-  compile 'com.google.android.gms:play-services-ads:9.2.0'
-  compile 'com.google.android.gms:play-services-analytics:9.2.0'
-  compile 'com.google.android.gms:play-services-games:9.2.0'
-  compile 'com.google.android.gms:play-services-plus:9.2.0'
+  compile 'com.google.android.gms:play-services-ads:9.2.1'
+  compile 'com.google.android.gms:play-services-analytics:9.2.1'
+  compile 'com.google.android.gms:play-services-games:9.2.1'
+  compile 'com.google.android.gms:play-services-plus:9.2.1'
 }

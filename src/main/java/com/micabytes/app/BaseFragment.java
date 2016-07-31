@@ -57,7 +57,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
 
 
   @Override
-  public void onClick(View v) {
+  public void onClick(View view) {
     // NOOP
   }
 
@@ -68,6 +68,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     updateFragment();
   }
 
+  @SuppressWarnings("ProhibitedExceptionCaught")
   @Override
   public void startActivityForResult(Intent intent, int requestCode) {
     try {
@@ -470,8 +471,8 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
-      toast((String) v.getContentDescription(), Toast.LENGTH_LONG);
+    public void onClick(View view) {
+      toast((String) view.getContentDescription(), Toast.LENGTH_LONG);
     }
 
   }

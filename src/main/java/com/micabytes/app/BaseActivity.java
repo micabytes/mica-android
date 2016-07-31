@@ -12,309 +12,111 @@
  */
 package com.micabytes.app;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 import com.micabytes.R;
-import com.micabytes.util.GameHelper;
 import com.micabytes.util.GameLog;
+import com.micabytes.util.GameUtils;
 
-import java.text.DecimalFormat;
-
-/**
- * Base class for Game Activities. <p/> This implementation now also implements the GamesClient
- * object from Google Play Games services and manages its lifecycle. Subclasses should override the
- * onSignInSucceeded
- */
-@SuppressWarnings({"ClassWithTooManyMethods", "unused"})
-@SuppressLint("Registered")
-public class BaseActivity extends AppCompatActivity implements GameHelper.GameHelperListener {
-  // The game helper object. This class is mainly a wrapper around this object.
-  private GameHelper gameHelper;
-
-  // We expose these constants here because we don't want users of this class
-  // to have to know about gameHelper at all.
-  public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
-  public static final int CLIENT_PLUS = GameHelper.CLIENT_PLUS;
-  public static final int CLIENT_SAVES = GameHelper.CLIENT_SNAPSHOT;
-  public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
-  private int requestedClients;
-  private boolean debugLog;
-
-  /**
-   * Constructs a BaseGameActivity with default client (GamesClient).
-   */
-  protected BaseActivity() {
-    // NOOP
-  }
-
-  /**
-   * Constructs a BaseGameActivity with the requested clients.
-   *
-   * @param requestClients The requested clients (a combination of CLIENT_GAMES, CLIENT_PLUS and
-   *                       CLIENT_SAVES).
-   */
-  protected BaseActivity(int requestClients) {
-    requestedClients = requestClients;
-  }
-
-  /**
-   * Sets the requested clients. The preferred way to set the requested clients is via the
-   * constructor, but this method is available if for some reason your code cannot do this in the
-   * constructor. This must be called before onCreate or getGameHelper() in order to have any
-   * effect. If called after onCreate()/getGameHelper(), this method is a no-op.
-   *
-   * @param requestClients A combination of the flags CLIENT_GAMES, CLIENT_PLUS and CLIENT_APPSTATE,
-   *                       or CLIENT_ALL to request all available clients.
-   */
-  @SuppressWarnings("unused")
-  protected void setRequestedClients(int requestClients) {
-    requestedClients = requestClients;
-  }
-
-  protected GameHelper getGameHelper() {
-    if (gameHelper == null) {
-      gameHelper = new GameHelper(this, requestedClients);
-      gameHelper.enableDebugLog(debugLog);
-    }
-    return gameHelper;
-  }
-
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    getGameHelper().setup(this, findViewById(android.R.id.content));
-  }
+@SuppressWarnings("AbstractClassExtendsConcreteClass")
+public abstract class BaseActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
+  private static final String TAG = BaseActivity.class.getName();
+  private static final int RC_SIGN_IN = 9001;
+  protected GoogleApiClient mGoogleApiClient;
+  private boolean mResolvingConnectionFailure = false;
+  private boolean mSignInClicked = false;
+  private boolean mAutoStartSignInFlow = true;
 
   @Override
   protected void onStart() {
     super.onStart();
-    getGameHelper().onStart(this);
+    mGoogleApiClient.connect();
   }
 
   @Override
   protected void onStop() {
     super.onStop();
-    getGameHelper().onStop();
+    if (mGoogleApiClient.isConnected()) {
+      mGoogleApiClient.disconnect();
+    }
+  }
+
+  public void googleSignIn() {
+    mSignInClicked = true;
+    mGoogleApiClient.connect();
+  }
+
+  public void googleSignOut() {
+    Games.signOut(mGoogleApiClient);
+    mGoogleApiClient.disconnect();
+    mSignInClicked = false;
+    showSignInButton();
+    showMessage((String) getText(R.string.signed_out));
+  }
+
+  public boolean isSignedIn() {
+    return mGoogleApiClient.isConnected();
+  }
+
+  protected abstract void showSignInButton();
+
+  protected abstract void showSignOutButton();
+
+  @Override
+  public void onConnected(@Nullable Bundle bundle) {
+    showSignOutButton();
+  }
+
+  @Override
+  public void onConnectionSuspended(int i) {
+    GameLog.d(TAG, "onConnectionSuspended() called. Trying to reconnect.");
+    mGoogleApiClient.connect();
+  }
+
+  @Override
+  public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    GameLog.d(TAG, "onConnectionFailed() called, result: " + connectionResult);
+    if (mResolvingConnectionFailure) {
+      GameLog.d(TAG, "onConnectionFailed() ignoring connection failure; already resolving.");
+      return;
+    }
+    if (mSignInClicked || mAutoStartSignInFlow) {
+      mAutoStartSignInFlow = false;
+      mSignInClicked = false;
+      mResolvingConnectionFailure =
+          GameUtils.resolveConnectionFailure(this, mGoogleApiClient, connectionResult, RC_SIGN_IN, getString(R.string.signin_other_error));
+    }
+    showSignInButton();
   }
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    getGameHelper().onActivityResult(requestCode, resultCode, data);
-  }
-
-  protected GoogleApiClient getApiClient() {
-    return getGameHelper().getApiClient();
-  }
-
-  public boolean isSignedIn() {
-    return getGameHelper().isSignedIn();
-  }
-
-  public void beginUserInitiatedSignIn() {
-    getGameHelper().beginUserInitiatedSignIn();
-  }
-
-  public void signOut() {
-    getGameHelper().signOut();
-  }
-
-  protected void showAlert(String message) {
-    getGameHelper().makeSimpleDialog(message).show();
-  }
-
-  protected void showAlert(String title, String message) {
-    getGameHelper().makeSimpleDialog(title, message).show();
-  }
-
-  protected void enableDebugLog(boolean enabled) {
-    debugLog = true;
-    getGameHelper().enableDebugLog(enabled);
-  }
-
-  protected String getInvitationId() {
-    return getGameHelper().getInvitationId();
-  }
-
-  protected void reconnectClient() {
-    getGameHelper().reconnectClient();
-  }
-
-  protected boolean hasSignInError() {
-    return getGameHelper().hasSignInError();
-  }
-
-  protected GameHelper.SignInFailureReason getSignInError() {
-    return getGameHelper().getSignInError();
-  }
-
-  public void showSpinner() {
-    View view = findViewById(R.id.ProgressLayout);
-    if (view != null)
-      view.setVisibility(View.VISIBLE);
-  }
-
-  public void dismissSpinner() {
-    View view = findViewById(R.id.ProgressLayout);
-    if (view != null)
-    view.setVisibility(View.GONE);
-  }
-
-
-  /**
-   * Removes the reference to the activity from every view in a view hierarchy (listeners, images
-   * etc.) in order to limit/eliminate memory leaks. This is a "fix" for memory problems on older
-   * versions of Android; it may not be necessary on newer versions. <p/> see
-   * http://code.google.com/p/android/issues/detail?id=8488 <p/> If used, this method should be
-   * called in the onDestroy() method of each activity.
-   *
-   * @param viewID normally the id of the root layout
-   */
-  @SuppressWarnings("CallToSystemGC")
-  protected static void unbindReferences(Activity activity, int viewID) {
-    try {
-      View view = activity.findViewById(viewID);
-      if (view != null) {
-        unbindViewReferences(view);
-        if (view instanceof ViewGroup) unbindViewGroupReferences((ViewGroup) view);
+    if (requestCode == RC_SIGN_IN) {
+      GameLog.d(TAG, "onActivityResult with requestCode == RC_SIGN_IN, responseCode="
+          + resultCode + ", intent=" + data);
+      mSignInClicked = false;
+      mResolvingConnectionFailure = false;
+      if (resultCode == RESULT_OK) {
+        mGoogleApiClient.connect();
+      } else {
+        GameUtils.showActivityResultError(this, RC_SIGN_IN, resultCode, R.string.signin_other_error);
       }
-    } catch (Throwable ignored) {
-      // whatever exception is thrown just ignore it because a crash is
-      // likely to be worse than this method not doing what it's supposed to do
-      // e.printStackTrace();
-    }
-    System.gc();
-  }
-
-  private static void unbindViewGroupReferences(ViewGroup viewGroup) {
-    int nrOfChildren = viewGroup.getChildCount();
-    for (int i = 0; i < nrOfChildren; i++) {
-      View view = viewGroup.getChildAt(i);
-      unbindViewReferences(view);
-      if (view instanceof ViewGroup) unbindViewGroupReferences((ViewGroup) view);
-    }
-    try {
-      viewGroup.removeAllViews();
-    } catch (Throwable ignored) {
-      // AdapterViews, ListViews and potentially other ViewGroups don't
-      // support the removeAllViews operation
     }
   }
 
-  @SuppressWarnings({"OverlyComplexMethod"})
-  private static void unbindViewReferences(View view) {
-    // set all listeners to null
-    try {
-      view.setOnClickListener(null);
-    } catch (Throwable ignored) {
-      // NOOP - not supported by all views/versions
-    }
-    try {
-      view.setOnCreateContextMenuListener(null);
-    } catch (Throwable ignored) {
-      // NOOP - not supported by all views/versions
-    }
-    try {
-      view.setOnFocusChangeListener(null);
-    } catch (Throwable ignored) {
-      // NOOP - not supported by all views/versions
-    }
-    try {
-      view.setOnKeyListener(null);
-    } catch (Throwable ignored) {
-      // NOOP - not supported by all views/versions
-    }
-    try {
-      view.setOnLongClickListener(null);
-    } catch (Throwable ignored) {
-      // NOOP - not supported by all views/versions
-    }
-    try {
-      view.setOnClickListener(null);
-    } catch (Throwable ignored) {
-      // NOOP - not supported by all views/versions
-    }
-    // set background to null
-    Drawable background = view.getBackground();
-    if (background != null) {
-      background.setCallback(null);
-    }
-    if (view instanceof ImageView) {
-      ImageView imageView = (ImageView) view;
-      Drawable imageViewDrawable = imageView.getDrawable();
-      if (imageViewDrawable != null) {
-        imageViewDrawable.setCallback(null);
-      }
-      imageView.setImageDrawable(null);
-      imageView.setImageBitmap(null);
-    }
-    if (view instanceof ImageButton) {
-      ImageButton imageButton = (ImageButton) view;
-      Drawable imageButtonDrawable = imageButton.getDrawable();
-      if (imageButtonDrawable != null) {
-        imageButtonDrawable.setCallback(null);
-      }
-      imageButton.setImageDrawable(null);
-    }
-    // destroy WebView
-    if (view instanceof WebView) {
-      view.destroyDrawingCache();
-      ((WebView) view).destroy();
-    }
-  }
+  public abstract void setFragment();
 
-  /*
-   * Show Heap
-   */
-  @SuppressWarnings({"MagicNumber", "CallToSystemGC", "rawtypes"})
-  public static void logHeap(Class clazz) {
-    DecimalFormat df = new DecimalFormat();
-    df.setMaximumFractionDigits(2);
-    df.setMinimumFractionDigits(2);
-    GameLog.d(clazz.getName(),
-        "DEBUG_MEMORY allocated " + df.format((double) (Runtime.getRuntime().totalMemory() / 1048576)) + '/'
-            + df.format((double) (Runtime.getRuntime().maxMemory() / 1048576)) + " MB ("
-            + df.format((double) (Runtime.getRuntime().freeMemory() / 1048576)) + " MB free)"
-    );
-    System.gc();
-    System.gc();
-  }
-
-  @Override
-  public void onSignInFailed() {
-    // NOOP
-  }
-
-  @Override
-  public void onSignInSucceeded() {
-    // NOOP
-  }
-
-  public void setFragment() {
-    // NOOP
-  }
-
-  public void openMenu() {
-    // NOOP
-  }
-
-  protected int getRequestedClients() {
-    return requestedClients;
-  }
+  public abstract void openMenu();
 
   // Progress Dialog used to display loading messages.
   private ProgressDialog progressDialog;
@@ -354,14 +156,6 @@ public class BaseActivity extends AppCompatActivity implements GameHelper.GameHe
    */
   public void showMessage(String msg) {
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-  }
-
-  public boolean isDebugLog() {
-    return debugLog;
-  }
-
-  public void setDebugLog(boolean log) {
-    debugLog = log;
   }
 
 }

@@ -16,9 +16,11 @@
   <string name="default_shorttext">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
   <string name="default_title" tools:ignore="UnusedResources">MicaBytes</string>
   <!--  GameHelper Strings -->
-  <string name="gamehelper_app_misconfigured">The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.</string>
-  <string name="gamehelper_license_failed">License check failed.</string>
-  <string name="gamehelper_sign_in_failed">Failed to sign in. Please check your network connection and try again.</string>
+  <string name="app_misconfigured">The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.</string>
+  <string name="license_failed">License check failed.</string>
+  <string name="signin_other_error">There was an issue with sign in. Please try again later.</string>
+  <string name="sign_in_failed">Failed to sign in. Please check your network connection and try again.</string>
+  <string name="signed_out">Signed out of Google Play services.</string>
   <string name="gamehelper_sign_out" tools:ignore="UnusedResources">Sign Out</string>
   <string name="gamehelper_unknown_error">Unknown error.</string>
   <!--  FileNaviationg Strings -->
