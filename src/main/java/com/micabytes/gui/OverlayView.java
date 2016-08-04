@@ -46,74 +46,79 @@ import com.micabytes.R;
 @SuppressLint("ViewConstructor")
 public class OverlayView extends View {
 
-    private static final int mDefaultOverlayCircleOffsetRes = R.dimen.simpletooltip_overlay_circle_offset;
-    private static final int mDefaultOverlayAlphaRes = R.integer.simpletooltip_overlay_alpha;
+  private static final int mDefaultOverlayCircleOffsetRes = R.dimen.simpletooltip_overlay_circle_offset;
+  private static final int mDefaultOverlayAlphaRes = R.integer.simpletooltip_overlay_alpha;
 
-    private View mAnchorView;
-    private Bitmap bitmap;
-    private float offset = 0;
+  private View mAnchorView;
+  private Bitmap bitmap;
+  private float offset = 0;
+  private boolean invalidated = true;
 
-    OverlayView(Context context, View anchorView) {
-        super(context);
-        this.mAnchorView = anchorView;
-        this.offset = context.getResources().getDimension(mDefaultOverlayCircleOffsetRes);
-    }
+  OverlayView(Context context, View anchorView) {
+    super(context);
+    this.mAnchorView = anchorView;
+    this.offset = context.getResources().getDimension(mDefaultOverlayCircleOffsetRes);
+  }
 
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        super.dispatchDraw(canvas);
+  @Override
+  protected void dispatchDraw(Canvas canvas) {
+    if (invalidated)
+      createWindowFrame();
 
-        if (bitmap == null) {
-            createWindowFrame();
-        }
+    canvas.drawBitmap(bitmap, 0, 0, null);
+  }
 
-        canvas.drawBitmap(bitmap, 0, 0, null);
-    }
+  private void createWindowFrame() {
+    final int width = getMeasuredWidth(), height = getMeasuredHeight();
+    if (width <= 0 || height <= 0)
+      return;
 
-    private void createWindowFrame() {
-        bitmap = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-        Canvas osCanvas = new Canvas(bitmap);
+    if (bitmap != null && !bitmap.isRecycled())
+      bitmap.recycle();
+    bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
-        RectF outerRectangle = new RectF(0, 0, getMeasuredWidth(), getMeasuredHeight());
+    Canvas osCanvas = new Canvas(bitmap);
 
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.BLACK);
-        paint.setAntiAlias(true);
-        paint.setAlpha(getResources().getInteger(mDefaultOverlayAlphaRes));
-        osCanvas.drawRect(outerRectangle, paint);
+    RectF outerRectangle = new RectF(0, 0, width, height);
 
-        paint.setColor(Color.TRANSPARENT);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    paint.setColor(Color.BLACK);
+    paint.setAntiAlias(true);
+    paint.setAlpha(getResources().getInteger(mDefaultOverlayAlphaRes));
+    osCanvas.drawRect(outerRectangle, paint);
 
-        RectF anchorRecr = SimpleTooltipUtils.calculeRectInWindow(mAnchorView);
-        RectF overlayRecr = SimpleTooltipUtils.calculeRectInWindow(this);
+    paint.setColor(Color.TRANSPARENT);
+    paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
 
-        float left = anchorRecr.left - overlayRecr.left;
-        float top = anchorRecr.top - overlayRecr.top;
-        RectF oval = new RectF(left - offset, top - offset, left + mAnchorView.getMeasuredWidth() + offset, top + mAnchorView.getMeasuredHeight() + offset);
+    RectF anchorRecr = SimpleTooltipUtils.calculeRectInWindow(mAnchorView);
+    RectF overlayRecr = SimpleTooltipUtils.calculeRectInWindow(this);
 
-        osCanvas.drawOval(oval, paint);
-    }
+    float left = anchorRecr.left - overlayRecr.left;
+    float top = anchorRecr.top - overlayRecr.top;
+    RectF oval = new RectF(left - offset, top - offset, left + mAnchorView.getMeasuredWidth() + offset, top + mAnchorView.getMeasuredHeight() + offset);
 
-    @Override
-    public boolean isInEditMode() {
-        return true;
-    }
+    osCanvas.drawOval(oval, paint);
 
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-        if (bitmap != null && !bitmap.isRecycled())
-            bitmap.recycle();
-        bitmap = null;
-    }
+    invalidated = false;
+  }
 
-    public View getAnchorView() {
-        return mAnchorView;
-    }
+  @Override
+  public boolean isInEditMode() {
+    return true;
+  }
 
-    public void setAnchorView(View anchorView) {
-        this.mAnchorView = anchorView;
-        invalidate();
-    }
+  @Override
+  protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    super.onLayout(changed, l, t, r, b);
+    invalidated = true;
+  }
+
+  public View getAnchorView() {
+    return mAnchorView;
+  }
+
+  public void setAnchorView(View anchorView) {
+    this.mAnchorView = anchorView;
+    invalidate();
+  }
 }

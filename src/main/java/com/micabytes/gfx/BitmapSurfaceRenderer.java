@@ -354,9 +354,11 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
           viewPort.getPhysicalSize(dstSize);
           srcRect.set(left, top, right, bottom);
           dstRect.set(0, 0, dstSize.x, dstSize.y);
-          Canvas canvas = new Canvas(viewPort.getBitmap());
-          canvas.drawColor(Color.BLACK);
-          canvas.drawBitmap(bmp, srcRect, dstRect, null);
+          synchronized (viewPort.bitmapLock) {
+            Canvas canvas = new Canvas(viewPort.bitmap);
+            canvas.drawColor(Color.BLACK);
+            canvas.drawBitmap(bmp, srcRect, dstRect, null);
+          }
         }
       }
     }
@@ -373,18 +375,29 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      * load the actual bitmap data from memory. The quality of the user experience rests on the speed
      * of this function.
      */
+    @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
     private void drawLowResolutionBackground() {
-      if (viewPort.getBitmap() == null) return;
+      int w = 0;
+      int h = 0;
+      synchronized (viewPort.bitmapLock) {
+        if (viewPort.bitmap == null) return;
+        w = viewPort.bitmap.getWidth();
+        h = viewPort.bitmap.getHeight();
+      }
       Rect rect = viewPort.getWindow();
       int left = rect.left >> sampleSize;
       int top = rect.top >> sampleSize;
       int right = rect.right >> sampleSize;
       int bottom = rect.bottom >> sampleSize;
       Rect sRect = new Rect(left, top, right, bottom);
-      Rect dRect = new Rect(0, 0, viewPort.getBitmap().getWidth(), viewPort.getBitmap().getHeight());
+      Rect dRect = new Rect(0, 0, w, h);
       // Draw to Canvas
-      Canvas canvas = new Canvas(viewPort.getBitmap());
-      canvas.drawBitmap(lowResBitmap, sRect, dRect, null);
+      synchronized (viewPort.bitmapLock) {
+        if (viewPort.bitmap != null && lowResBitmap != null) {
+          Canvas canvas = new Canvas(viewPort.bitmap);
+          canvas.drawBitmap(lowResBitmap, sRect, dRect, null);
+        }
+      }
     }
 
   }

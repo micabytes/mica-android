@@ -12,6 +12,7 @@
  */
 package com.micabytes.app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.ViewFlipper;
 
+import com.micabytes.GameApplication;
 import com.micabytes.gui.LinearListView;
 import com.micabytes.util.GameLog;
 import com.micabytes.util.UIObjectNotFoundException;
@@ -96,9 +98,12 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     getBaseActivity().setFragment();
   }
 
-  @NonNull
   protected BaseActivity getBaseActivity() {
     return (BaseActivity) getActivity();
+  }
+
+  protected void showErrorMessage(String msg) {
+    Toast.makeText(GameApplication.getInstance(), msg, Toast.LENGTH_LONG).show();
   }
 
   @NonNull
@@ -126,18 +131,18 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
   protected TextView getTextView(int resId) throws UIObjectNotFoundException {
     View root = getView();
     if (root == null)
-      throw new UIObjectNotFoundException("No getView in getTextView(int)");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     TextView v = (TextView) root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
   }
 
-  @Nullable
+  @NonNull
   protected TextView setTextView(int resId, Typeface font) throws UIObjectNotFoundException {
     View root = getView();
     if (root == null)
-      throw new UIObjectNotFoundException("No getView in setTextView(int)");
+      throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     TextView t = (TextView) root.findViewById(resId);
     if (t == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);

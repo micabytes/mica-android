@@ -28,7 +28,7 @@ import com.micabytes.util.GameLog;
 import com.micabytes.util.GameUtils;
 
 @SuppressWarnings("AbstractClassExtendsConcreteClass")
-public abstract class BaseActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener  {
+public abstract class BaseActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
   private static final String TAG = BaseActivity.class.getName();
   private static final int RC_SIGN_IN = 9001;
   protected GoogleApiClient mGoogleApiClient;
@@ -99,6 +99,15 @@ public abstract class BaseActivity extends AppCompatActivity implements GoogleAp
   }
 
   @Override
+  public void startActivityForResult(Intent intent, int requestCode) {
+    Intent sIntent = intent;
+    if (sIntent == null) {
+      sIntent = new Intent();
+    }
+    super.startActivityForResult(sIntent, requestCode);
+  }
+
+  @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == RC_SIGN_IN) {
@@ -142,8 +151,7 @@ public abstract class BaseActivity extends AppCompatActivity implements GoogleAp
     if (progressDialog != null && progressDialog.isShowing()) {
       try {
         progressDialog.dismiss();
-      }
-      catch (IllegalArgumentException e) {
+      } catch (IllegalArgumentException e) {
         GameLog.logException(e);
       }
     }
@@ -151,8 +159,8 @@ public abstract class BaseActivity extends AppCompatActivity implements GoogleAp
 
   /**
    * Display a status message for the last operation at the bottom of the screen.
-   *  @param msg   the message to display.
    *
+   * @param msg the message to display.
    */
   public void showMessage(String msg) {
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();

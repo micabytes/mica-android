@@ -56,8 +56,8 @@ dependencies {
     transitive = true;
   }
   // Google Play
-  compile 'com.google.android.gms:play-services-ads:9.2.1'
-  compile 'com.google.android.gms:play-services-analytics:9.2.1'
-  compile 'com.google.android.gms:play-services-games:9.2.1'
-  compile 'com.google.android.gms:play-services-plus:9.2.1'
+  compile 'com.google.android.gms:play-services-ads:9.4.0'
+  compile 'com.google.android.gms:play-services-analytics:9.4.0'
+  compile 'com.google.android.gms:play-services-games:9.4.0'
+  compile 'com.google.android.gms:play-services-plus:9.4.0'
 }

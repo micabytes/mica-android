@@ -147,12 +147,19 @@ public abstract class SurfaceRenderer {
   @SuppressWarnings({"PublicInnerClass", "NonPrivateFieldAccessedInSynchronizedContext"})
   public class ViewPort {
     // The Bitmap of the current ViewPort
-    @SuppressWarnings("FieldAccessedSynchronizedAndUnsynchronized") protected Bitmap bitmap;
+    protected Bitmap bitmap;
+    protected final Object bitmapLock = new Object();
     // TODO: Bitmap needs checking.
     // The rect defining where the viewport is within the scene
     private final Rect window = new Rect(0, 0, 0, 0);
     // The zoom factor of the viewport
     private float zoom = 1.0f;
+
+    public Bitmap getBitmap() {
+      synchronized (bitmapLock) {
+        return bitmap;
+      }
+    }
 
     public synchronized void getOrigin(Point p) {
       p.set(window.left, window.top);
@@ -186,7 +193,7 @@ public abstract class SurfaceRenderer {
     public void setSize(int w, int h) {
       int x;
       int y;
-      synchronized (this) {
+      synchronized (bitmapLock) {
         if (bitmap != null) {
           bitmap.recycle();
           bitmap = null;
@@ -221,20 +228,16 @@ public abstract class SurfaceRenderer {
       p.y = getPhysicalHeight();
     }
 
-    public synchronized int getPhysicalWidth() {
-      return bitmap.getWidth();
+    public int getPhysicalWidth() {
+      synchronized (bitmapLock) {
+        return bitmap.getWidth();
+      }
     }
 
-    public synchronized int getPhysicalHeight() {
-      return bitmap.getHeight();
-    }
-
-    public synchronized Bitmap getBitmap() {
-      return bitmap;
-    }
-
-    public synchronized void setBitmap(Bitmap bmp) {
-      bitmap = bmp;
+    public int getPhysicalHeight() {
+      synchronized (bitmapLock) {
+        return bitmap.getHeight();
+      }
     }
 
     public synchronized float getZoom() {
@@ -247,8 +250,11 @@ public abstract class SurfaceRenderer {
     }
 
     public void zoom(float factor, PointF screenFocus) {
-      if (getBitmap() == null) return;
-      PointF screenSize = new PointF(getBitmap().getWidth(), getBitmap().getHeight());
+      PointF screenSize;
+      synchronized(bitmapLock) {
+        if (bitmap == null) return;
+        screenSize = new PointF(bitmap.getWidth(), bitmap.getHeight());
+      }
       PointF sceneSize = new PointF(getBackgroundSize());
       float screenWidthToHeight = screenSize.x / screenSize.y;
       float screenHeightToWidth = screenSize.y / screenSize.x;
@@ -306,7 +312,7 @@ public abstract class SurfaceRenderer {
       drawBase();
       drawLayer();
       drawFinal();
-      synchronized (this) {
+      synchronized (bitmapLock) {
         if ((canvas != null) && (bitmap != null)) {
           canvas.drawBitmap(bitmap, 0.0F, 0.0F, null);
         }
@@ -316,6 +322,7 @@ public abstract class SurfaceRenderer {
     public synchronized Rect getWindow() {
       return window;
     }
+
   }
 
 }
