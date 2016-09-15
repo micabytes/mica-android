@@ -35,6 +35,8 @@ public final class GameConstants {
   @NonNls public static final String FILE = "file";
   @NonNls public static final String CONDITION = "condition";
   @NonNls public static final String TIMEOUT = "timeout";
+  public static final String FACTION = "faction";
+  public static final String NATIVES = "natives";
 
   private GameConstants() {
     // NOOP

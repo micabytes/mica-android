@@ -172,7 +172,7 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
    * @param dv    the values displayed to the user.
    */
   @SuppressWarnings({"unused", "MethodCanBeVariableArityMethod", "AssignmentToCollectionOrArrayFieldFromParameter"})
-  public void setRange(int st, int ed, String[] dv) {
+  public void setRange(int st, int ed, @Nullable String[] dv) {
     displayedValues = dv;
     startValue = st;
     endValue = ed;

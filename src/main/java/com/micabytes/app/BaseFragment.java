@@ -139,7 +139,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
   }
 
   @NonNull
-  protected TextView setTextView(int resId, Typeface font) throws UIObjectNotFoundException {
+  protected TextView setTextView(int resId, @Nullable Typeface font) throws UIObjectNotFoundException {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
