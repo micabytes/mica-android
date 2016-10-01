@@ -17,7 +17,7 @@ repositories {
 
 android {
   compileSdkVersion 24
-  buildToolsVersion '24.0.1'
+  buildToolsVersion '24.0.2'
 
   defaultConfig {
     minSdkVersion 10
@@ -51,16 +51,16 @@ dependencies {
   compile 'de.hdodenhof:circleimageview:2.0.0'
   // JSON Libraries
   // Remember to modify proguard-rules.pro also
-  compile 'com.fasterxml.jackson.core:jackson-core:2.8.2'
-  compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.2'
-  compile 'com.fasterxml.jackson.core:jackson-databind:2.8.2'
+  compile 'com.fasterxml.jackson.core:jackson-core:2.8.3'
+  compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.3'
+  compile 'com.fasterxml.jackson.core:jackson-databind:2.8.3'
   // Fabric
-  compile('com.crashlytics.sdk.android:crashlytics:2.5.7@aar') {
+  compile('com.crashlytics.sdk.android:crashlytics:2.6.4@aar') {
     transitive = true;
   }
   // Google Play
-  compile 'com.google.android.gms:play-services-ads:9.4.0'
-  compile 'com.google.android.gms:play-services-games:9.4.0'
+  compile 'com.google.android.gms:play-services-ads:9.6.1'
+  compile 'com.google.android.gms:play-services-games:9.6.1'
   //compile 'com.google.android.gms:play-services-analytics:9.4.0'
   //compile 'com.google.android.gms:play-services-plus:9.4.0'
 }
