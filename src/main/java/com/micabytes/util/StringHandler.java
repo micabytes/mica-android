@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 public final class StringHandler {
   private static final String TAG = StringHandler.class.getName();
   private static final int NOT_FOUND = -1;
-  public static final char AT = '@';
+  @NonNls public static final char AT = '@';
   public static final char HASH_MARK = '#';
   public static final char PERCENT = '%';
   public static final String NULL = "null";
@@ -68,6 +68,7 @@ public final class StringHandler {
   private static final Pattern LT_SPLITTER = Pattern.compile("[<]+");
   private static final Pattern EQ_SPLITTER = Pattern.compile("[=]+");
   private static final Pattern DOT_SPLITTER = Pattern.compile("[.]");
+  public static final Pattern UNDERSCORE_SPLITTER = Pattern.compile("[_]");
 
   private StringHandler() {
     // NOOP
