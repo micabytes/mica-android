@@ -80,11 +80,13 @@ public final class MusicHandler {
     } else {
       Context context = GameApplication.getInstance();
       MediaPlayer mediaPlayer = MediaPlayer.create(context, music);
-      mediaPlayer.setVolume(mutedMusic ? 0.0f : volume, mutedMusic ? 0.0f : volume);
-      PLAYERS.put(music, mediaPlayer);
-      mediaPlayer.setLooping(true);
-      mediaPlayer.setOnCompletionListener(null);
-      mediaPlayer.start();
+      if (mediaPlayer != null) {
+        mediaPlayer.setVolume(mutedMusic ? 0.0f : volume, mutedMusic ? 0.0f : volume);
+        PLAYERS.put(music, mediaPlayer);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.setOnCompletionListener(null);
+        mediaPlayer.start();
+      }
     }
   }
 
