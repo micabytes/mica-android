@@ -15,6 +15,7 @@ package com.micabytes.gfx;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Resources;
+import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -27,6 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.LruCache;
 import android.util.DisplayMetrics;
+import android.widget.ImageView;
 
 import com.micabytes.GameApplication;
 import com.micabytes.util.GameLog;
@@ -144,6 +146,16 @@ public final class ImageHandler {
     opt.inJustDecodeBounds = true;
     BitmapFactory.decodeResource(GameApplication.getInstance().getResources(), key, opt);
     return opt;
+  }
+
+  @BindingAdapter({"app:src"})
+  public static void setImageViewResource(ImageView imageView, int resource) {
+    imageView.setImageResource(resource);
+  }
+
+  @BindingAdapter({"app:pix"})
+  public static void setImageViewResource(ImageView imageView, Bitmap bmp) {
+    imageView.setImageBitmap(bmp);
   }
 
 }
