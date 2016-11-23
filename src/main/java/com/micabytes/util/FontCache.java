@@ -69,7 +69,7 @@ public final class FontCache {
     }
   }
 
-  @BindingAdapter({"bind:font"})
+  @BindingAdapter({"font"})
   public static void setFont(TextView view, String fontName) {
     view.setTypeface(getInstance(view.getContext()).get(fontName));
   }

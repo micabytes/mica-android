@@ -48,7 +48,7 @@ public abstract class HexMap {
   // Draw
   protected final Canvas canvas = new Canvas();
 
-  protected HexMap(String id, String name) {
+  protected HexMap() {
     tilePaint.setAntiAlias(true);
     tilePaint.setFilterBitmap(true);
     tilePaint.setDither(true);
@@ -60,7 +60,7 @@ public abstract class HexMap {
   }
 
   @SuppressWarnings("AssignmentToStaticFieldFromInstanceMethod")
-  protected void setHexMap(TileMapZone[][] map) {
+  public void setHexMap(TileMapZone[][] map) {
     zones = new TileMapZone[map.length][map[0].length];
     for (int i = 0; i < map.length; i++) {
       System.arraycopy(map[i], 0, zones[i], 0, map[i].length);

@@ -11,13 +11,13 @@ buildscript {
 apply plugin: 'com.android.library'
 
 repositories {
-  mavenCentral()
+  jcenter()
   maven { url 'https://maven.fabric.io/public' }
 }
 
 android {
   compileSdkVersion 25
-  buildToolsVersion '25.0.0'
+  buildToolsVersion '25.0.1'
 
   defaultConfig {
     minSdkVersion 10
@@ -35,10 +35,6 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
-  //compileOptions {
-  //  sourceCompatibility JavaVersion.VERSION_1_8
-  //  targetCompatibility JavaVersion.VERSION_1_8
-  //}
 }
 
 dependencies {
@@ -46,12 +42,13 @@ dependencies {
   // Annotations
   //noinspection GradleDynamicVersion
   compile 'com.intellij:annotations:+@jar'
-  compile 'com.android.support:support-annotations:25.0.0'
+  compile 'com.android.support:support-annotations:25.0.1'
   // Android Support
-  compile 'com.android.support:appcompat-v7:25.0.0'
-  compile 'com.android.support:design:25.0.0'
-  // CircleImageView component
+  compile 'com.android.support:appcompat-v7:25.0.1'
+  compile 'com.android.support:design:25.0.1'
+  // Components
   compile 'de.hdodenhof:circleimageview:2.0.0'
+  compile 'com.github.douglasjunior:android-simple-tooltip:0.1.2'
   // JSON Libraries
   // Remember to modify proguard-rules.pro also
   compile 'com.fasterxml.jackson.core:jackson-core:2.8.4'
@@ -62,8 +59,11 @@ dependencies {
     transitive = true;
   }
   // Google Play
-  compile 'com.google.android.gms:play-services-ads:9.8.0'
-  compile 'com.google.android.gms:play-services-games:9.8.0'
-  //compile 'com.google.android.gms:play-services-analytics:9.4.0'
-  //compile 'com.google.android.gms:play-services-plus:9.4.0'
+  compile 'com.google.android.gms:play-services-ads:10.0.0'
+  compile 'com.google.android.gms:play-services-games:10.0.0'
+  //{
+  //    exclude group: 'com.google.firebase', module: 'com.google.firebase'
+  //}
+  //compile 'com.google.android.gms:play-services-analytics:9.8.0'
+  //compile 'com.google.android.gms:play-services-plus:9.8.0'
 }

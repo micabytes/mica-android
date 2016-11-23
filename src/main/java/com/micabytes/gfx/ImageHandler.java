@@ -148,12 +148,12 @@ public final class ImageHandler {
     return opt;
   }
 
-  @BindingAdapter({"app:src"})
+  @BindingAdapter({"src"})
   public static void setImageViewResource(ImageView imageView, int resource) {
     imageView.setImageResource(resource);
   }
 
-  @BindingAdapter({"app:pix"})
+  @BindingAdapter({"pix"})
   public static void setImageViewResource(ImageView imageView, Bitmap bmp) {
     imageView.setImageBitmap(bmp);
   }
