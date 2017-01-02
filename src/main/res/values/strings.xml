@@ -2,6 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
   <!-- App Title -->
   <string name="lib_game">MicaBytes Game Library</string>
+  <string name="common_ok">OK</string>
   <!-- Default Placeholder Strings -->
   <string name="default_date" tools:ignore="UnusedResources">January 1, 1970</string>
   <string name="default_error">Error</string>

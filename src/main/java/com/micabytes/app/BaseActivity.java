@@ -17,7 +17,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -135,7 +137,7 @@ public abstract class BaseActivity extends AppCompatActivity implements GoogleAp
    *
    * @param msg the message to display.
    */
-  protected void showProgressDialog(String msg) {
+  public void showProgressDialog(String msg) {
     if (progressDialog == null) {
       progressDialog = new ProgressDialog(this);
       progressDialog.setIndeterminate(true);
@@ -147,7 +149,7 @@ public abstract class BaseActivity extends AppCompatActivity implements GoogleAp
   /**
    * Hide the progress dialog, if it was showing.
    */
-  protected void dismissProgressDialog() {
+  public void dismissProgressDialog() {
     if (progressDialog != null && progressDialog.isShowing()) {
       try {
         progressDialog.dismiss();
@@ -164,6 +166,13 @@ public abstract class BaseActivity extends AppCompatActivity implements GoogleAp
    */
   public void showMessage(String msg) {
     Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+  }
+
+  public void alert(String message) {
+    AlertDialog.Builder bld = new AlertDialog.Builder(this);
+    bld.setMessage(message);
+    bld.setNeutralButton(getString(R.string.common_ok), null);
+    bld.create().show();
   }
 
 }
