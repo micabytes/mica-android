@@ -17,7 +17,7 @@ repositories {
 
 android {
   compileSdkVersion 25
-  buildToolsVersion '25.0.1'
+  buildToolsVersion '25.0.2'
 
   defaultConfig {
     minSdkVersion 10
@@ -47,13 +47,13 @@ dependencies {
   compile 'com.android.support:appcompat-v7:25.1.0'
   compile 'com.android.support:design:25.1.0'
   // Components
-  compile 'de.hdodenhof:circleimageview:2.0.0'
+  compile 'de.hdodenhof:circleimageview:2.1.0'
   compile 'com.github.douglasjunior:android-simple-tooltip:0.1.2'
   // JSON Libraries
   // Remember to modify proguard-rules.pro also
-  compile 'com.fasterxml.jackson.core:jackson-core:2.8.4'
-  compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.4'
-  compile 'com.fasterxml.jackson.core:jackson-databind:2.8.4'
+  compile 'com.fasterxml.jackson.core:jackson-core:2.8.5'
+  compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.5'
+  compile 'com.fasterxml.jackson.core:jackson-databind:2.8.5'
   // Fabric
   compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
     transitive = true;
