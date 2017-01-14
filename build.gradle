@@ -42,10 +42,10 @@ dependencies {
   // Annotations
   //noinspection GradleDynamicVersion
   compile 'com.intellij:annotations:+@jar'
-  compile 'com.android.support:support-annotations:25.1.0'
+  compile 'com.android.support:support-annotations:25.0.1'
   // Android Support
-  compile 'com.android.support:appcompat-v7:25.1.0'
-  compile 'com.android.support:design:25.1.0'
+  compile 'com.android.support:appcompat-v7:25.0.1'
+  compile 'com.android.support:design:25.0.1'
   // Components
   compile 'de.hdodenhof:circleimageview:2.1.0'
   compile 'com.github.douglasjunior:android-simple-tooltip:0.1.2'
