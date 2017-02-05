@@ -24,12 +24,12 @@ import com.micabytes.GameApplication;
  * activity, and stop the music in the onPause. release should be called in onDestroy of the root
  * activity.
  */
-@SuppressWarnings({"UtilityClass", "unused"})
+@SuppressWarnings({"UtilityClass", "unused", "WeakerAccess"})
 public final class MusicHandler {
   private static final int INVALID_NUMBER = 0;
   private static final SparseArray<MediaPlayer> PLAYERS = new SparseArray<>();
   private static final float VOLUME_MAX = 1.0f;
-  public static final float DEFAULT_VOLUME = 0.25f;
+  private static final float DEFAULT_VOLUME = 0.25f;
   private static float volume = DEFAULT_VOLUME;
   private static int currentMusic = INVALID_NUMBER;
   private static int nextMusic = INVALID_NUMBER;
@@ -51,9 +51,8 @@ public final class MusicHandler {
 
   /**
    * Start playing a music resource
-   *
-   * @param context The context (application or activity)
    * @param music   The resource id of the music file
+   * @param forced  Force the player to the front
    */
   public static void start(int music, boolean forced) {
     if (currentMusic == music) {
@@ -96,8 +95,9 @@ public final class MusicHandler {
       nextMusic = music;
       MediaPlayer mp = PLAYERS.get(music);
       if (mp == null) {
-        Context context = GameApplication.getInstance();
-        PLAYERS.put(music, MediaPlayer.create(context, music));
+        MediaPlayer mediaPlayer = MediaPlayer.create(GameApplication.getInstance(), music);
+        if (mediaPlayer != null)
+          PLAYERS.put(music, mediaPlayer);
       }
       MediaPlayer cp = PLAYERS.get(currentMusic);
       if (cp != null) {

@@ -167,9 +167,9 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
    * Set the range of numbers allowed for the number picker. The currentValue value will be automatically
    * set to the startValue. Also provide a mapping for values used to display to the user.
    *
-   * @param st    the startValue of the range (inclusive)
-   * @param ed    the endValue of the range (inclusive)
-   * @param dv    the values displayed to the user.
+   * @param st the startValue of the range (inclusive)
+   * @param ed the endValue of the range (inclusive)
+   * @param dv the values displayed to the user.
    */
   @SuppressWarnings({"unused", "MethodCanBeVariableArityMethod", "AssignmentToCollectionOrArrayFieldFromParameter"})
   public void setRange(int st, int ed, @Nullable String[] dv) {
@@ -394,7 +394,13 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
 
   private int getSelectedPos(String str) {
     if (displayedValues == null) {
-      return Integer.parseInt(str);
+      try {
+        return Integer.parseInt(str);
+      }
+      catch (NumberFormatException ignored) {
+        // Invalid number format
+        return startValue;
+      }
     }
     for (int i = 0; i < displayedValues.length; i++) {
         /* Don't force the user to type in jan when ja will do */
