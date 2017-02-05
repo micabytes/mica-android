@@ -8,8 +8,10 @@ public final class GameConstants {
   @NonNls public static final String ID = "id";
   @NonNls public static final String NAME = "name";
   @NonNls public static final String DESCRIPTION = "description";
+  @NonNls public static final String AVAILABILITY = "availability";
   @NonNls public static final String LEVEL = "level";
   @NonNls public static final String VALUE = "value";
+  @NonNls public static final String VARIANT = "variant";
   @NonNls public static final String DRAWABLE = "drawable";
   @NonNls public static final String SIZE = "size";
   @NonNls public static final String TYPE = "type";
@@ -28,6 +30,7 @@ public final class GameConstants {
   public static final int HUNDRED = 100;
   public static final int THOUSAND = 1000;
   @NonNls public static final String TRAITS = "traits";
+  @NonNls public static final String USAGE = "usage";
   @NonNls public static final String EFFECTS = "effects";
   @NonNls public static final String EFFECT_IDS = "effectIds";
   @NonNls public static final String EFFECT_VALUES = "effectValues";
