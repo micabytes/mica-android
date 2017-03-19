@@ -1,4 +1,6 @@
 buildscript {
+  ext.jackson_version = '2.8.6'
+
   repositories {
     maven { url 'https://maven.fabric.io/public' }
   }
@@ -42,25 +44,25 @@ dependencies {
   // Annotations
   //noinspection GradleDynamicVersion
   compile 'com.intellij:annotations:+@jar'
-  compile 'com.android.support:support-annotations:25.0.1'
+  compile 'com.android.support:support-annotations:25.3.0'
   // Android Support
-  compile 'com.android.support:appcompat-v7:25.0.1'
-  compile 'com.android.support:design:25.0.1'
+  compile 'com.android.support:appcompat-v7:25.3.0'
+  compile 'com.android.support:design:25.3.0'
   // Components
   compile 'de.hdodenhof:circleimageview:2.1.0'
   compile 'com.github.douglasjunior:android-simple-tooltip:0.1.2'
   // JSON Libraries
   // Remember to modify proguard-rules.pro also
-  compile 'com.fasterxml.jackson.core:jackson-core:2.8.5'
-  compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.5'
-  compile 'com.fasterxml.jackson.core:jackson-databind:2.8.5'
+  compile "com.fasterxml.jackson.core:jackson-core:$jackson_version"
+  compile "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
+  compile "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
   // Fabric
-  compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
+  compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
     transitive = true;
   }
   // Google Play
-  compile 'com.google.android.gms:play-services-ads:10.0.1'
-  compile 'com.google.android.gms:play-services-games:10.0.1'
+  compile 'com.google.android.gms:play-services-ads:10.0.0'
+  compile 'com.google.android.gms:play-services-games:10.0.0'
   //{
   //    exclude group: 'com.google.firebase', module: 'com.google.firebase'
   //}
