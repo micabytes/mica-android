@@ -22,7 +22,7 @@ android {
   buildToolsVersion '25.0.2'
 
   defaultConfig {
-    minSdkVersion 10
+    minSdkVersion 14
     targetSdkVersion 25
     //jackOptions {
     //  enabled true
@@ -61,8 +61,8 @@ dependencies {
     transitive = true;
   }
   // Google Play
-  compile 'com.google.android.gms:play-services-ads:10.0.0'
-  compile 'com.google.android.gms:play-services-games:10.0.0'
+  compile 'com.google.android.gms:play-services-ads:10.2.1'
+  compile 'com.google.android.gms:play-services-games:10.2.1'
   //{
   //    exclude group: 'com.google.firebase', module: 'com.google.firebase'
   //}
