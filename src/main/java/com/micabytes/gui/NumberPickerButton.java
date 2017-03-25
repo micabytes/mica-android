@@ -21,14 +21,14 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.widget.ImageButton;
+import android.support.v7.widget.AppCompatImageButton;
 
 import com.micabytes.R;
 
 /**
  * This class exists purely to cancel long click events.
  */
-public class NumberPickerButton extends ImageButton {
+public class NumberPickerButton extends AppCompatImageButton {
 
     private NumberPicker numberPicker;
     

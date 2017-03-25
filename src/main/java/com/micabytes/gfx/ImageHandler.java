@@ -26,7 +26,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.LruCache;
+import android.util.LruCache;
 import android.util.DisplayMetrics;
 import android.widget.ImageView;
 
