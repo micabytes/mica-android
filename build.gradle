@@ -19,7 +19,7 @@ repositories {
 
 android {
   compileSdkVersion 25
-  buildToolsVersion '25.0.2'
+  buildToolsVersion '25.0.3'
 
   defaultConfig {
     minSdkVersion 14
@@ -61,8 +61,8 @@ dependencies {
     transitive = true;
   }
   // Google Play
-  compile 'com.google.android.gms:play-services-ads:10.2.4'
-  compile 'com.google.android.gms:play-services-games:10.2.4'
+  compile 'com.google.android.gms:play-services-ads:10.2.6'
+  compile 'com.google.android.gms:play-services-games:10.2.6'
   //{
   //    exclude group: 'com.google.firebase', module: 'com.google.firebase'
   //}
