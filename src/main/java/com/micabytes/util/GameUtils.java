@@ -71,9 +71,8 @@ public class GameUtils {
     } else {
       // not resolvable... so show an error message
       int errorCode = result.getErrorCode();
-      Dialog dialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
-          activity, requestCode);
-      if (dialog != null) {
+      Dialog dialog = GooglePlayServicesUtil.getErrorDialog(errorCode, activity, requestCode);
+      if (dialog != null && !activity.isFinishing()) {
         dialog.show();
       } else {
         // no built-in dialog: show the fallback error message
