@@ -62,8 +62,8 @@ dependencies {
     transitive = true;
   }
   // Google Play
-  compile 'com.google.android.gms:play-services-ads:10.2.6'
-  compile 'com.google.android.gms:play-services-games:10.2.6'
+  compile 'com.google.android.gms:play-services-ads:11.0.0'
+  compile 'com.google.android.gms:play-services-games:11.0.0'
   //{
   //    exclude group: 'com.google.firebase', module: 'com.google.firebase'
   //}
