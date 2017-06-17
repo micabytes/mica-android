@@ -16,34 +16,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-import com.micabytes.gfx.ImageHandler;
-
 /**
- * Zone superclass for TileMap and HexMap
+ * Zone interface for TileMap and HexMap
  */
-public class TileMapZone {
-  int value;
-
-  /**
-   * Get the width of a tile
-   */
-  public int getWidth() {
-    return ImageHandler.get(value).getWidth();
-  }
-
-  /**
-   * Get the height of a tile
-   */
-  public int getHeight() {
-    return ImageHandler.get(value).getHeight();
-  }
-
-  /**
-   * Draw the base bitmap of the tile on a canvas
-   */
-  public void drawBase(Canvas canvas, Rect tileRect, Rect destRect, Paint paint) {
-    canvas.drawBitmap(ImageHandler.get(value), tileRect, destRect, paint);
-  }
-
-
+public interface TileMapZone {
+  int getWidth();
+  int getHeight();
+  void drawBase(Canvas canvas, Rect tileRect, Rect destRect, Paint paint);
 }

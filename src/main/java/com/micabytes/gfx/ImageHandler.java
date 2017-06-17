@@ -88,8 +88,8 @@ public final class ImageHandler {
 
   @NonNull
   public static Bitmap get(int key, Bitmap.Config config) {
-    if (key == 0)
-      GameLog.d(TAG, "Null resource sent to get()");
+    //if (key == 0)
+    //  GameLog.d(TAG, "Null resource sent to get()");
     if (memoryCache == null) initCache();
     Bitmap cached = memoryCache.get(key);
     if (cached != null)

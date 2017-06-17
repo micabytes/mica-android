@@ -29,11 +29,11 @@ import com.micabytes.util.GameLog;
 @SuppressWarnings("unused")
 public abstract class HexMap {
   private static final String TAG = HexMap.class.getName();
-  private static boolean standardOrientation = true;
-  private static int mapWidth = 0;
-  private static int mapHeight = 0;
-  private static int tileSlope = 0;
-  private static Rect tileRect = new Rect();
+  protected static boolean standardOrientation = true;
+  protected static int mapWidth = 0;
+  protected static int mapHeight = 0;
+  protected static int tileSlope = 0;
+  protected static Rect tileRect = new Rect();
   protected TileMapZone[][] zones;
   protected float scaleFactor;
   protected final Point viewPortOrigin = new Point();
@@ -43,7 +43,7 @@ public abstract class HexMap {
   protected int windowTop;
   protected int windowRight;
   protected int windowBottom;
-  private final Paint tilePaint = new Paint();
+  protected final Paint tilePaint = new Paint();
   protected final Paint tileText = new Paint();
   // Draw
   protected final Canvas canvas = new Canvas();
