@@ -210,7 +210,7 @@ public final class StringHandler {
       return (String) obj;
     if (tokens.length == 1)
       return obj.toString();
-    GameObjectInterface sObj = (GameObjectInterface) obj;
+    //GameObjectInterface sObj = (GameObjectInterface) obj;
     //Object res = sObj.getAttribute(tokens[1]);
     //if (res instanceof String) return (String) res;
     //return res.toString();
@@ -396,7 +396,7 @@ public final class StringHandler {
       return ((Double) obj).intValue();
     if (obj instanceof String)
       return 1;
-    GameObjectInterface gObj = (GameObjectInterface) obj;
+    //GameObjectInterface gObj = (GameObjectInterface) obj;
     /*Object attribute = gObj.getAttribute(tokens[1]);
     if (attribute instanceof Boolean) {
       return (Boolean) attribute ? 1 : 0;

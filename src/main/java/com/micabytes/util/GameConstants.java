@@ -1,6 +1,7 @@
 package com.micabytes.util;
 
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("UtilityClass")
 public final class GameConstants {
@@ -40,6 +41,7 @@ public final class GameConstants {
   @NonNls public static final String TIMEOUT = "timeout";
   public static final String FACTION = "faction";
   public static final String NATIVES = "natives";
+  @NotNull @NonNls public static final String WEALTH = "WEALTH";
 
   private GameConstants() {
     // NOOP

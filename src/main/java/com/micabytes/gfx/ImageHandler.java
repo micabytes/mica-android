@@ -33,6 +33,8 @@ import android.widget.ImageView;
 import com.micabytes.GameApplication;
 import com.micabytes.util.GameLog;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * ImageHandler is a singleton class that is used to manage bitmaps resources used programmatically
  * in the app (i.e., not bitmaps assigned in layouts). By allocating and managing them in a central
@@ -155,6 +157,11 @@ public final class ImageHandler {
 
   @BindingAdapter({"pix"})
   public static void setImageViewResource(ImageView imageView, Bitmap bmp) {
+    imageView.setImageBitmap(bmp);
+  }
+
+  @BindingAdapter("app:pix")
+  public static void setPix(CircleImageView imageView, Bitmap bmp) {
     imageView.setImageBitmap(bmp);
   }
 
