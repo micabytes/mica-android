@@ -16,6 +16,7 @@ public final class GameConstants {
   @NonNls public static final String DRAWABLE = "drawable";
   @NonNls public static final String SIZE = "size";
   @NonNls public static final String TYPE = "type";
+  @NonNls public static final String REFERENCE = "reference";
   @NonNls public static final String WIDTH = "width";
   @NonNls public static final String HEIGHT = "height";
   @NonNls public static final String ACTIVITY = "activity";
