@@ -162,8 +162,8 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     thread.setName(DRAW_THREAD);
     thread.setRunning(true);
     thread.start();
-    renderer.start();
-    touch.start();
+    if (renderer != null) renderer.start();
+    if (touch != null) touch.start();
     // Required to ensure thread has focus
     if (thread != null)
       thread.onWindowFocusChanged(true);
@@ -251,6 +251,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     @SuppressWarnings({"RefusedBequest", "WhileLoopSpinsOnField", "BusyWait"})
     @Override
     public void run() {
+      if (renderer == null) return;
       try {
         Thread.sleep(delay);
       } catch (InterruptedException ignored) {
