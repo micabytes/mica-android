@@ -62,7 +62,6 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
   public MicaSurfaceView(Context context) {
     super(context);
-    // This ensures that we don't get errors when using it in layout editing
     if (isInEditMode()) return;
     touch = new TouchHandler(context);
     initialize(context);
@@ -70,7 +69,6 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
   public MicaSurfaceView(Context context, AttributeSet attrs) {
     super(context, attrs);
-    // This ensures that we don't get errors when using it in layout editing
     if (isInEditMode()) return;
     touch = new TouchHandler(context);
     initialize(context);
@@ -78,7 +76,6 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
   public MicaSurfaceView(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
-    // This ensures that we don't get errors when using it in layout editing
     if (isInEditMode()) return;
     touch = new TouchHandler(context);
     initialize(context);
@@ -111,7 +108,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
   // Return the position of the current view (center)
   public Point getViewPosition() {
     Point ret = new Point();
-    renderer.getViewPosition(ret);
+    if (renderer != null) renderer.getViewPosition(ret);
     return ret;
   }
 
@@ -131,6 +128,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
   @SuppressWarnings("unused")
   public void centerViewPosition() {
+    if (renderer == null) return;
     Point viewportSize = new Point();
     Point sceneSize = renderer.getBackgroundSize();
     renderer.getViewSize(viewportSize);
@@ -143,7 +141,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
   @SuppressWarnings("unused")
   public Point getViewSize() {
     Point ret = new Point();
-    renderer.getViewPosition(ret);
+    if (renderer != null) renderer.getViewPosition(ret);
     return ret;
   }
 
@@ -173,12 +171,12 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
   @Override
   public void surfaceDestroyed(SurfaceHolder holder) {
     GameLog.d(TAG, "surfaceDestroying");
-    touch.stop();
-    renderer.stop();
-    thread.setRunning(false);
+    if (touch != null) touch.stop();
+    if (renderer != null) renderer.stop();
+    if (thread != null) thread.setRunning(false);
     //thread.surfaceDestroyed();
     boolean retry = true;
-    while (retry) {
+    while (retry && thread != null) {
       try {
         thread.join();
         retry = false;
@@ -191,14 +189,16 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
   @Override
   public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-    renderer.setViewSize(width, height);
-    // Recheck scale factor and reset position to prevent out of bounds
-    Point p = new Point();
-    renderer.getViewPosition(p);
-    setZoom(getZoom(), new PointF(p.x, p.y));
-    //Point p = new Point();
-    //this.renderer.getViewPosition(p);
-    renderer.setViewPosition(p.x, p.y);
+    if (renderer != null) {
+      renderer.setViewSize(width, height);
+      // Recheck scale factor and reset position to prevent out of bounds
+      Point p = new Point();
+      renderer.getViewPosition(p);
+      setZoom(getZoom(), new PointF(p.x, p.y));
+      //Point p = new Point();
+      //this.renderer.getViewPosition(p);
+      renderer.setViewPosition(p.x, p.y);
+    }
     // Debug
     GameLog.d(TAG, "surfaceChanged; new dimensions: w=" + width + ", h= " + height);
     // Required to ensure thread has focus
@@ -214,13 +214,11 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     GameLog.d(TAG, "onWindowFocusChanged");
   }
 
-  // ----------------------------------------------------------------------
-
   /**
    * The Rendering thread for the MicaSurfaceView
    */
   @SuppressWarnings("ClassExplicitlyExtendsThread")
-  class GameSurfaceViewThread extends Thread {
+  private class GameSurfaceViewThread extends Thread {
     private static final int BUG_DELAY = 500;
     private final int delay;
     private final SurfaceHolder surfaceHolder;
@@ -280,7 +278,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
       }
     }
 
-    public synchronized void onWindowFocusChanged(boolean focus) {
+    synchronized void onWindowFocusChanged(boolean focus) {
       hasFocus = focus;
       if (hasFocus) {
         notifyAll();
@@ -297,6 +295,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
   @SuppressWarnings({"NumericCastThatLosesPrecision"})
   @Override
   public boolean onTouchEvent(@NonNull MotionEvent event) {
+    if (renderer == null) return false;
     boolean consumed = gesture.onTouchEvent(event);
     if (consumed) return true;
     scaleGesture.onTouchEvent(event);
@@ -312,8 +311,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         listener.onTouchDown(x, y);
         return touch.down(event);
       case MotionEvent.ACTION_MOVE:
-        long scaleMoveGuard = SCALE_MOVE_GUARD;
-        if (scaleGesture.isInProgress() || ((System.currentTimeMillis() - lastScaleTime) < scaleMoveGuard))
+        if (scaleGesture.isInProgress() || ((System.currentTimeMillis() - lastScaleTime) < (long) SCALE_MOVE_GUARD))
           //noinspection BreakStatement
           break;
         return touch.move(event);
@@ -335,7 +333,6 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
   @Override
   public boolean onDown(MotionEvent e) {
-    // NOOP
     return false;
   }
 
@@ -346,7 +343,6 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
   @Override
   public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-    // NOOP
     return false;
   }
 
@@ -357,7 +353,6 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
 
   @Override
   public boolean onSingleTapUp(MotionEvent e) {
-    // NOOP
     return false;
   }
 
@@ -383,11 +378,11 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
     }
   }
 
-  protected enum TouchState {
+  private enum TouchState {
     NO_TOUCH, IN_TOUCH, ON_FLING, IN_FLING
   }
 
-  class TouchHandler {
+  private class TouchHandler {
     @NonNls
     private static final String TOUCH_THREAD = "touchThread";
     // Current Touch State
