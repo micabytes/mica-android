@@ -15,12 +15,13 @@ apply plugin: 'kotlin-android'
 
 repositories {
   jcenter()
+  maven { url "https://maven.google.com" }
   maven { url 'https://maven.fabric.io/public' }
 }
 
 android {
   compileSdkVersion 25
-  buildToolsVersion '25.0.3'
+  buildToolsVersion '26.0.0'
 
   defaultConfig {
     minSdkVersion 14
