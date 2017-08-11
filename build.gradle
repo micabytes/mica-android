@@ -60,6 +60,6 @@ dependencies {
     transitive = true;
   }
   // Google Play
-  compile "com.google.android.gms:play-services-ads:$google_play_version"
+  //compile "com.google.android.gms:play-services-ads:$google_play_version"
   compile "com.google.android.gms:play-services-games:$google_play_version"
 }
