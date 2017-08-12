@@ -131,7 +131,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    TextView v = (TextView) root.findViewById(resId);
+    TextView v = root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
@@ -142,7 +142,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    TextView t = (TextView) root.findViewById(resId);
+    TextView t = root.findViewById(resId);
     if (t == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     if (font != null)
@@ -156,7 +156,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    EditText v = (EditText) root.findViewById(resId);
+    EditText v = root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
@@ -167,7 +167,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    ImageView v = (ImageView) root.findViewById(resId);
+    ImageView v = root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
@@ -178,7 +178,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    ImageView v = (ImageView) root.findViewById(resId);
+    ImageView v = root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     v.setOnClickListener(this);
@@ -192,7 +192,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     if (img == null)
       throw new IllegalArgumentException("setting image view " + resId + " with no or null bitmap");
-    ImageView v = (ImageView) root.findViewById(resId);
+    ImageView v = root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     v.setImageBitmap(img);
@@ -204,7 +204,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    CircleImageView v = (CircleImageView) root.findViewById(resId);
+    CircleImageView v = root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
@@ -215,7 +215,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    CheckBox v = (CheckBox) root.findViewById(resId);
+    CheckBox v = root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
@@ -226,7 +226,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    RadioButton v = (RadioButton) root.findViewById(resId);
+    RadioButton v = root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
@@ -237,7 +237,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    ImageButton button = (ImageButton) root.findViewById(resId);
+    ImageButton button = root.findViewById(resId);
     if (button == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return button;
@@ -248,7 +248,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    ImageButton button = (ImageButton) root.findViewById(resId);
+    ImageButton button = root.findViewById(resId);
     if (button == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     button.setOnClickListener(this);
@@ -262,7 +262,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
     if (img == null)
       throw new IllegalArgumentException("setting image button " + resId + " with null bitmap");
-    ImageButton button = (ImageButton) root.findViewById(resId);
+    ImageButton button = root.findViewById(resId);
     if (button == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     button.setOnClickListener(this);
@@ -275,7 +275,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    Button button = (Button) root.findViewById(resId);
+    Button button = root.findViewById(resId);
     if (button == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     button.setOnClickListener(this);
@@ -287,7 +287,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException("No getView in setButton(int)");
-    Button button = (Button) root.findViewById(resId);
+    Button button = root.findViewById(resId);
     if (button == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     button.setOnClickListener(this);
@@ -299,7 +299,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    Button button = (Button) root.findViewById(resId);
+    Button button = root.findViewById(resId);
     if (button == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     if (font != null) button.setTypeface(font);
@@ -312,7 +312,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    Button button = (Button) root.findViewById(resId);
+    Button button = root.findViewById(resId);
     if (button == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return button;
@@ -323,7 +323,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    ToggleButton button = (ToggleButton) root.findViewById(resId);
+    ToggleButton button = root.findViewById(resId);
     if (button == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     button.setOnClickListener(this);
@@ -335,7 +335,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    ToggleButton button = (ToggleButton) root.findViewById(resId);
+    ToggleButton button = root.findViewById(resId);
     if (button == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return button;
@@ -346,7 +346,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    Spinner spinner = (Spinner) root.findViewById(resId);
+    Spinner spinner = root.findViewById(resId);
     if (spinner == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     ArrayAdapter<CharSequence> adapter =
@@ -361,7 +361,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    Spinner spinner = (Spinner) root.findViewById(resId);
+    Spinner spinner = root.findViewById(resId);
     if (spinner == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return spinner;
@@ -372,7 +372,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    ListView listView = (ListView) root.findViewById(resId);
+    ListView listView = root.findViewById(resId);
     if (listView == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return listView;
@@ -383,7 +383,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    ListView listView = (ListView) root.findViewById(resId);
+    ListView listView = root.findViewById(resId);
     if (listView == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     listView.setAdapter(adapter);
@@ -395,7 +395,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    LinearListView listView = (LinearListView) root.findViewById(resId);
+    LinearListView listView = root.findViewById(resId);
     if (listView == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return listView;
@@ -406,7 +406,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    LinearListView listView = (LinearListView) root.findViewById(resId);
+    LinearListView listView = root.findViewById(resId);
     if (listView == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     listView.setAdapter(adapter);
@@ -418,7 +418,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    RelativeLayout v = (RelativeLayout) root.findViewById(resId);
+    RelativeLayout v = root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
@@ -429,7 +429,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    LinearLayout v = (LinearLayout) root.findViewById(resId);
+    LinearLayout v = root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
@@ -440,7 +440,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    ProgressBar v = (ProgressBar) root.findViewById(resId);
+    ProgressBar v = root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
@@ -451,7 +451,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    SeekBar v = (SeekBar) root.findViewById(resId);
+    SeekBar v = root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;
@@ -462,7 +462,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     View root = getView();
     if (root == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_THE_ROOT_VIEW);
-    ViewFlipper v = (ViewFlipper) root.findViewById(resId);
+    ViewFlipper v = root.findViewById(resId);
     if (v == null)
       throw new UIObjectNotFoundException(COULD_NOT_FIND_RES_ID + resId + IN_FIND_VIEW_BY_ID);
     return v;

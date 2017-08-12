@@ -113,16 +113,16 @@ public final class NumberPicker extends LinearLayout implements OnClickListener,
     handler = new Handler();
     InputFilter inputFilter = new NumberPickerInputFilter();
     numberInputFilter = new NumberRangeKeyListener();
-    incrementButton = (NumberPickerButton) findViewById(R.id.increment);
+    incrementButton = findViewById(R.id.increment);
     incrementButton.setOnClickListener(this);
     incrementButton.setOnLongClickListener(this);
     incrementButton.setNumberPicker(this);
-    decrementButton = (NumberPickerButton) findViewById(R.id.decrement);
+    decrementButton = findViewById(R.id.decrement);
     decrementButton.setOnClickListener(this);
     decrementButton.setOnLongClickListener(this);
     decrementButton.setNumberPicker(this);
 
-    text = (EditText) findViewById(R.id.timepicker_input);
+    text = findViewById(R.id.timepicker_input);
     text.setOnFocusChangeListener(this);
     text.setFilters(new InputFilter[]{inputFilter});
     text.setRawInputType(InputType.TYPE_CLASS_NUMBER);

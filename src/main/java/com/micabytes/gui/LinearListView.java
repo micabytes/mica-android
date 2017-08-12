@@ -48,7 +48,7 @@ public class LinearListView extends LinearLayout {
     return adapter;
   }
 
-  @BindingAdapter("bind:adapter")
+  @BindingAdapter("adapter")
   public  static void bindList(LinearListView view, BaseAdapter adapter) {
     view.setAdapter(adapter);
   }
@@ -86,7 +86,7 @@ public class LinearListView extends LinearLayout {
     }
   }
 
-  @BindingAdapter("bind:adapter")
+  @BindingAdapter("adapter")
   public  static void bindList(ListView view, BaseAdapter adapter) {
     view.setAdapter(adapter);
   }

@@ -34,8 +34,8 @@ public class FileNavigationLayout extends LinearLayout implements AdapterView.On
     context = ctx;
     LayoutInflater layoutInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     layoutInflater.inflate(R.layout.view_file_navigation, this);
-    pathLabel = (TextView) findViewById(R.id.FileNavigationPath);
-    listView = (ListView) findViewById(R.id.FileNavigationList);
+    pathLabel = findViewById(R.id.FileNavigationPath);
+    listView = findViewById(R.id.FileNavigationList);
     if (isInEditMode()) return;
     setFolder(root);
   }

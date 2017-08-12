@@ -31,7 +31,6 @@ import android.util.DisplayMetrics;
 import android.widget.ImageView;
 
 import com.micabytes.GameApplication;
-import com.micabytes.util.GameLog;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -125,8 +124,7 @@ public final class ImageHandler {
     RectF rectF = new RectF(rect);
     paint.setAntiAlias(true);
     canvas.drawARGB(0, 0, 0, 0);
-    int color = COLOR_RED;
-    paint.setColor(color);
+    paint.setColor(COLOR_RED);
     float roundPx = PIXEL_ROUNDING;
     canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
     paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
@@ -160,8 +158,8 @@ public final class ImageHandler {
     imageView.setImageBitmap(bmp);
   }
 
-  @BindingAdapter("app:pix")
-  public static void setPix(CircleImageView imageView, Bitmap bmp) {
+  @BindingAdapter("pix")
+  public static void setCircleImageViewResource(CircleImageView imageView, Bitmap bmp) {
     imageView.setImageBitmap(bmp);
   }
 

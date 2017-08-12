@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-/** TODO: Deprecate most of this functionality. */
+/* TODO: Deprecate most of this functionality. */
 /**
  * StringHandler is a wrapper around the standard Android getString functionality. It is primarily
  * used for formatting magic on strings using the GameObjectInterface.

@@ -377,8 +377,8 @@ public class BitmapSurfaceRenderer extends SurfaceRenderer {
      */
     @SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
     private void drawLowResolutionBackground() {
-      int w = 0;
-      int h = 0;
+      int w;
+      int h;
       synchronized (viewPort.bitmapLock) {
         if (viewPort.bitmap == null) return;
         w = viewPort.bitmap.getWidth();
