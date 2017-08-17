@@ -43,7 +43,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 @SuppressWarnings("UtilityClass")
 public final class ImageHandler {
-  private static final String TAG = ImageHandler.class.getName();
   private static final Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.ARGB_8888;
   private static final int COLOR_RED = 0xff424242;
   private static final int PIXEL_ROUNDING = 12;
