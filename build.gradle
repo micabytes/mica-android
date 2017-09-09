@@ -39,7 +39,7 @@ dependencies {
   compile "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
   // Fabric
   compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-    transitive = true;
+    transitive = true
   }
   // Google Play
   compile "com.google.android.gms:play-services-games:$google_play_version"
