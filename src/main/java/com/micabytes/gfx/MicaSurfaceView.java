@@ -118,7 +118,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
   }
 
   public void setViewPosition(Point p) {
-    renderer.setViewPosition(p.x, p.y);
+    if (renderer != null) renderer.setViewPosition(p.x, p.y);
   }
 
   @SuppressWarnings("unused")
@@ -150,7 +150,7 @@ public class MicaSurfaceView extends SurfaceView implements SurfaceHolder.Callba
   }
 
   public void setZoom(float z, PointF center) {
-    renderer.zoom(z, center);
+    if (renderer != null) renderer.zoom(z, center);
   }
 
   @Override
