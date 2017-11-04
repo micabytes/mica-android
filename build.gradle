@@ -30,7 +30,7 @@ dependencies {
   compile "com.android.support:appcompat-v7:$android_support_version"
   compile "com.android.support:design:$android_support_version"
   // Components
-  compile 'de.hdodenhof:circleimageview:2.1.0'
+  compile 'de.hdodenhof:circleimageview:2.2.0'
   compile 'com.github.douglasjunior:android-simple-tooltip:0.2.1'
   // JSON Libraries
   // Remember to modify proguard-rules.pro also
@@ -38,7 +38,7 @@ dependencies {
   compile "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
   compile "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
   // Fabric
-  compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+  compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
     transitive = true
   }
   // Google Play
