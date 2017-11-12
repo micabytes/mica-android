@@ -28,44 +28,45 @@ import io.fabric.sdk.android.Fabric;
 @NonNls
 public final class GameLog {
   @SuppressWarnings("PublicField") public static boolean debug = true;
+  @SuppressWarnings("PublicField") public static String t = "MicaBytes";
 
   private GameLog() {
     // NOOP
   }
 
   public static void i(String tag, String s) {
-    if (debug) Log.i(tag, s);
+    //if (debug) Log.i(tag, s);
     if (Fabric.isInitialized())
-      Crashlytics.log(Log.INFO, tag, s);
+      Crashlytics.log(Log.INFO, t, s);
   }
 
   public static void v(String tag, String s) {
-    if (debug) Log.v(tag, s);
+    if (debug) Log.v(t, s);
   }
 
   public static void d(String tag, String s) {
-    if (debug) Log.d(tag, s);
+    if (debug) Log.d(t, s);
   }
 
   public static void w(String tag, String s) {
-    if (debug)
-      Log.w(tag, s);
+    //if (debug)
+    //  Log.w(tag, s);
     if (Fabric.isInitialized())
-      Crashlytics.log(Log.WARN, tag, s);
+      Crashlytics.log(Log.WARN, t, s);
   }
 
   public static void e(String tag, String s) {
-    if (debug)
-      Log.e(tag, s);
+    //if (debug)
+    //  Log.e(tag, s);
     if (Fabric.isInitialized())
-      Crashlytics.log(Log.ERROR, tag, s);
+      Crashlytics.log(Log.ERROR, t, s);
   }
 
   public static void logException(Exception e) {
-    if (debug) {
-      //noinspection CallToPrintStackTrace
-      e.printStackTrace();
-    }
+    //if (debug) {
+    //noinspection CallToPrintStackTrace
+    //  e.printStackTrace();
+    //}
     if (Fabric.isInitialized()) {
       Crashlytics.logException(e);
     }
