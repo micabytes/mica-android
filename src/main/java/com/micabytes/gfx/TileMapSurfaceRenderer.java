@@ -26,7 +26,7 @@ public final class TileMapSurfaceRenderer extends SurfaceRenderer {
   // The low resolution version of the background image
   private TileMap gameSurfaceTileMap;
 
-  private TileMapSurfaceRenderer(Context con) {
+  public TileMapSurfaceRenderer(Context con) {
     super(con);
   }
 
