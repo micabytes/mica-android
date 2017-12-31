@@ -28,7 +28,7 @@ import io.fabric.sdk.android.Fabric;
 @NonNls
 public final class GameLog {
   @SuppressWarnings("PublicField") public static boolean debug = true;
-  @SuppressWarnings("PublicField") public static String t = "MicaBytes";
+  private static final String t = "MicaBytes";
 
   private GameLog() {
     // NOOP
