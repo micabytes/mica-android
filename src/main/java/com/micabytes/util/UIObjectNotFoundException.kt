@@ -10,21 +10,14 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.micabytes.util;
+package com.micabytes.util
 
-@SuppressWarnings({"ClassIndependentOfModule", "ClassUnconnectedToPackage", "unused"})
-public class GamePathNotFoundException extends Exception {
+class UIObjectNotFoundException : Exception {
 
-  public GamePathNotFoundException(String message) {
-    super(message);
-  }
+  constructor(message: String) : super(message)
 
-  public GamePathNotFoundException(Throwable throwable) {
-    super(throwable);
-  }
+  constructor(throwable: Throwable) : super(throwable)
 
-  public GamePathNotFoundException(String message, Throwable throwable) {
-    super(message, throwable);
-  }
+  constructor(message: String, throwable: Throwable) : super(message, throwable)
 
 }

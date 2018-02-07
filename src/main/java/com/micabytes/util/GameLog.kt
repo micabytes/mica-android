@@ -11,65 +11,60 @@
  * the License.
  */
 
-package com.micabytes.util;
+package com.micabytes.util
 
-import android.util.Log;
+import android.util.Log
 
-import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.Crashlytics
 
-import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NonNls
 
-import io.fabric.sdk.android.Fabric;
+import io.fabric.sdk.android.Fabric
 
 /*
  * This GameLogger uses Fabric and Crashlytics to log exceptions and useful diagnostics information.
  */
-@SuppressWarnings("UtilityClass")
 @NonNls
-public final class GameLog {
-  @SuppressWarnings("PublicField") public static boolean debug = true;
-  private static final String t = "MicaBytes";
+object GameLog {
+  var debug = true
+  private const val t = "MicaBytes"
 
-  private GameLog() {
-    // NOOP
-  }
-
-  public static void i(String tag, String s) {
+  fun i(tag: String, s: String) {
     //if (debug) Log.i(tag, s);
     if (Fabric.isInitialized())
-      Crashlytics.log(Log.INFO, t, s);
+      Crashlytics.log(Log.INFO, t, s)
   }
 
-  public static void v(String tag, String s) {
-    if (debug) Log.v(t, s);
+  fun v(tag: String, s: String) {
+    if (debug) Log.v(t, s)
   }
 
-  public static void d(String tag, String s) {
-    if (debug) Log.d(t, s);
+  fun d(tag: String, s: String) {
+    if (debug) Log.d(t, s)
   }
 
-  public static void w(String tag, String s) {
+  fun w(tag: String, s: String) {
     //if (debug)
     //  Log.w(tag, s);
     if (Fabric.isInitialized())
-      Crashlytics.log(Log.WARN, t, s);
+      Crashlytics.log(Log.WARN, t, s)
   }
 
-  public static void e(String tag, String s) {
+  fun e(tag: String, s: String?) {
     //if (debug)
     //  Log.e(tag, s);
     if (Fabric.isInitialized())
-      Crashlytics.log(Log.ERROR, t, s);
+      Crashlytics.log(Log.ERROR, t, s)
   }
 
-  public static void logException(Exception e) {
+  fun logException(e: Exception) {
     //if (debug) {
-    //noinspection CallToPrintStackTrace
+
     //  e.printStackTrace();
     //}
     if (Fabric.isInitialized()) {
-      Crashlytics.logException(e);
+      Crashlytics.logException(e)
     }
   }
 
-}
+}// NOOP

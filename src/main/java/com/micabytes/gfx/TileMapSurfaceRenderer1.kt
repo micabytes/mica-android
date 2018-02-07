@@ -10,66 +10,54 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.micabytes.gfx;
+package com.micabytes.gfx
 
-import android.content.Context;
+import android.content.Context
 
-import com.micabytes.map.TileMap;
+import com.micabytes.map.TileMap
 
 /**
  * TileMapSurfaceRenderer is a renderer that handles the rendering of a Tiled (square) map to the
  * screen. The game should subclass the renderer and extend the drawing methods to add other game
  * elements.
  */
-@SuppressWarnings("unused")
-public final class TileMapSurfaceRenderer extends SurfaceRenderer {
+class TileMapSurfaceRenderer(con: Context) : SurfaceRenderer(con) {
   // The low resolution version of the background image
-  private TileMap gameSurfaceTileMap;
-
-  public TileMapSurfaceRenderer(Context con) {
-    super(con);
-  }
+  private var gameSurfaceTileMap: TileMap? = null
 
   /**
    * Set the TileMap
    */
-  public void setTileMap(TileMap map) {
-    gameSurfaceTileMap = map;
-    backgroundSize.set(gameSurfaceTileMap.getRenderWidth(), gameSurfaceTileMap.getRenderHeight());
+  fun setTileMap(map: TileMap) {
+    gameSurfaceTileMap = map
+    backgroundSize.set(gameSurfaceTileMap!!.renderWidth, gameSurfaceTileMap!!.renderHeight)
   }
 
-  @Override
-  public void drawBase() {
-    gameSurfaceTileMap.drawBase(context, viewPort);
+  public override fun drawBase() {
+    gameSurfaceTileMap!!.drawBase(context, viewPort)
   }
 
-  @Override
-  protected void drawLayer() {
-    gameSurfaceTileMap.drawLayer(context, viewPort);
+  override fun drawLayer() {
+    gameSurfaceTileMap!!.drawLayer(context, viewPort)
   }
 
-  @Override
-  protected void drawFinal() {
-    gameSurfaceTileMap.drawFinal(context, viewPort);
+  override fun drawFinal() {
+    gameSurfaceTileMap!!.drawFinal(context, viewPort)
   }
 
-  @Override
-  public void start() {
+  override fun start() {
     // NOOP
   }
 
-  @Override
-  public void stop() {
+  override fun stop() {
     // NOOP
   }
 
-  @Override
-  public void suspend() {
+  override fun suspend() {
     // NOOP
   }
 
-  @Override
-  public void resume() {
+  override fun resume() {
     // NOOP
   }
 
