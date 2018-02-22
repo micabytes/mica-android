@@ -53,9 +53,23 @@ class ImageHandler private constructor() {
     val MEGABYTE = 1024
     var density = 0.0f
       get() {
-        setDensity()
+        if (field < DENSITY_MINIMUM) {
+          val context = GameApplication.instance
+          val resources = context.resources
+          val metrics = resources.displayMetrics
+          return metrics.density
+        }
         return field
       }
+    private set(i) {
+      field = i
+      if (density < DENSITY_MINIMUM) {
+        val context = GameApplication.instance
+        val resources = context.resources
+        val metrics = resources.displayMetrics
+        field = metrics.density
+      }
+    }
     // Bitmap cache
     private var memoryCache: LruCache<Int, Bitmap>? = null
 
@@ -66,15 +80,6 @@ class ImageHandler private constructor() {
         override fun sizeOf(key: Int?, value: Bitmap): Int {
           return value.rowBytes * value.height
         }
-      }
-    }
-
-    private fun setDensity() {
-      if (density < DENSITY_MINIMUM) {
-        val context = GameApplication.instance
-        val resources = context.resources
-        val metrics = resources.displayMetrics
-        density = metrics.density
       }
     }
 

@@ -2,6 +2,8 @@ package com.micabytes
 
 import android.app.Application
 
+/* The Game Application - Singleton
+ */
 class GameApplication : Application() {
   var world: WorldInterface? = null
 

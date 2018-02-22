@@ -16,41 +16,27 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.PointF
-import android.os.Build
 import android.util.AttributeSet
-import android.view.GestureDetector
-import android.view.MotionEvent
-import android.view.ScaleGestureDetector
-import android.view.SurfaceHolder
-import android.view.SurfaceView
+import android.view.*
 import android.widget.Scroller
-
 import com.micabytes.util.GameLog
-
-import org.jetbrains.annotations.NonNls
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.TimeUnit
 
 /**
- * MicaSurfaceView encapsulates all of the logic for handling 2D game maps. Pass it a
- * SurfaceListener to receive touch events and a SurfaceRenderer to handle the drawing.
+ * MicaSurfaceView encapsulates all of the logic for handling 2D game maps. Pass it a SurfaceListener to receive touch
+ * events and a SurfaceRenderer to handle the drawing.
  */
-class MicaSurfaceView : SurfaceView, SurfaceHolder.Callback, GestureDetector.OnGestureListener {
-  /**
-   * The Game Controller. This where we send UI events other than scroll and pinch-zoom in order to be handled
-   */
+class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(context, attributes), SurfaceHolder.Callback, GestureDetector.OnGestureListener {
   private var listener: SurfaceListener? = null
-  /**
-   * The Game Renderer. This handles all of the drawing duties to the Surface view
-   */
   private var renderer: SurfaceRenderer? = null
-  // The Touch Handlers
-  private var touch: TouchHandler? = null
-  private var gesture: GestureDetector? = null
-  private var scaleGesture: ScaleGestureDetector? = null
+  private var touch: TouchHandler = TouchHandler(context)
+  private var gesture: GestureDetector = GestureDetector(context, this)
+  private var scaleGesture: ScaleGestureDetector = ScaleGestureDetector(context, ScaleListener())
   private var lastScaleTime: Long = 0
-  // Rendering Thread
-  private var thread: GameSurfaceViewThread? = null
+  private var executor: ScheduledExecutorService? = null
 
-  // Return the position of the current view (center)
   var viewPosition: Point
     get() {
       val ret = Point()
@@ -61,221 +47,86 @@ class MicaSurfaceView : SurfaceView, SurfaceHolder.Callback, GestureDetector.OnG
       if (renderer != null) renderer!!.setViewPosition(p.x, p.y)
     }
 
-  val viewSize: Point
-    get() {
-      val ret = Point()
-      if (renderer != null) renderer!!.getViewPosition(ret)
-      return ret
-    }
-
   val zoom: Float
     get() = renderer!!.zoom
-  //private Runnable threadEvent = null;
 
-  constructor(context: Context) : super(context) {
-    if (isInEditMode) return
-    touch = TouchHandler(context)
-    initialize(context)
+  init {
+    if (!isInEditMode) {
+      holder.addCallback(this)
+      isFocusable = true
+    }
   }
 
-  constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-    if (isInEditMode) return
-    touch = TouchHandler(context)
-    initialize(context)
-  }
-
-  constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-    if (isInEditMode) return
-    touch = TouchHandler(context)
-    initialize(context)
-  }
-
-  private fun initialize(context: Context) {
-    // Set SurfaceHolder callback
-    holder.addCallback(this)
-    // Initialize touch handlers
-    gesture = GestureDetector(context, this)
-    scaleGesture = ScaleGestureDetector(context, ScaleListener())
-    // Allow focus
-    isFocusable = true
-  }
-
-  /**
-   * Sets the surface view listener
-   */
   fun setListener(surfaceListener: SurfaceListener) {
     listener = surfaceListener
   }
 
-  /**
-   * Sets the renderer and creates the rendering thread
-   */
   fun setRenderer(r: SurfaceRenderer) {
     renderer = r
   }
 
-  fun setViewPort(w: Int, h: Int) {
-    renderer!!.setViewSize(w, h)
-  }
-
-  fun setMapPosition(p: Point) {
-    renderer!!.setMapPosition(p.x, p.y)
-  }
-
-  fun centerViewPosition() {
-    if (renderer == null) return
-    val viewportSize = Point()
-    val sceneSize = renderer!!.backgroundSize
-    renderer!!.getViewSize(viewportSize)
-
-    val x = (sceneSize.x - viewportSize.x) / 2
-    val y = (sceneSize.y - viewportSize.y) / 2
-    renderer!!.setViewPosition(x, y)
-  }
-
-  fun setZoom(z: Float, center: PointF) {
-    if (renderer != null) renderer!!.zoom(z, center)
-  }
+  fun setZoom(z: Float, center: PointF) = renderer?.zoom(z, center)
 
   override fun surfaceCreated(holder: SurfaceHolder) {
     GameLog.d(TAG, "surfaceCreate")
-    thread = GameSurfaceViewThread(holder)
-    thread!!.name = DRAW_THREAD
-    thread!!.setRunning(true)
-    thread!!.start()
     if (renderer != null) renderer!!.start()
-    if (touch != null) touch!!.start()
-    // Required to ensure thread has focus
-    if (thread != null)
-      thread!!.onWindowFocusChanged(true)
+    touch.start()
+    start()
     GameLog.d(TAG, "surfaceCreated")
   }
 
   override fun surfaceDestroyed(holder: SurfaceHolder) {
-    GameLog.d(TAG, "surfaceDestroying")
-    if (touch != null) touch!!.stop()
+    GameLog.d(TAG, "surfaceDestroy")
+    touch.stop()
     if (renderer != null) renderer!!.stop()
-    if (thread != null) thread!!.setRunning(false)
-    //thread.surfaceDestroyed();
-    var retry = true
-    while (retry && thread != null) {
-      try {
-        thread!!.join()
-        retry = false
-      } catch (ignored: InterruptedException) {
-        // Repeat until success
-      }
-
-    }
+    stop()
     GameLog.d(TAG, "surfaceDestroyed")
   }
 
   override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-    if (renderer != null) {
-      renderer!!.setViewSize(width, height)
-      // Recheck scale factor and reset position to prevent out of bounds
-      val p = Point()
-      renderer!!.getViewPosition(p)
-      setZoom(zoom, PointF(p.x.toFloat(), p.y.toFloat()))
-      //Point p = new Point();
-      //this.renderer.getViewPosition(p);
-      renderer!!.setViewPosition(p.x, p.y)
-    }
-    // Debug
-    GameLog.d(TAG, "surfaceChanged; new dimensions: w=$width, h= $height")
-    // Required to ensure thread has focus
-    if (thread != null)
-      thread!!.onWindowFocusChanged(true)
+    renderer?.setViewSize(width, height)
+    val p = Point()
+    renderer?.getViewPosition(p)
+    setZoom(zoom, PointF(p.x.toFloat(), p.y.toFloat()))
+    renderer!!.setViewPosition(p.x, p.y)
   }
 
-  override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
-    super.onWindowFocusChanged(hasWindowFocus)
-    if (thread != null)
-      thread!!.onWindowFocusChanged(hasWindowFocus)
-    GameLog.d(TAG, "onWindowFocusChanged")
+  fun start() {
+    executor = Executors.newSingleThreadScheduledExecutor()
+    executor?.scheduleAtFixedRate({
+      draw()
+    }, 100, 100, TimeUnit.MILLISECONDS)
   }
 
-  /**
-   * The Rendering thread for the MicaSurfaceView
-   */
-  private inner class GameSurfaceViewThread internal constructor(private val surfaceHolder: SurfaceHolder) : Thread() {
-    private val lock = java.lang.Object()
-    private val delay: Int
-    private var running: Boolean = false
-    private var hasFocus: Boolean = false
-
-    init {
-      name = GameSurfaceViewThread::class.java.name
-      if (Build.BRAND.equals(GOOGLE, ignoreCase = true) &&
-          Build.MANUFACTURER.equals(ASUS, ignoreCase = true) &&
-          Build.MODEL.equals(NEXUS_7, ignoreCase = true)) {
-        GameLog.w(TAG, "Sleep 500ms (Device: Asus Nexus 7)")
-        delay = BUG_DELAY
-      } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN_MR2) {
-        GameLog.w(TAG, "Sleep 500ms (Handle issue 58385 in Android 4.3)")
-        //
-        delay = BUG_DELAY
-      } else {
-        delay = 5
+  fun draw() {
+    var canvas: Canvas? = null
+    try {
+      canvas = holder.lockCanvas()
+      synchronized(holder) {
+        renderer!!.draw(canvas)
       }
-    }
-
-    fun setRunning(run: Boolean) {
-      running = run
-    }
-
-    override fun run() {
-      if (renderer == null) return
-      try {
-        Thread.sleep(delay.toLong())
-      } catch (ignored: InterruptedException) {
-        // NOOP
-      }
-
-      var canvas: Canvas? = null
-      // This is the rendering loop; it goes until asked to quit.
-      while (running) {
+    } catch (e: Exception) {
+      e.printStackTrace()
+    } finally {
+      if (canvas != null) {
         try {
-          Thread.sleep(5) // CPU timeout - help keep things cool
-        } catch (ignored: InterruptedException) {
-          // NOOP
-        }
-
-        try {
-          canvas = surfaceHolder.lockCanvas()
-          if (canvas != null) {
-            synchronized(surfaceHolder) {
-              renderer!!.draw(canvas)
-            }
-          }
-        } finally {
-          if (canvas != null) {
-            surfaceHolder.unlockCanvasAndPost(canvas)
-          }
+          holder.unlockCanvasAndPost(canvas)
+        } catch (e: Exception) {
+          e.printStackTrace()
         }
       }
     }
-
-    @Synchronized
-    internal fun onWindowFocusChanged(focus: Boolean) {
-      hasFocus = focus
-      if (hasFocus) {
-        lock.notifyAll()
-      }
-    }
-
   }
 
-  // ----------------------------------------------------------------------
+  fun stop() {
+    executor?.shutdown()
+  }
 
-  /**
-   * Handle Touch Events
-   */
   override fun onTouchEvent(event: MotionEvent): Boolean {
     if (renderer == null) return false
-    val consumed = gesture!!.onTouchEvent(event)
+    val consumed = gesture.onTouchEvent(event)
     if (consumed) return true
-    scaleGesture!!.onTouchEvent(event)
+    scaleGesture.onTouchEvent(event)
     // Calculate actual event position in background view
     val point = Point()
     renderer!!.getViewPosition(point)
@@ -286,18 +137,18 @@ class MicaSurfaceView : SurfaceView, SurfaceHolder.Callback, GestureDetector.OnG
     when (event.action and MotionEvent.ACTION_MASK) {
       MotionEvent.ACTION_DOWN -> {
         listener!!.onTouchDown(x, y)
-        return touch!!.down(event)
+        return touch.down(event)
       }
       MotionEvent.ACTION_MOVE -> {
-        if (scaleGesture!!.isInProgress || System.currentTimeMillis() - lastScaleTime < SCALE_MOVE_GUARD.toLong())
+        if (scaleGesture.isInProgress || System.currentTimeMillis() - lastScaleTime < SCALE_MOVE_GUARD.toLong())
           return super.onTouchEvent(event)
-        return touch!!.move(event)
+        return touch.move(event)
       }
       MotionEvent.ACTION_UP -> {
         listener!!.onTouchUp(x, y)
-        return touch!!.onTouchUp(event)
+        return touch.onTouchUp(event)
       }
-      MotionEvent.ACTION_CANCEL -> return touch!!.cancel(event)
+      MotionEvent.ACTION_CANCEL -> return touch.cancel(event)
       else -> {
       }
     }
@@ -305,7 +156,7 @@ class MicaSurfaceView : SurfaceView, SurfaceHolder.Callback, GestureDetector.OnG
   }
 
   override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-    return touch!!.fling(e1, e2, velocityX, velocityY)
+    return touch.fling(e1, e2, velocityX, velocityY)
   }
 
   override fun onDown(e: MotionEvent): Boolean {
@@ -355,25 +206,16 @@ class MicaSurfaceView : SurfaceView, SurfaceHolder.Callback, GestureDetector.OnG
 
   private inner class TouchHandler internal constructor(context: Context) {
     // Current Touch State
-    @get:Synchronized @set:Synchronized private var state = TouchState.NO_TOUCH
-    // Point initially touched
+    @get:Synchronized
+    @set:Synchronized
+    private var state = TouchState.NO_TOUCH
     private val touchDown = Point(0, 0)
-    // View Center onTouchDown
     private val viewCenterAtDown = Point(0, 0)
-    // View Center onFling
     private val viewCenterAtFling = Point()
-    // View Center onFling
     private val viewSizeAtFling = Point()
-    // View Center onFling
     private var backgroundSizeAtFling = Point()
-    // Scroller
-    internal val scroller: Scroller
-    // Thread for handling
+    internal val scroller: Scroller = Scroller(context)
     private var touchThread: TouchHandlerThread? = null
-
-    init {
-      scroller = Scroller(context)
-    }
 
     internal fun start() {
       touchThread = TouchHandlerThread(this)
@@ -397,9 +239,6 @@ class MicaSurfaceView : SurfaceView, SurfaceHolder.Callback, GestureDetector.OnG
       touchThread = null
     }
 
-    /**
-     * Handle a down event
-     */
     internal fun down(event: MotionEvent): Boolean {
       // Cancel rendering suspension
       renderer!!.resume()
@@ -415,9 +254,6 @@ class MicaSurfaceView : SurfaceView, SurfaceHolder.Callback, GestureDetector.OnG
       return true
     }
 
-    /**
-     * Handle a move event
-     */
     internal fun move(event: MotionEvent): Boolean {
       if (state == TouchState.IN_TOUCH) {
         val zoom = renderer!!.zoom
@@ -432,9 +268,6 @@ class MicaSurfaceView : SurfaceView, SurfaceHolder.Callback, GestureDetector.OnG
       return false
     }
 
-    /**
-     * Handle an onTouchUp event
-     */
     internal fun onTouchUp(event: MotionEvent): Boolean {
       if (state == TouchState.IN_TOUCH) {
         state = TouchState.NO_TOUCH
@@ -442,9 +275,6 @@ class MicaSurfaceView : SurfaceView, SurfaceHolder.Callback, GestureDetector.OnG
       return true
     }
 
-    /**
-     * Handle a cancel event
-     */
     internal fun cancel(event: MotionEvent): Boolean {
       if (state == TouchState.IN_TOUCH) {
         state = TouchState.NO_TOUCH
@@ -541,14 +371,8 @@ class MicaSurfaceView : SurfaceView, SurfaceHolder.Callback, GestureDetector.OnG
 
   companion object {
     private val TAG = MicaSurfaceView::class.java.name
-    @NonNls private val DRAW_THREAD = "drawThread"
     private val SCALE_MOVE_GUARD = 500
-    @NonNls val GOOGLE = "google"
-    @NonNls val ASUS = "asus"
-    @NonNls val NEXUS_7 = "Nexus 7"
     val TOUCH_THREAD = "touchThread"
-    val BUG_DELAY = 500
-
   }
 
 }

@@ -87,7 +87,7 @@ abstract class BaseActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
     showSignInButton()
   }
 
-  override fun startActivityForResult(intent: Intent, requestCode: Int) {
+  override fun startActivityForResult(intent: Intent?, requestCode: Int) {
     var sIntent: Intent? = intent
     if (sIntent == null) {
       sIntent = Intent()
@@ -95,7 +95,7 @@ abstract class BaseActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
     super.startActivityForResult(sIntent, requestCode)
   }
 
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
     if (requestCode == RC_SIGN_IN) {
       GameLog.d(TAG, "onActivityResult with requestCode == RC_SIGN_IN, responseCode="
