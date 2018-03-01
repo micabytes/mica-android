@@ -38,7 +38,6 @@ public abstract class TileMap {
     protected int windowTop;
     protected int windowRight;
     protected int windowBottom;
-    public boolean standardOrientation = true;
     // Draw
     protected final Canvas canvas = new Canvas();
 
