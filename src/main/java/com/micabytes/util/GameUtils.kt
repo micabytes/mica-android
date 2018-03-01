@@ -37,8 +37,10 @@ object GameUtils {
    * @param message  the message to display in the Dialog.
    */
   fun showAlert(activity: Activity, message: String) {
-    AlertDialog.Builder(activity).setMessage(message)
-        .setNeutralButton(android.R.string.ok, null).create().show()
+    if (!activity.isFinishing) {
+      AlertDialog.Builder(activity).setMessage(message)
+          .setNeutralButton(android.R.string.ok, null).create().show()
+    }
   }
 
   /**

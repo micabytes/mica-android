@@ -15,7 +15,7 @@ package com.micabytes.util;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import com.micabytes.GameApplication;
+import com.micabytes.Game;
 import com.micabytes.R;
 
 import org.jetbrains.annotations.NonNls;
@@ -75,18 +75,18 @@ public final class StringHandler {
   }
 
   public static String get(int id) {
-    Context c = GameApplication.Companion.getInstance();
+    Context c = Game.Companion.getInstance();
     return c.getString(id);
   }
 
   @SuppressWarnings("OverloadedVarargsMethod")
   public static String get(int id, Object... args) {
-    Context c = GameApplication.Companion.getInstance();
+    Context c = Game.Companion.getInstance();
     return c.getString(id, args);
   }
 
   public static String list(List<String> list) {
-    Context c = GameApplication.Companion.getInstance();
+    Context c = Game.Companion.getInstance();
     if (list.isEmpty()) return "";
     if (list.size() == 1)
       return list.get(0);
@@ -230,7 +230,7 @@ public final class StringHandler {
 
   @SuppressWarnings("StringContatenationInLoop")
   public static String listString(ArrayList<String> list) {
-    Context c = GameApplication.Companion.getInstance();
+    Context c = Game.Companion.getInstance();
     @NonNls String ret = "";
     if (list.isEmpty()) return ret;
     if (list.size() == 1) {
@@ -256,7 +256,7 @@ public final class StringHandler {
 
   @SuppressWarnings("OverloadedVarargsMethod")
   public static String get(int id, HashMap<String, Object> variables, Object... args) {
-    Context c = GameApplication.Companion.getInstance();
+    Context c = Game.Companion.getInstance();
     return format(c.getString(id, args), variables);
   }
 

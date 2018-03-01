@@ -1,10 +1,7 @@
 package com.micabytes.util
 
-import android.databinding.BindingAdapter
 import android.graphics.Typeface
-import android.widget.Button
-import android.widget.TextView
-import com.micabytes.GameApplication
+import com.micabytes.Game
 import java.util.*
 
 object FontHandler {
@@ -15,7 +12,7 @@ object FontHandler {
     return if (CACHE.containsKey(fontName)) {
       CACHE[fontName]
     } else {
-      val typeface = Typeface.createFromAsset(GameApplication.instance.assets, FONT_DIR + StringHandler.SLASH + fontName + ".ttf")
+      val typeface = Typeface.createFromAsset(Game.instance.assets, FONT_DIR + StringHandler.SLASH + fontName + ".ttf")
       CACHE[fontName] = typeface
       typeface
     }

@@ -14,8 +14,6 @@ package com.micabytes.gfx
 
 import android.app.ActivityManager
 import android.content.Context
-import android.content.res.Resources
-import android.databinding.BindingAdapter
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -25,12 +23,8 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import android.util.LruCache
-import android.util.DisplayMetrics
-import android.widget.ImageView
 
-import com.micabytes.GameApplication
-
-import de.hdodenhof.circleimageview.CircleImageView
+import com.micabytes.Game
 
 /**
  * ImageHandler is a singleton class that is used to manage bitmaps resources used programmatically
@@ -54,7 +48,7 @@ class ImageHandler private constructor() {
     var density = 0.0f
       get() {
         if (field < DENSITY_MINIMUM) {
-          val context = GameApplication.instance
+          val context = Game.instance
           val resources = context.resources
           val metrics = resources.displayMetrics
           return metrics.density
@@ -64,7 +58,7 @@ class ImageHandler private constructor() {
     private set(i) {
       field = i
       if (density < DENSITY_MINIMUM) {
-        val context = GameApplication.instance
+        val context = Game.instance
         val resources = context.resources
         val metrics = resources.displayMetrics
         field = metrics.density
@@ -74,7 +68,7 @@ class ImageHandler private constructor() {
     private var memoryCache: LruCache<Int, Bitmap>? = null
 
     private fun initCache() {
-      val memoryClass = (GameApplication.instance.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).memoryClass
+      val memoryClass = (Game.instance.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).memoryClass
       val memoryCacheSize = MEGABYTE * MEGABYTE * memoryClass / 8
       memoryCache = object : LruCache<Int, Bitmap>(memoryCacheSize) {
         override fun sizeOf(key: Int?, value: Bitmap): Int {
@@ -107,7 +101,7 @@ class ImageHandler private constructor() {
       if (key == 0) return null
       val opts = BitmapFactory.Options()
       opts.inPreferredConfig = bitmapConfig
-      return BitmapFactory.decodeResource(GameApplication.instance.resources, key, opts)
+      return BitmapFactory.decodeResource(Game.instance.resources, key, opts)
     }
 
     fun getSceneBitmap(bkg: Int, left: Int, right: Int): Bitmap? {
@@ -138,7 +132,7 @@ class ImageHandler private constructor() {
       val opt = BitmapFactory.Options()
       opt.inPreferredConfig = BitmapSurfaceRenderer.DEFAULT_CONFIG
       opt.inJustDecodeBounds = true
-      BitmapFactory.decodeResource(GameApplication.instance.resources, key, opt)
+      BitmapFactory.decodeResource(Game.instance.resources, key, opt)
       return opt
     }
 

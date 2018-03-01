@@ -1,11 +1,11 @@
 package com.micabytes.util
 
-import com.micabytes.GameApplication
+import com.micabytes.Game
 import com.micabytes.R
 import java.util.*
 
 fun ArrayList<String>.toText(): String {
-  val c = GameApplication.instance
+  val c = Game.instance
   if (isEmpty()) return ""
   if (size == 1)
     return get(0)

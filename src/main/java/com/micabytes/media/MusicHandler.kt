@@ -14,7 +14,7 @@ package com.micabytes.media
 
 import android.media.MediaPlayer
 import android.util.SparseArray
-import com.micabytes.GameApplication
+import com.micabytes.Game
 
 /**
  * MusicHandler is a simple, dumb wrapper around the Android MediaPlayer. It plays music files
@@ -65,7 +65,7 @@ object MusicHandler {
         mp.start()
       }
     } else {
-      val context = GameApplication.instance
+      val context = Game.instance
       val mediaPlayer = MediaPlayer.create(context, music)
       if (mediaPlayer != null) {
         mediaPlayer.setVolume(if (mutedMusic) 0.0f else volume, if (mutedMusic) 0.0f else volume)
@@ -83,7 +83,7 @@ object MusicHandler {
       nextMusic = music
       val mp = PLAYERS.get(music)
       if (mp == null) {
-        val mediaPlayer = MediaPlayer.create(GameApplication.instance, music)
+        val mediaPlayer = MediaPlayer.create(Game.instance, music)
         if (mediaPlayer != null)
           PLAYERS.put(music, mediaPlayer)
       }
