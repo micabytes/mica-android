@@ -15,7 +15,7 @@ package com.micabytes.util;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import com.micabytes.GameApplication;
+import com.micabytes.Game;
 import com.micabytes.R;
 
 import org.jetbrains.annotations.NonNls;
@@ -75,18 +75,18 @@ public final class StringHandler {
   }
 
   public static String get(int id) {
-    Context c = GameApplication.getInstance();
+    Context c = Game.Companion.getInstance();
     return c.getString(id);
   }
 
   @SuppressWarnings("OverloadedVarargsMethod")
   public static String get(int id, Object... args) {
-    Context c = GameApplication.getInstance();
+    Context c = Game.Companion.getInstance();
     return c.getString(id, args);
   }
 
   public static String list(List<String> list) {
-    Context c = GameApplication.getInstance();
+    Context c = Game.Companion.getInstance();
     if (list.isEmpty()) return "";
     if (list.size() == 1)
       return list.get(0);
@@ -154,9 +154,9 @@ public final class StringHandler {
         String replace = ret.substring(start, end + 1);
         String[] tokens = opt.split("[|]");
         if (tokens.length == 1)
-          ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
+          ret = ret.replace(replace, tokens[RandomHandler.INSTANCE.random(tokens.length)]);
         else if ("?".equals(condition)) {
-          ret = ret.replace(replace, tokens[RandomHandler.random(tokens.length)]);
+          ret = ret.replace(replace, tokens[RandomHandler.INSTANCE.random(tokens.length)]);
         } else if (condition != null){
           condition = condition.replace("?", "");
           int nInt = evaluate(condition, variables);
@@ -199,7 +199,7 @@ public final class StringHandler {
       return GameConstants.ERROR;
     String[] tokens = DOT_SPLITTER.split(str, 2);
     if (tokens.length > 2) {
-      GameLog.e(TAG, "Failed to getStringValue variable value for object " + str);
+      GameLog.INSTANCE.e(TAG, "Failed to getStringValue variable value for object " + str);
       return GameConstants.ERROR;
     }
     Object obj = variables.get(tokens[0]);
@@ -222,7 +222,7 @@ public final class StringHandler {
     if (str.contains(divisor)) {
       String[] tokens = str.split(SQUARE_BRACE_LEFT + divisor + SQUARE_BRACE_RIGHT);
       if (tokens.length > 0) {
-        return tokens[RandomHandler.random(tokens.length)];
+        return tokens[RandomHandler.INSTANCE.random(tokens.length)];
       }
     }
     return str;
@@ -230,7 +230,7 @@ public final class StringHandler {
 
   @SuppressWarnings("StringContatenationInLoop")
   public static String listString(ArrayList<String> list) {
-    Context c = GameApplication.getInstance();
+    Context c = Game.Companion.getInstance();
     @NonNls String ret = "";
     if (list.isEmpty()) return ret;
     if (list.size() == 1) {
@@ -256,7 +256,7 @@ public final class StringHandler {
 
   @SuppressWarnings("OverloadedVarargsMethod")
   public static String get(int id, HashMap<String, Object> variables, Object... args) {
-    Context c = GameApplication.getInstance();
+    Context c = Game.Companion.getInstance();
     return format(c.getString(id, args), variables);
   }
 
@@ -272,26 +272,26 @@ public final class StringHandler {
         sb.append(line).append(EOL);
       }
     } catch (IOException e) {
-      GameLog.logException(e);
+      GameLog.INSTANCE.logException(e);
     } finally {
       try {
         if (reader != null) {
           reader.close();
         }
       } catch (IOException e) {
-        GameLog.logException(e);
+        GameLog.INSTANCE.logException(e);
       }
       try {
         is.close();
       } catch (IOException e) {
-        GameLog.logException(e);
+        GameLog.INSTANCE.logException(e);
       }
     }
     return sb.toString();
   }
 
   @SuppressWarnings("CollectionDeclaredAsConcreteClass")
-  public static int evaluate(String test, HashMap<String, Object> variables) {
+  private static int evaluate(String test, HashMap<String, Object> variables) {
     String[] tokens = AND_SPLITTER.split(test);
     if (tokens.length == 1)
       return evaluateStatement(test, variables);
@@ -315,7 +315,7 @@ public final class StringHandler {
         String val2 = tokens[1].trim().toLowerCase(Locale.US);
         return (getVariableValue(val1, variables) >= getVariableValue(val2, variables)) ? 1 : 0;
       }
-      GameLog.e(TAG, "Could not parse statement fragment GEQ:" + str);
+      GameLog.INSTANCE.e(TAG, "Could not parse statement fragment GEQ:" + str);
       return 0;
     }
     // >=
@@ -326,7 +326,7 @@ public final class StringHandler {
         String val2 = tokens[1].trim().toLowerCase(Locale.US);
         return (getVariableValue(val1, variables) <= getVariableValue(val2, variables)) ? 1 : 0;
       }
-      GameLog.e(TAG, "Could not parse statement fragment LEQ:" + str);
+      GameLog.INSTANCE.e(TAG, "Could not parse statement fragment LEQ:" + str);
       return 0;
     }
     // >
@@ -337,7 +337,7 @@ public final class StringHandler {
         String val2 = tokens[1].trim().toLowerCase(Locale.US);
         return (getVariableValue(val1, variables) > getVariableValue(val2, variables)) ? 1 : 0;
       }
-      GameLog.e(TAG, "Could not parse statement fragment GT:" + str);
+      GameLog.INSTANCE.e(TAG, "Could not parse statement fragment GT:" + str);
       return 0;
     }
     // <
@@ -348,7 +348,7 @@ public final class StringHandler {
         String val2 = tokens[1].trim().toLowerCase(Locale.US);
         return (getVariableValue(val1, variables) < getVariableValue(val2, variables)) ? 1 : 0;
       }
-      GameLog.e(TAG, "Could not parse statement fragment LT:" + str);
+      GameLog.INSTANCE.e(TAG, "Could not parse statement fragment LT:" + str);
       return 0;
     }
     // Set Last, as it will otherwise take precedence over all the others.
@@ -360,7 +360,7 @@ public final class StringHandler {
         String val2 = tokens[1].trim().toLowerCase(Locale.US);
         return (getVariableValue(val1, variables) == getVariableValue(val2, variables)) ? 1 : 0;
       }
-      GameLog.e(TAG, "Could not parse statement fragment " + str);
+      GameLog.INSTANCE.e(TAG, "Could not parse statement fragment " + str);
       return 0;
     }
     // Retrieve
@@ -378,7 +378,7 @@ public final class StringHandler {
     }
     String[] tokens = DOT_SPLITTER.split(str, 2);
     if (tokens.length > 2) {
-      GameLog.e(TAG, "Failed to getVariableValue for object " + str);
+      GameLog.INSTANCE.e(TAG, "Failed to getVariableValue for object " + str);
       return 0;
     }
     if (variables == null)

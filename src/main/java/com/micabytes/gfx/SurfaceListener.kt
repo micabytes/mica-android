@@ -10,13 +10,13 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.micabytes.gfx;
+package com.micabytes.gfx
 
 /**
  * Interface for SurfaceListener. Is used to return touch information to the game controller
  */
-public interface SurfaceListener {
-    void onTouchDown(int x, int y);
+interface SurfaceListener {
+  fun onTouchDown(x: Int, y: Int)
 
-    void onTouchUp(int x, int y);
+  fun onTouchUp(x: Int, y: Int)
 }

@@ -1,30 +1,25 @@
 /*
- * Copyright 2015 MicaByte Systems
- *
+ * Copyright 2013 MicaByte Systems
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.micabytes.util;
+package com.micabytes.map
 
-@SuppressWarnings({"ClassIndependentOfModule", "ClassUnconnectedToPackage", "unused"})
-public class UIObjectNotFoundException extends Exception {
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
+import com.micabytes.gfx.ImageHandler
 
-  public UIObjectNotFoundException(String message) {
-    super(message);
-  }
-
-  public UIObjectNotFoundException(Throwable throwable) {
-    super(throwable);
-  }
-
-  public UIObjectNotFoundException(String message, Throwable throwable) {
-    super(message, throwable);
-  }
-
+/** Zone interface for TileMap and HexMap */
+interface TileMapZone {
+  fun getWidth(): Int
+  fun getHeight(): Int
+  fun drawBase(canvas: Canvas, tileRect: Rect, destRect: Rect, paint: Paint)
 }
