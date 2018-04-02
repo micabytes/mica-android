@@ -301,7 +301,7 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
     /**
      * Use the high resolution cached bitmap for drawing
      */
-    internal fun drawHighResolution(bmp: Bitmap?) {
+    private fun drawHighResolution(bmp: Bitmap?) {
       val wSize = viewPort.window
       if (bmp != null) {
         synchronized(viewPort) {
@@ -321,7 +321,7 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
       }
     }
 
-    internal fun drawLowResolution() {
+    private fun drawLowResolution() {
       if (state != CacheState.NOT_INITIALIZED) {
         drawLowResolutionBackground()
       }
@@ -527,7 +527,7 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
      * This function tries to recover from an OutOfMemoryError in the CacheThread.
      */
     private fun cacheBitmapOutOfMemoryError() {
-      if (memUsage > 0) memUsage = memUsage - 1
+      if (memUsage > 0) memUsage -= 1
       GameLog.e(TAG, "OutOfMemory caught; reducing cache size to $memUsage percent.")
     }
 
@@ -539,9 +539,9 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
     @NonNls
     private val CACHE_THREAD = "cacheThread"
     val DEFAULT_CONFIG: Bitmap.Config = Bitmap.Config.RGB_565
-    private val DEFAULT_SAMPLE_SIZE = 2
-    private val DEFAULT_MEM_USAGE = 20
-    private val DEFAULT_THRESHOLD = 0.75f
+    private const val DEFAULT_SAMPLE_SIZE = 2
+    private const val DEFAULT_MEM_USAGE = 20
+    private const val DEFAULT_THRESHOLD = 0.75f
   }
 
 }

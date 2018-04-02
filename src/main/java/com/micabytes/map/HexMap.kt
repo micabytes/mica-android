@@ -30,16 +30,16 @@ import com.micabytes.util.GameLog
  * if it is going to be used for flat-side up maps.
  */
 abstract class HexMap protected constructor() {
-  protected lateinit var zones: Array2D<TileMapZone>
-  protected var scaleFactor: Float = 0.toFloat()
-  protected val viewPortOrigin = Point()
-  protected val viewPortSize = Point()
-  protected val destRect = Rect()
-  protected var windowLeft: Int = 0
-  protected var windowTop: Int = 0
-  protected var windowRight: Int = 0
-  protected var windowBottom: Int = 0
-  protected val tilePaint = Paint()
+  private lateinit var zones: Array2D<TileMapZone>
+  private var scaleFactor: Float = 0.toFloat()
+  private val viewPortOrigin = Point()
+  private val viewPortSize = Point()
+  private val destRect = Rect()
+  private var windowLeft: Int = 0
+  private var windowTop: Int = 0
+  private var windowRight: Int = 0
+  private var windowBottom: Int = 0
+  private val tilePaint = Paint()
   protected val tileText = Paint()
   // Draw
   protected val canvas = Canvas()

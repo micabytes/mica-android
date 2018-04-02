@@ -14,8 +14,8 @@ class Game : Application() {
     @JvmStatic
     lateinit var instance: Game
       private set
-    lateinit var world: WorldInterface
-    lateinit var data: DataInterface
+    var world: WorldInterface? = null
+    var data: DataInterface? = null
   }
 
 }

@@ -371,8 +371,8 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
 
   companion object {
     private val TAG = MicaSurfaceView::class.java.name
-    private val SCALE_MOVE_GUARD = 500
-    val TOUCH_THREAD = "touchThread"
+    private const val SCALE_MOVE_GUARD = 500
+    const val TOUCH_THREAD = "touchThread"
   }
 
 }

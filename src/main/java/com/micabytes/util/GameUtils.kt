@@ -36,7 +36,7 @@ object GameUtils {
    * @param activity the Activity in which the Dialog should be displayed.
    * @param message  the message to display in the Dialog.
    */
-  fun showAlert(activity: Activity, message: String) {
+  private fun showAlert(activity: Activity, message: String) {
     if (!activity.isFinishing) {
       AlertDialog.Builder(activity).setMessage(message)
           .setNeutralButton(android.R.string.ok, null).create().show()
@@ -168,7 +168,7 @@ object GameUtils {
    * @param text     the message to display on the Dialog.
    * @return an instance of [android.app.AlertDialog]
    */
-  fun makeSimpleDialog(activity: Activity, text: String): Dialog {
+  private fun makeSimpleDialog(activity: Activity, text: String): Dialog {
     return AlertDialog.Builder(activity).setMessage(text)
         .setNeutralButton(android.R.string.ok, null).create()
   }

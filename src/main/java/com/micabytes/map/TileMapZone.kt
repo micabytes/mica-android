@@ -15,7 +15,6 @@ package com.micabytes.map
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
-import com.micabytes.gfx.ImageHandler
 
 /** Zone interface for TileMap and HexMap */
 interface TileMapZone {

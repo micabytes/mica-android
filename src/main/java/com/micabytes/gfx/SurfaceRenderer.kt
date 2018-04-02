@@ -32,7 +32,7 @@ abstract class SurfaceRenderer
 /**
  * Constructor for the surface renderer
  *
- * @param con We need to pass in the context, so that we have it when we create bitmaps for drawing operations later. Since the draw operations are
+ * @param context We need to pass in the context, so that we have it when we create bitmaps for drawing operations later. Since the draw operations are
  * run in a thread, we can't pass the context through the thread (at least not easily)
  */
 protected constructor(// Context
@@ -144,12 +144,12 @@ protected constructor(// Context
     // The zoom factor of the viewport
     @get:Synchronized @set:Synchronized var zoom = 1.0f
 
-    val physicalWidth: Int
+    private val physicalWidth: Int
       get() = synchronized(bitmapLock) {
         return bitmap!!.width
       }
 
-    val physicalHeight: Int
+    private val physicalHeight: Int
       get() = synchronized(bitmapLock) {
         return bitmap!!.height
       }
@@ -296,7 +296,7 @@ protected constructor(// Context
 
   companion object {
     // View Size Minimum
-    protected val MINIMUM_PIXELS_IN_VIEW = 50
+    protected const val MINIMUM_PIXELS_IN_VIEW = 50
   }
 
 }

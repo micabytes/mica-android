@@ -40,7 +40,7 @@ object GameLog {
   }
 
   fun d(tag: String, s: String) {
-    if (debug) Log.d(t, s)
+    if (debug) Crashlytics.log(Log.DEBUG, t, s)
   }
 
   fun w(tag: String, s: String) {
@@ -58,10 +58,9 @@ object GameLog {
   }
 
   fun logException(e: Exception) {
-    //if (debug) {
-
-    //  e.printStackTrace();
-    //}
+    if (debug) {
+      e.printStackTrace()
+    }
     if (Fabric.isInitialized()) {
       Crashlytics.logException(e)
     }

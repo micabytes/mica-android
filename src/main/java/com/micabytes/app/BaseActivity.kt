@@ -74,7 +74,7 @@ abstract class BaseActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
   }
 
   override fun onConnectionFailed(connectionResult: ConnectionResult) {
-    GameLog.d(TAG, "onConnectionFailed() called, result: " + connectionResult)
+    GameLog.d(TAG, "onConnectionFailed() called, result: $connectionResult")
     if (resolvingConnectionFailure) {
       GameLog.d(TAG, "onConnectionFailed() ignoring connection failure; already resolving.")
       return
@@ -132,7 +132,7 @@ abstract class BaseActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
 
   companion object {
     private val TAG = BaseActivity::class.java.name
-    private val RC_SIGN_IN = 9001
+    private const val RC_SIGN_IN = 9001
   }
 
 }

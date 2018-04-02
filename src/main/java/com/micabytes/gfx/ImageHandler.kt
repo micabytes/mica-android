@@ -41,10 +41,10 @@ class ImageHandler private constructor() {
 
   companion object {
     private val DEFAULT_CONFIG = Bitmap.Config.ARGB_8888
-    private val COLOR_RED = -0xbdbdbe
-    private val PIXEL_ROUNDING = 12
-    val DENSITY_MINIMUM = 0.1f
-    val MEGABYTE = 1024
+    private const val COLOR_RED = -0xbdbdbe
+    private const val PIXEL_ROUNDING = 12
+    private const val DENSITY_MINIMUM = 0.1f
+    private const val MEGABYTE = 1024
     var density = 0.0f
       get() {
         if (field < DENSITY_MINIMUM) {

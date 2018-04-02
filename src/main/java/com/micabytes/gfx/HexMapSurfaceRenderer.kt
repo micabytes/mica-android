@@ -13,8 +13,6 @@
 package com.micabytes.gfx
 
 import android.content.Context
-import android.graphics.Point
-
 import com.micabytes.map.HexMap
 
 /**

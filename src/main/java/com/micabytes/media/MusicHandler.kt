@@ -95,7 +95,7 @@ object MusicHandler {
     }
   }
 
-  fun shouldQueue(forced: Boolean): Boolean {
+  private fun shouldQueue(forced: Boolean): Boolean {
     return !forced && currentMusic != INVALID_NUMBER
   }
 
