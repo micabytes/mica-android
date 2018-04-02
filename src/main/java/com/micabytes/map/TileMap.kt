@@ -19,11 +19,11 @@ import android.graphics.Point
 import android.graphics.Rect
 
 import com.micabytes.gfx.SurfaceRenderer
+import com.micabytes.util.Array2D
 import com.micabytes.util.GameLog
 
 /** TileMap superclass  */
-abstract class TileMap {
-  private var zones: Array<Array<TileMapZone>>? = null
+abstract class TileMap (protected val zones: Array2D<TileMapZone?>) {
   protected var scaleFactor: Float = 0.toFloat()
   protected val viewPortOrigin = Point()
   protected val viewPortSize = Point()
@@ -90,12 +90,12 @@ abstract class TileMap {
     // Draw Tiles
     for (i in iMn until iMx) {
       for (j in jMn until jMx) {
-        if (zones!![i][j] != null) {
+        if (zones!![i, j] != null) {
           destRect.left = ((i * tileSize - windowLeft) / scaleFactor).toInt()
           destRect.top = ((j * tileSize - windowTop) / scaleFactor).toInt()
           destRect.right = ((i * tileSize + tileSize - windowLeft) / scaleFactor).toInt()
           destRect.bottom = ((j * tileSize + tileSize - windowTop) / scaleFactor).toInt()
-          zones!![i][j].drawBase(canvas, tileRect, destRect, paint)
+          zones!![i, j]?.drawBase(canvas, tileRect, destRect, paint)
         }
       }
     }
