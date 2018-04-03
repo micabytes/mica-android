@@ -24,9 +24,8 @@ dependencies {
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   // Kotlin
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  // Annotations
-  implementation "com.android.support:support-annotations:$android_support_version"
   // Android Support
+  implementation "com.android.support:support-annotations:$android_support_version"
   implementation "com.android.support:appcompat-v7:$android_support_version"
   implementation "com.android.support:design:$android_support_version"
   // Components
@@ -38,9 +37,6 @@ dependencies {
   implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
   implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
   // Fabric
-  implementation('com.crashlytics.sdk.android:crashlytics:2.9.0@aar') {
-    transitive = true
-  }
-  // Google Play
+  implementation "com.crashlytics.sdk.android:crashlytics:$crashlytics_version"
   implementation "com.google.android.gms:play-services-games:$google_play_version"
 }
