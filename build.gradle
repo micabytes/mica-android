@@ -23,20 +23,19 @@ android {
 dependencies {
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   // Kotlin
-  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   // Android Support
-  implementation "com.android.support:support-annotations:$android_support_version"
-  implementation "com.android.support:appcompat-v7:$android_support_version"
-  implementation "com.android.support:design:$android_support_version"
+  api "com.android.support:support-annotations:$android_support_version"
+  api "com.android.support:appcompat-v7:$android_support_version"
+  api "com.android.support:design:$android_support_version"
   // Components
-  implementation 'de.hdodenhof:circleimageview:2.2.0'
-  implementation 'com.github.douglasjunior:android-simple-tooltip:0.2.2'
-  // JSON Libraries
-  // Remember to modify proguard-rules.pro also
-  implementation "com.fasterxml.jackson.core:jackson-core:$jackson_version"
-  implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
-  implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
+  api 'de.hdodenhof:circleimageview:2.2.0'
+  api 'com.github.douglasjunior:android-simple-tooltip:0.2.2'
+  // JSON Libraries - Remember to modify proguard-rules.pro also
+  api "com.fasterxml.jackson.core:jackson-core:$jackson_version"
+  api "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
+  api "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
   // Fabric
-  implementation "com.crashlytics.sdk.android:crashlytics:$crashlytics_version"
-  implementation "com.google.android.gms:play-services-games:$google_play_version"
+  api "com.crashlytics.sdk.android:crashlytics:$crashlytics_version"
+  api "com.google.android.gms:play-services-games:$google_play_version"
 }
