@@ -48,18 +48,6 @@ abstract class TileMap (protected val zones: Array2D<TileMapZone?>) {
   val tileWidth: Int
     get() = tileRect.width()
 
-  fun setTileMap(map: Array<Array<TileMapZone>>) {
-    /*
-    zones = Array(map.size) { arrayOfNulls(map[0].size) }
-    for (i in map.indices) {
-      System.arraycopy(map[i], 0, zones!![i], 0, map[i].size)
-    }
-    mapHeight = map[0].size
-    mapWidth = map.size
-    tileRect = Rect(0, 0, map[0][0].width, map[0][0].height)
-     */
-  }
-
   open fun drawBase(context: Context, p: SurfaceRenderer.ViewPort) {
     if (p.bitmap == null) {
       GameLog.e("TileMap", "Viewport bitmap is null in TileMap")
@@ -90,12 +78,12 @@ abstract class TileMap (protected val zones: Array2D<TileMapZone?>) {
     // Draw Tiles
     for (i in iMn until iMx) {
       for (j in jMn until jMx) {
-        if (zones!![i, j] != null) {
+        if (zones[i, j] != null) {
           destRect.left = ((i * tileSize - windowLeft) / scaleFactor).toInt()
           destRect.top = ((j * tileSize - windowTop) / scaleFactor).toInt()
           destRect.right = ((i * tileSize + tileSize - windowLeft) / scaleFactor).toInt()
           destRect.bottom = ((j * tileSize + tileSize - windowTop) / scaleFactor).toInt()
-          zones!![i, j]?.drawBase(canvas, tileRect, destRect, paint)
+          zones[i, j]?.drawBase(canvas, tileRect, destRect, paint)
         }
       }
     }
