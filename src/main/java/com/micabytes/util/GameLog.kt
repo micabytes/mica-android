@@ -57,6 +57,11 @@ object GameLog {
       Crashlytics.log(Log.ERROR, t, s)
   }
 
+  fun e(s: String?) {
+    if (Fabric.isInitialized())
+      Crashlytics.log(Log.ERROR, t, s)
+  }
+
   fun logException(e: Exception) {
     if (debug) {
       e.printStackTrace()
