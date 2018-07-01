@@ -30,7 +30,9 @@ object GameConstants {
   const val FIFTY = 50
   const val HUNDRED = 100
   const val THOUSAND = 1000
+  @NonNls const val SKILLS = "skills"
   @NonNls const val TRAITS = "traits"
+  @NonNls const val ITEMS = "items"
   @NonNls const val USAGE = "usage"
   @NonNls const val EFFECTS = "effects"
   @NonNls const val EFFECT_IDS = "effectIds"
