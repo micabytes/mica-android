@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
   compileSdkVersion 27
@@ -23,13 +24,14 @@ dependencies {
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   // Kotlin
   api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  kapt "com.android.databinding:compiler:$android_plugin_version"
   // Android Support
   api "com.android.support:support-annotations:$android_support_version"
-  api "com.android.support:appcompat-v7:$android_support_version"
+  api "com.android.support:support-compat:$android_support_version"
   api "com.android.support:design:$android_support_version"
   // Components
-  api 'de.hdodenhof:circleimageview:2.2.0'
-  api 'com.github.douglasjunior:android-simple-tooltip:0.2.2'
+  api "de.hdodenhof:circleimageview:$circleimageview_version"
+  api "com.github.douglasjunior:android-simple-tooltip:$tooltip_version"
   // JSON Libraries - Remember to modify proguard-rules.pro also
   api "com.fasterxml.jackson.core:jackson-core:$jackson_version"
   api "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"

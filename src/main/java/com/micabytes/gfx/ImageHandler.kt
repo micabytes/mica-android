@@ -97,6 +97,9 @@ class ImageHandler private constructor() {
       return ret
     }
 
+    @JvmOverloads
+    operator fun get(key: String, config: Bitmap.Config = DEFAULT_CONFIG): Bitmap = get(Game.instance.resources.getIdentifier(key, "drawable", Game.instance.packageName))
+
     private fun loadBitmap(key: Int, bitmapConfig: Bitmap.Config): Bitmap? {
       if (key == 0) return null
       val opts = BitmapFactory.Options()
