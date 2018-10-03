@@ -13,6 +13,7 @@
 package com.micabytes.util
 
 import java.util.Random
+import kotlin.math.floor
 
 /** RandomHandler
  * This class provides a number of simple utilite functions for handling of randomness. It includes
@@ -64,4 +65,10 @@ object RandomHandler {
     return if (ret == 0 && fail >= nDice / 2) -1 else ret
   }
 
+}
+
+fun randomRound(x: Float): Int {
+  var ret = floor(x).toInt()
+  if (x % 1 > RandomHandler.random()) ret++
+  return ret
 }

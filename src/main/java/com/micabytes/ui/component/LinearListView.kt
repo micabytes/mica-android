@@ -1,4 +1,4 @@
-package com.micabytes.gui
+package com.micabytes.ui.component
 
 import android.annotation.TargetApi
 import android.content.Context

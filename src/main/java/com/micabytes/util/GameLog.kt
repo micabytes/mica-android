@@ -39,7 +39,9 @@ object GameLog {
     if (debug) Log.v(t, s)
   }
 
-  fun d(tag: String, s: String) {
+  fun d(s: String) = d(t, s)
+
+  fun d(tag: String = "MicaBytes", s: String) {
     if (debug) Crashlytics.log(Log.DEBUG, t, s)
   }
 

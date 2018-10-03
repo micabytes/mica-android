@@ -1,13 +1,12 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 
 android {
-  compileSdkVersion 27
+  compileSdkVersion 28
 
   defaultConfig {
-    minSdkVersion 14
-    targetSdkVersion 27
+    minSdkVersion 15
+    targetSdkVersion 28
   }
   dataBinding {
     enabled = true
@@ -24,10 +23,11 @@ dependencies {
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   // Kotlin
   api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  kapt "com.android.databinding:compiler:$android_plugin_version"
   // Android Support
   api "com.android.support:support-annotations:$android_support_version"
   api "com.android.support:support-compat:$android_support_version"
+  api "com.android.support:support-media-compat:$android_support_version"
+  api "com.android.support:support-v4:$android_support_version"
   api "com.android.support:design:$android_support_version"
   // Components
   api "de.hdodenhof:circleimageview:$circleimageview_version"
@@ -37,6 +37,8 @@ dependencies {
   api "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
   api "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
   // Fabric
+  api "com.google.firebase:firebase-core:$firebase_core_version"
+  api "com.google.firebase:firebase-ads:$firebase_ads_version"
   api "com.crashlytics.sdk.android:crashlytics:$crashlytics_version"
   api "com.google.android.gms:play-services-games:$google_play_version"
 }

@@ -1,18 +1,19 @@
 package com.micabytes.util
 
-class Array2D<T> (val xSize: Int, val ySize: Int, val array: Array<Array<T>>) {
+@Suppress("unused")
+class Array2D<T>(val xSize: Int, val ySize: Int, val array: Array<Array<T>>) {
 
   companion object {
 
-    inline operator fun <reified T> invoke() = Array2D(0, 0, Array(0, { emptyArray<T>() }))
+    inline operator fun <reified T> invoke() = Array2D(0, 0, Array(0) { emptyArray<T>() })
 
     inline operator fun <reified T> invoke(xWidth: Int, yWidth: Int) =
-        Array2D(xWidth, yWidth, Array(xWidth, { arrayOfNulls<T>(yWidth) }))
+        Array2D(xWidth, yWidth, Array(xWidth) { arrayOfNulls<T>(yWidth) })
 
     inline operator fun <reified T> invoke(xWidth: Int, yWidth: Int, operator: (Int, Int) -> (T)): Array2D<T> {
-      val array = Array(xWidth, {
-        val x = it
-        Array(yWidth, {operator(x, it)})})
+      val array = Array(xWidth) { _ ->
+        Array(yWidth) { operator(it, it) }
+      }
       return Array2D(xWidth, yWidth, array)
     }
 
@@ -25,7 +26,7 @@ class Array2D<T> (val xSize: Int, val ySize: Int, val array: Array<Array<T>>) {
   }
 
   inline fun forEach(operation: (T) -> Unit) {
-    array.forEach { it.forEach { operation.invoke(it) } }
+    array.forEach { it -> it.forEach { operation.invoke(it) } }
   }
 
   inline fun forEachIndexed(operation: (x: Int, y: Int, T) -> Unit) {

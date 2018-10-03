@@ -103,7 +103,8 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
     try {
       canvas = holder.lockCanvas()
       synchronized(holder) {
-        renderer!!.draw(canvas)
+        if (canvas != null)
+          renderer!!.draw(canvas)
       }
     } catch (e: Exception) {
       e.printStackTrace()

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
   <!-- App Title -->
   <string name="lib_game">MicaBytes Game Library</string>
   <string name="common_ok">OK</string>
   <!-- Default Placeholder Strings -->
-  <string name="default_date" tools:ignore="UnusedResources">January 1, 1970</string>
+  <string name="default_date" >January 1, 1970</string>
   <string name="default_error">Error</string>
   <string name="default_gui">UI element</string>
-  <string name="default_name" tools:ignore="UnusedResources">MicaBytes</string>
-  <string name="default_number" tools:ignore="UnusedResources">999999</string>
-  <string name="default_number_small" tools:ignore="UnusedResources">99</string>
-  <string name="default_placeholder" tools:ignore="UnusedResources">Placeholder</string>
-  <string name="default_plural" tools:ignore="UnusedResources">s</string>
-  <string name="default_text" tools:ignore="UnusedResources">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ipsum nisi, ultricies eget condimentum id, cursus at tortor. Nulla in nunc eget leo vestibulum volutpat. Integer a adipiscing odio.</string>
-  <string name="default_longtext" tools:ignore="UnusedResources">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ipsum nisi, ultricies eget condimentum id, cursus at tortor. Nulla in nunc eget leo vestibulum volutpat. Integer a adipiscing odio. Curabitur volutpat tristique leo, ut sagittis augue iaculis sit amet. Etiam blandit sollicitudin scelerisque. Quisque a sapien ut felis eleifend scelerisque at a risus. Integer sit amet odio dolor.</string>
+  <string name="default_name" >MicaBytes</string>
+  <string name="default_number" >999999</string>
+  <string name="default_number_small" >99</string>
+  <string name="default_placeholder" >Placeholder</string>
+  <string name="default_plural" >s</string>
+  <string name="default_text" >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ipsum nisi, ultricies eget condimentum id, cursus at tortor. Nulla in nunc eget leo vestibulum volutpat. Integer a adipiscing odio.</string>
+  <string name="default_longtext" >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ipsum nisi, ultricies eget condimentum id, cursus at tortor. Nulla in nunc eget leo vestibulum volutpat. Integer a adipiscing odio. Curabitur volutpat tristique leo, ut sagittis augue iaculis sit amet. Etiam blandit sollicitudin scelerisque. Quisque a sapien ut felis eleifend scelerisque at a risus. Integer sit amet odio dolor.</string>
   <string name="default_shorttext">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</string>
-  <string name="default_title" tools:ignore="UnusedResources">MicaBytes</string>
+  <string name="default_title" >MicaBytes</string>
   <string name="default_none">None</string>
   <!--  GameHelper Strings -->
   <string name="app_misconfigured">The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.</string>
@@ -23,7 +23,7 @@
   <string name="signin_other_error">There was an issue with sign in. Please try again later.</string>
   <string name="sign_in_failed">Failed to sign in. Please check your network connection and try again.</string>
   <string name="signed_out">Signed out of Google Play services.</string>
-  <string name="gamehelper_sign_out" tools:ignore="UnusedResources">Sign Out</string>
+  <string name="gamehelper_sign_out" >Sign Out</string>
   <string name="gamehelper_unknown_error">Unknown error.</string>
   <!--  FileNaviationg Strings -->
   <string name="filenavigation_location">Location: %1$s</string>
@@ -32,8 +32,8 @@
   <string name="stringhandler_and1">and</string>
   <string name="stringhandler_and2">, and</string>
   <!-- Error Messages -->
-  <string name="err_txt_ioexception" tools:ignore="UnusedResources">I/O error while processing the %1$s data file. Contact support@micabytes.com for help.</string>
-  <string name="err_txt_jsonnotfound" tools:ignore="UnusedResources">Could not find the %1$s data file. Contact support@micabytes.com for help.</string>
-  <string name="err_txt_jsonprocerror" tools:ignore="UnusedResources">Processing error while processing the %1$s data file. Contact support@micabytes.com for help.</string>
-  <string name="err_txt_not_signed_in" tools:ignore="UnusedResources">Not signed in to Google Play.</string>
+  <string name="err_txt_ioexception" >I/O error while processing the %1$s data file. Contact support@micabytes.com for help.</string>
+  <string name="err_txt_jsonnotfound" >Could not find the %1$s data file. Contact support@micabytes.com for help.</string>
+  <string name="err_txt_jsonprocerror" >Processing error while processing the %1$s data file. Contact support@micabytes.com for help.</string>
+  <string name="err_txt_not_signed_in" >Not signed in to Google Play.</string>
 </resources>
