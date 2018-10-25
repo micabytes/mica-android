@@ -23,13 +23,9 @@ dependencies {
   implementation fileTree(include: ['*.jar'], dir: 'libs')
   // Kotlin
   api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  // Android Support
-  api "com.android.support:support-annotations:$android_support_version"
-  api "com.android.support:support-compat:$android_support_version"
-  api "com.android.support:support-media-compat:$android_support_version"
-  api "com.android.support:support-v4:$android_support_version"
-  api "com.android.support:design:$android_support_version"
   // Components
+  api "androidx.appcompat:appcompat:$androidx_appcompat_version"
+  api "com.github.frankiesardo:linearlistview:1.0.1@aar"
   api "de.hdodenhof:circleimageview:$circleimageview_version"
   api "com.github.douglasjunior:android-simple-tooltip:$tooltip_version"
   // JSON Libraries - Remember to modify proguard-rules.pro also

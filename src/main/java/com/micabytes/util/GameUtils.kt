@@ -16,8 +16,8 @@
 
 package com.micabytes.util
 
-import android.app.Activity
-import android.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.IntentSender
 import android.util.Log
@@ -36,9 +36,9 @@ object GameUtils {
    * @param activity the Activity in which the Dialog should be displayed.
    * @param message  the message to display in the Dialog.
    */
-  private fun showAlert(activity: Activity, message: String) {
+  private fun showAlert(activity: androidx.appcompat.app.AppCompatActivity, message: String) {
     if (!activity.isFinishing) {
-      AlertDialog.Builder(activity).setMessage(message)
+      androidx.appcompat.app.AlertDialog.Builder(activity).setMessage(message)
           .setNeutralButton(android.R.string.ok, null).create().show()
     }
   }
@@ -55,7 +55,7 @@ object GameUtils {
    * @param fallbackErrorMessage a generic error message to display if the failure cannot be resolved.
    * @return true if the connection failure is resolved, false otherwise.
    */
-  fun resolveConnectionFailure(activity: Activity,
+  fun resolveConnectionFailure(activity: androidx.appcompat.app.AppCompatActivity,
                                client: GoogleApiClient, result: ConnectionResult, requestCode: Int,
                                fallbackErrorMessage: String): Boolean {
 
@@ -93,7 +93,7 @@ object GameUtils {
    * @param resIds the resource IDs to check for placeholders
    * @return true if sample is set up correctly; false otherwise.
    */
-  fun verifySampleSetup(activity: Activity, vararg resIds: Int): Boolean {
+  fun verifySampleSetup(activity: androidx.appcompat.app.AppCompatActivity, vararg resIds: Int): Boolean {
     val problems = StringBuilder()
     var problemFound = false
     problems.append("The following set up problems were found:\n\n")
@@ -129,7 +129,7 @@ object GameUtils {
    * @param actResp          the response code from onActivityResult.
    * @param errorDescription the resource id of a String for a generic error message.
    */
-  fun showActivityResultError(activity: Activity?, requestCode: Int, actResp: Int, errorDescription: Int) {
+  fun showActivityResultError(activity: androidx.appcompat.app.AppCompatActivity?, requestCode: Int, actResp: Int, errorDescription: Int) {
     if (activity == null) {
       Log.e("BaseGameUtils", "*** No Activity. Can't show failure dialog!")
       return
@@ -168,8 +168,8 @@ object GameUtils {
    * @param text     the message to display on the Dialog.
    * @return an instance of [android.app.AlertDialog]
    */
-  private fun makeSimpleDialog(activity: Activity, text: String): Dialog {
-    return AlertDialog.Builder(activity).setMessage(text)
+  private fun makeSimpleDialog(activity: androidx.appcompat.app.AppCompatActivity, text: String): Dialog {
+    return androidx.appcompat.app.AlertDialog.Builder(activity).setMessage(text)
         .setNeutralButton(android.R.string.ok, null).create()
   }
 
@@ -181,8 +181,8 @@ object GameUtils {
    * @param text     the message to display on the Dialog.
    * @return an instance of [android.app.AlertDialog]
    */
-  fun makeSimpleDialog(activity: Activity, title: String, text: String): Dialog {
-    return AlertDialog.Builder(activity)
+  fun makeSimpleDialog(activity: androidx.appcompat.app.AppCompatActivity, title: String, text: String): Dialog {
+    return androidx.appcompat.app.AlertDialog.Builder(activity)
         .setTitle(title)
         .setMessage(text)
         .setNeutralButton(android.R.string.ok, null)

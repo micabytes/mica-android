@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="wrap_content"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
   <View
@@ -51,7 +52,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:contentDescription="@string/default_gui"
-      android:src="@drawable/ui_balloonpopup_arrow_up"/>
+      app:srcCompat="@drawable/ui_balloonpopup_arrow_up"/>
 
   <ImageView
       android:id="@+id/arrow_down"
@@ -60,5 +61,5 @@
       android:layout_below="@id/BalloonPopupFooter"
       android:layout_marginTop="-1dip"
       android:contentDescription="@string/default_gui"
-      android:src="@drawable/ui_balloonpopup_arrow_down"/>
+      app:srcCompat="@drawable/ui_balloonpopup_arrow_down"/>
 </RelativeLayout>

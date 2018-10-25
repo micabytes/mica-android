@@ -3,7 +3,6 @@ package com.micabytes.ui.component
 import android.annotation.TargetApi
 import android.content.Context
 import android.database.DataSetObserver
-import android.databinding.BindingAdapter
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
@@ -11,6 +10,7 @@ import android.widget.Adapter
 import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.ListView
+import androidx.databinding.BindingAdapter
 
 import java.util.ArrayList
 

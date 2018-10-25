@@ -13,7 +13,6 @@
 package com.micabytes.util;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 
 import com.micabytes.Game;
 import com.micabytes.R;
@@ -135,7 +134,7 @@ public final class StringHandler {
    * @return String with all of the scripting code replaced appropriately
    */
   @SuppressWarnings({"MethodWithMoreThanThreeNegations", "OverlyComplexMethod", "ConstantConditions"})
-  public static String format(String text, @Nullable HashMap<String, Object> variables) {
+  public static String format(String text, HashMap<String, Object> variables) {
     String ret = resolveLineBreaks(text);
     // Markup Link Notation
     int start = ret.indexOf(SQUARE_BRACE_LEFT);

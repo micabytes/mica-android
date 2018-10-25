@@ -42,7 +42,7 @@ object GameLog {
   fun d(s: String) = d(t, s)
 
   fun d(tag: String = "MicaBytes", s: String) {
-    if (debug) Crashlytics.log(Log.DEBUG, t, s)
+    if (debug && Fabric.isInitialized()) Crashlytics.log(Log.DEBUG, t, s)
   }
 
   fun w(tag: String, s: String) {

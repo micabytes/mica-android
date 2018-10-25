@@ -12,13 +12,11 @@
  */
 package com.micabytes.app
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
-
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.games.Games
@@ -102,7 +100,7 @@ abstract class BaseActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
           + resultCode + ", intent=" + data)
       signInClicked = false
       resolvingConnectionFailure = false
-      if (resultCode == Activity.RESULT_OK) {
+      if (resultCode == androidx.appcompat.app.AppCompatActivity.RESULT_OK) {
         googleApiClient!!.connect()
       } else {
         GameUtils.showActivityResultError(this, RC_SIGN_IN, resultCode, R.string.signin_other_error)

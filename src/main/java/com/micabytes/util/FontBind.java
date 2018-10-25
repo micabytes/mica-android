@@ -1,16 +1,15 @@
 package com.micabytes.util;
 
 
-import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import androidx.databinding.BindingAdapter;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FontBind {
 
-    @BindingAdapter({"font"})
+    @BindingAdapter("font")
     public static void setFont(TextView view, String fontName) {
         view.setTypeface(FontHandler.INSTANCE.get(fontName));
     }
