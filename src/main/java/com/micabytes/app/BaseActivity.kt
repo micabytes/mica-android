@@ -108,10 +108,6 @@ abstract class BaseActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
     }
   }
 
-  abstract fun setFragment()
-
-  abstract fun openMenu()
-
   /**
    * Display a status message for the last operation at the bottom of the screen.
    *

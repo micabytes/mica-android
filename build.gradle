@@ -37,4 +37,5 @@ dependencies {
   api "com.google.firebase:firebase-ads:$firebase_ads_version"
   api "com.crashlytics.sdk.android:crashlytics:$crashlytics_version"
   api "com.google.android.gms:play-services-games:$google_play_version"
+  api "com.google.android.gms:play-services-auth:$google_play_version"
 }
