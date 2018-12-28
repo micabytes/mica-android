@@ -45,6 +45,8 @@ object GameLog {
     if (debug && Fabric.isInitialized()) Crashlytics.log(Log.DEBUG, t, s)
   }
 
+  fun w(s: String) = w(t, s)
+
   fun w(tag: String, s: String) {
     //if (debug)
     //  Log.w(tag, s);

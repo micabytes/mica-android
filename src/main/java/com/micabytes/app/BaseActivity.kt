@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 MicaByte Systems
+ * Copyright 2013 MicaBytes
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -13,76 +13,116 @@
 package com.micabytes.app
 
 import android.content.Intent
-import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.games.AchievementsClient
 import com.google.android.gms.games.Games
+import com.google.android.gms.games.PlayersClient
+import com.google.android.gms.games.SnapshotsClient
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.micabytes.R
 import com.micabytes.util.GameLog
-import com.micabytes.util.GameUtils
 
-abstract class BaseActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-  protected var googleApiClient: GoogleApiClient? = null
+
+abstract class BaseActivity : AppCompatActivity() {
+  protected var mGoogleSignInClient: GoogleSignInClient? = null
+  protected var mSnapshotsClient: SnapshotsClient? = null
+  private var mAchievementsClient: AchievementsClient? = null
+  //private var mLeaderboardsClient: LeaderboardsClient? = null
+  //private var mEventsClient: EventsClient? = null
+  private var mPlayersClient: PlayersClient? = null  //protected var googleApiClient: GoogleApiClient? = null
   private var resolvingConnectionFailure = false
   private var signInClicked = false
   private var autoStartSignInFlow = true
+  //private val mOutbox = AccomplishmentsOutbox()
 
   val isSignedIn: Boolean
-    get() = googleApiClient!!.isConnected
+    get() = GoogleSignIn.getLastSignedInAccount(this) != null
 
+  private fun signInSilently() {
+    GameLog.d("signInSilently()")
+    mGoogleSignInClient?.silentSignIn()?.addOnCompleteListener(this,
+        OnCompleteListener<GoogleSignInAccount> {
+          fun onComplete(task: Task<GoogleSignInAccount>) {
+            if (task.isSuccessful) {
+              GameLog.d("signInSilently(): success")
+            } else {
+              GameLog.logException(task.exception!!)
+              onDisconnected()
+            }
+          }
+        })
+  }
+
+  fun signIn() {
+    GameLog.d("signIn()")
+    startActivityForResult(mGoogleSignInClient?.signInIntent, RC_SIGN_IN)
+  }
+
+  fun signOut() {
+    GameLog.d("signOut()")
+    if (!isSignedIn) {
+      GameLog.w("signOut() called, but was not signed in!")
+      return
+    }
+    mGoogleSignInClient?.signOut()?.addOnCompleteListener(this) { task ->
+      val successful = task.isSuccessful
+      GameLog.d("signOut(): " + (if (successful) "success" else "failed"))
+      onDisconnected()
+    }
+  }
+
+  protected fun onConnected(googleSignInAccount: GoogleSignInAccount) {
+    GameLog.d("onConnected(): connected to Google APIs")
+    mSnapshotsClient = Games.getSnapshotsClient(this, googleSignInAccount)
+    mAchievementsClient = Games.getAchievementsClient(this, googleSignInAccount)
+    mPlayersClient = Games.getPlayersClient(this, googleSignInAccount)
+    //mLeaderboardsClient = Games.getLeaderboardsClient(this, googleSignInAccount)
+    //mEventsClient = Games.getEventsClient(this, googleSignInAccount)
+    // if we have accomplishments to push, push them
+    /*
+    if (!mOutbox.isEmpty()) {
+      pushAccomplishments()
+      Toast.makeText(this, getString(R.string.your_progress_will_be_uploaded),
+          Toast.LENGTH_LONG).show()
+    }
+    loadAndPrintEvents()
+    */
+  }
+
+  protected fun onDisconnected() {
+    GameLog.d("onDisconnected()")
+    mSnapshotsClient = null
+    mAchievementsClient = null
+    mPlayersClient = null
+  }
+
+  fun onSignInButtonClicked() {
+    signIn()
+  }
+
+  fun onSignOutButtonClicked() {
+    signOut()
+  }
+
+
+
+  // onResume?
   override fun onStart() {
     super.onStart()
-    googleApiClient!!.connect()
+    signInSilently()
   }
 
   override fun onStop() {
     super.onStop()
-    if (googleApiClient!!.isConnected) {
-      googleApiClient!!.disconnect()
+    if (isSignedIn) {
+      onDisconnected()
     }
-  }
-
-  fun googleSignIn() {
-    signInClicked = true
-    googleApiClient!!.connect()
-  }
-
-  fun googleSignOut() {
-    Games.signOut(googleApiClient!!)
-    googleApiClient!!.disconnect()
-    signInClicked = false
-    showSignInButton()
-    showMessage(getText(R.string.signed_out) as String)
-  }
-
-  protected abstract fun showSignInButton()
-
-  protected abstract fun showSignOutButton()
-
-  override fun onConnected(bundle: Bundle?) {
-    showSignOutButton()
-  }
-
-  override fun onConnectionSuspended(i: Int) {
-    GameLog.d(TAG, "onConnectionSuspended() called. Trying to reconnect.")
-    googleApiClient!!.connect()
-  }
-
-  override fun onConnectionFailed(connectionResult: ConnectionResult) {
-    GameLog.d(TAG, "onConnectionFailed() called, result: $connectionResult")
-    if (resolvingConnectionFailure) {
-      GameLog.d(TAG, "onConnectionFailed() ignoring connection failure; already resolving.")
-      return
-    }
-    if (signInClicked || autoStartSignInFlow) {
-      autoStartSignInFlow = false
-      signInClicked = false
-      resolvingConnectionFailure = GameUtils.resolveConnectionFailure(this, googleApiClient!!, connectionResult, RC_SIGN_IN, getString(R.string.signin_other_error))
-    }
-    showSignInButton()
   }
 
   override fun startActivityForResult(intent: Intent?, requestCode: Int) {
@@ -91,21 +131,6 @@ abstract class BaseActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
       sIntent = Intent()
     }
     super.startActivityForResult(sIntent, requestCode)
-  }
-
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == RC_SIGN_IN) {
-      GameLog.d(TAG, "onActivityResult with requestCode == RC_SIGN_IN, responseCode="
-          + resultCode + ", intent=" + data)
-      signInClicked = false
-      resolvingConnectionFailure = false
-      if (resultCode == androidx.appcompat.app.AppCompatActivity.RESULT_OK) {
-        googleApiClient!!.connect()
-      } else {
-        GameUtils.showActivityResultError(this, RC_SIGN_IN, resultCode, R.string.signin_other_error)
-      }
-    }
   }
 
   /**
@@ -123,6 +148,27 @@ abstract class BaseActivity : AppCompatActivity(), GoogleApiClient.ConnectionCal
     bld.setNeutralButton(getString(R.string.common_ok), null)
     bld.create().show()
   }
+
+  protected fun showProgressBar() {
+    //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  protected fun hideProgressBar() {
+    //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  protected fun showAlertBar(resId: Int) {
+    //(findViewById<View>(R.id.alert_bar) as TextView).text = getString(resId)
+    //findViewById<View>(R.id.alert_bar).visibility = View.VISIBLE
+  }
+
+  protected fun hideAlertBar() {
+    /*val alertBar = findViewById<View>(R.id.alert_bar)
+    if (alertBar != null && alertBar.visibility != View.GONE) {
+      alertBar.visibility = View.GONE
+    }*/
+  }
+
 
   companion object {
     private val TAG = BaseActivity::class.java.name
