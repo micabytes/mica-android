@@ -19,44 +19,47 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.games.AchievementsClient
 import com.google.android.gms.games.Games
 import com.google.android.gms.games.PlayersClient
 import com.google.android.gms.games.SnapshotsClient
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.micabytes.R
 import com.micabytes.util.GameLog
 
 
 abstract class BaseActivity : AppCompatActivity() {
+  protected val RC_SIGN_IN = 9001
+  protected val RC_LIST_SAVED_GAMES = 9002
   protected var mGoogleSignInClient: GoogleSignInClient? = null
-  protected var mSnapshotsClient: SnapshotsClient? = null
+  protected val mSnapshotsClient: SnapshotsClient?
+    get() {
+      if (isSignedIn) {
+        val account = GoogleSignIn.getLastSignedInAccount(this) ?: return null
+        return Games.getSnapshotsClient(this, account)
+      }
+      showMessage(getString(R.string.err_txt_not_signed_in))
+      return null
+    }
   private var mAchievementsClient: AchievementsClient? = null
-  //private var mLeaderboardsClient: LeaderboardsClient? = null
-  //private var mEventsClient: EventsClient? = null
   private var mPlayersClient: PlayersClient? = null  //protected var googleApiClient: GoogleApiClient? = null
-  private var resolvingConnectionFailure = false
-  private var signInClicked = false
-  private var autoStartSignInFlow = true
-  //private val mOutbox = AccomplishmentsOutbox()
 
   val isSignedIn: Boolean
     get() = GoogleSignIn.getLastSignedInAccount(this) != null
 
   private fun signInSilently() {
     GameLog.d("signInSilently()")
-    mGoogleSignInClient?.silentSignIn()?.addOnCompleteListener(this,
-        OnCompleteListener<GoogleSignInAccount> {
-          fun onComplete(task: Task<GoogleSignInAccount>) {
-            if (task.isSuccessful) {
-              GameLog.d("signInSilently(): success")
-            } else {
-              GameLog.logException(task.exception!!)
-              onDisconnected()
-            }
-          }
-        })
+    mGoogleSignInClient?.silentSignIn()?.addOnCompleteListener { task ->
+      if (task.isSuccessful) {
+        GameLog.d("signInSilently(): success")
+        onConnected(task.result!!)
+      } else {
+        GameLog.d("signInSilently(): ${task.exception?.message}. Code: ${(task.exception as ApiException).statusCode}")
+        GameLog.d("Silent signIn failed. Starting manual sign in!")
+        onDisconnected()
+        startActivityForResult(mGoogleSignInClient?.signInIntent, RC_SIGN_IN)
+      }
+    }
   }
 
   fun signIn() {
@@ -68,6 +71,7 @@ abstract class BaseActivity : AppCompatActivity() {
     GameLog.d("signOut()")
     if (!isSignedIn) {
       GameLog.w("signOut() called, but was not signed in!")
+      onDisconnected()
       return
     }
     mGoogleSignInClient?.signOut()?.addOnCompleteListener(this) { task ->
@@ -79,11 +83,10 @@ abstract class BaseActivity : AppCompatActivity() {
 
   protected fun onConnected(googleSignInAccount: GoogleSignInAccount) {
     GameLog.d("onConnected(): connected to Google APIs")
-    mSnapshotsClient = Games.getSnapshotsClient(this, googleSignInAccount)
+    Games.getGamesClient(this, googleSignInAccount).setViewForPopups(findViewById(android.R.id.content))
+    //mSnapshotsClient = Games.getSnapshotsClient(this, googleSignInAccount)
     mAchievementsClient = Games.getAchievementsClient(this, googleSignInAccount)
     mPlayersClient = Games.getPlayersClient(this, googleSignInAccount)
-    //mLeaderboardsClient = Games.getLeaderboardsClient(this, googleSignInAccount)
-    //mEventsClient = Games.getEventsClient(this, googleSignInAccount)
     // if we have accomplishments to push, push them
     /*
     if (!mOutbox.isEmpty()) {
@@ -97,32 +100,15 @@ abstract class BaseActivity : AppCompatActivity() {
 
   protected fun onDisconnected() {
     GameLog.d("onDisconnected()")
-    mSnapshotsClient = null
+    //mSnapshotsClient = null
     mAchievementsClient = null
     mPlayersClient = null
   }
 
-  fun onSignInButtonClicked() {
-    signIn()
-  }
-
-  fun onSignOutButtonClicked() {
-    signOut()
-  }
-
-
-
-  // onResume?
-  override fun onStart() {
-    super.onStart()
-    signInSilently()
-  }
-
-  override fun onStop() {
-    super.onStop()
-    if (isSignedIn) {
-      onDisconnected()
-    }
+  override fun onResume() {
+    super.onResume()
+    if (!isSignedIn)
+      signInSilently()
   }
 
   override fun startActivityForResult(intent: Intent?, requestCode: Int) {
@@ -150,29 +136,11 @@ abstract class BaseActivity : AppCompatActivity() {
   }
 
   protected fun showProgressBar() {
-    //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    //TODO("not implemented")
   }
 
   protected fun hideProgressBar() {
-    //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
-
-  protected fun showAlertBar(resId: Int) {
-    //(findViewById<View>(R.id.alert_bar) as TextView).text = getString(resId)
-    //findViewById<View>(R.id.alert_bar).visibility = View.VISIBLE
-  }
-
-  protected fun hideAlertBar() {
-    /*val alertBar = findViewById<View>(R.id.alert_bar)
-    if (alertBar != null && alertBar.visibility != View.GONE) {
-      alertBar.visibility = View.GONE
-    }*/
-  }
-
-
-  companion object {
-    private val TAG = BaseActivity::class.java.name
-    private const val RC_SIGN_IN = 9001
+    //TODO("not implemented")
   }
 
 }

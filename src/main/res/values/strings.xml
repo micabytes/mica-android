@@ -36,4 +36,5 @@
   <string name="err_txt_jsonnotfound" >Could not find the %1$s data file. Contact support@micabytes.com for help.</string>
   <string name="err_txt_jsonprocerror" >Processing error while processing the %1$s data file. Contact support@micabytes.com for help.</string>
   <string name="err_txt_not_signed_in" >Not signed in to Google Play.</string>
+  <string name="err_txt_no_snapshots_client" >Not able to retrieve the Google Play snapshots client. Are you signed in?</string>
 </resources>

@@ -13,18 +13,8 @@
 package com.micabytes.gfx
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.BitmapRegionDecoder
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Point
-import android.graphics.Rect
-
+import android.graphics.*
 import com.micabytes.util.GameLog
-
-import org.jetbrains.annotations.NonNls
-
 import java.io.FilterInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -36,6 +26,12 @@ import java.io.InputStream
  * elements.
  */
 open class BitmapSurfaceRenderer : SurfaceRenderer {
+  private val TAG = BitmapSurfaceRenderer::class.java.name
+  private val CACHE_THREAD = "cacheThread"
+  private val DEFAULT_CONFIG: Bitmap.Config = Bitmap.Config.RGB_565
+  private val DEFAULT_SAMPLE_SIZE = 2
+  private val DEFAULT_MEM_USAGE = 20
+  private val DEFAULT_THRESHOLD = 0.75f
   // BitmapRegionDecoder - this is the class that does the magic
   private var decoder: BitmapRegionDecoder? = null
   // The cached portion of the background image
@@ -334,8 +330,8 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
      * of this function.
      */
     private fun drawLowResolutionBackground() {
-      var w: Int = 0
-      var h: Int = 0
+      var w: Int
+      var h: Int
       synchronized(viewPort.bitmapLock) {
         if (viewPort.bitmap == null) return
         w = viewPort.bitmap!!.width
@@ -430,7 +426,7 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
               }
               // End Loading Timer
               val endTime = System.currentTimeMillis()
-              GameLog.d(TAG, "Loaded background image in " + (endTime - startTime) + " ms")
+              GameLog.i(TAG, "Loaded background image in " + (endTime - startTime) + " ms")
             } catch (ignored: OutOfMemoryError) {
               GameLog.d(TAG, "CacheThread out of memory")
               // Out of memory ERROR detected. Lower the memory allocation
@@ -531,17 +527,6 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
       GameLog.e(TAG, "OutOfMemory caught; reducing cache size to $memUsage percent.")
     }
 
-  }
-
-  companion object {
-    private val TAG = BitmapSurfaceRenderer::class.java.name
-    // Default Settings
-    @NonNls
-    private val CACHE_THREAD = "cacheThread"
-    val DEFAULT_CONFIG: Bitmap.Config = Bitmap.Config.RGB_565
-    private const val DEFAULT_SAMPLE_SIZE = 2
-    private const val DEFAULT_MEM_USAGE = 20
-    private const val DEFAULT_THRESHOLD = 0.75f
   }
 
 }

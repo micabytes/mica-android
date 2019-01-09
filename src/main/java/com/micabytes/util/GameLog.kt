@@ -30,9 +30,7 @@ object GameLog {
   private const val t = "MicaBytes"
 
   fun i(tag: String, s: String) {
-    //if (debug) Log.i(tag, s);
-    if (Fabric.isInitialized())
-      Crashlytics.log(Log.INFO, t, s)
+    if (debug) Log.i(tag, s);
   }
 
   fun v(tag: String, s: String) {
@@ -43,6 +41,7 @@ object GameLog {
 
   fun d(tag: String = "MicaBytes", s: String) {
     if (debug && Fabric.isInitialized()) Crashlytics.log(Log.DEBUG, t, s)
+    if (debug) Log.d(t, s)
   }
 
   fun w(s: String) = w(t, s)

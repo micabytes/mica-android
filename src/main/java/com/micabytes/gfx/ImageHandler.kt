@@ -133,7 +133,7 @@ class ImageHandler private constructor() {
 
     fun getDimensions(key: Int): BitmapFactory.Options {
       val opt = BitmapFactory.Options()
-      opt.inPreferredConfig = BitmapSurfaceRenderer.DEFAULT_CONFIG
+      opt.inPreferredConfig = Bitmap.Config.RGB_565
       opt.inJustDecodeBounds = true
       BitmapFactory.decodeResource(Game.instance.resources, key, opt)
       return opt
