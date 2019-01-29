@@ -38,4 +38,6 @@ dependencies {
   api "com.crashlytics.sdk.android:crashlytics:$crashlytics_version"
   api "com.google.android.gms:play-services-games:$google_play_version"
   api "com.google.android.gms:play-services-auth:$google_gms_version"
+  // Glide
+  //api "com.github.bumptech.glide:glide:4.8.0"
 }

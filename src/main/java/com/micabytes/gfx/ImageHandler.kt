@@ -16,14 +16,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.Rect
-import android.graphics.RectF
 import android.util.LruCache
-
 import com.micabytes.Game
 
 /**
@@ -33,28 +26,20 @@ import com.micabytes.Game
  * reuse bitmaps where possible. Bitmaps are also placed in a SoftReference so that - at least in
  * theory - they are purged when memory runs low.
  */
-class ImageHandler private constructor() {
-
-  init {
-    initCache()
-  }
-
-  companion object {
-    private val DEFAULT_CONFIG = Bitmap.Config.ARGB_8888
-    private const val COLOR_RED = -0xbdbdbe
-    private const val PIXEL_ROUNDING = 12
-    private const val DENSITY_MINIMUM = 0.1f
-    private const val MEGABYTE = 1024
-    var density = 0.0f
-      get() {
-        if (field < DENSITY_MINIMUM) {
-          val context = Game.instance
-          val resources = context.resources
-          val metrics = resources.displayMetrics
-          return metrics.density
-        }
-        return field
+object ImageHandler {
+  private val DEFAULT_CONFIG = Bitmap.Config.ARGB_8888
+  private const val DENSITY_MINIMUM = 0.1f
+  private const val MEGABYTE = 1024
+  var density = 0.0f
+    get() {
+      if (field < DENSITY_MINIMUM) {
+        val context = Game.instance
+        val resources = context.resources
+        val metrics = resources.displayMetrics
+        return metrics.density
       }
+      return field
+    }
     private set(i) {
       field = i
       if (density < DENSITY_MINIMUM) {
@@ -64,81 +49,90 @@ class ImageHandler private constructor() {
         field = metrics.density
       }
     }
-    // Bitmap cache
-    private var memoryCache: LruCache<Int, Bitmap>? = null
+  // Bitmap cache
+  private var memoryCache: LruCache<Int, Bitmap>? = null
 
-    private fun initCache() {
-      val memoryClass = (Game.instance.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).memoryClass
-      val memoryCacheSize = MEGABYTE * MEGABYTE * memoryClass / 8
-      memoryCache = object : LruCache<Int, Bitmap>(memoryCacheSize) {
-        override fun sizeOf(key: Int?, value: Bitmap): Int {
-          return value.rowBytes * value.height
-        }
+  init {
+    initCache()
+  }
+
+  private fun initCache() {
+    val memoryClass = (Game.instance.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager).memoryClass
+    val memoryCacheSize = MEGABYTE * MEGABYTE * memoryClass / 8
+    memoryCache = object : LruCache<Int, Bitmap>(memoryCacheSize) {
+      override fun sizeOf(key: Int?, value: Bitmap): Int {
+        return value.rowBytes * value.height
       }
     }
+  }
 
-    @JvmStatic
-    fun getJ(key: Int) = get(key)
+  @JvmStatic
+  fun getJ(key: Int) = get(key)
 
-    @JvmOverloads
-    operator fun get(key: Int, config: Bitmap.Config = DEFAULT_CONFIG): Bitmap {
-      //if (key == 0)
-      //  GameLog.d(TAG, "Null resource sent to get()");
-      if (memoryCache == null) initCache()
-      val cached = memoryCache!!.get(key)
-      if (cached != null)
-        return cached
-      val ret = loadBitmap(key, config)
-      if (ret == null) {
-        val conf = Bitmap.Config.ARGB_8888
-        return Bitmap.createBitmap(1, 1, conf)
+  @JvmOverloads
+  operator fun get(key: Int, config: Bitmap.Config = DEFAULT_CONFIG): Bitmap {
+    if (memoryCache == null) initCache()
+    val cached = memoryCache!!.get(key)
+    if (cached != null)
+      return cached
+    val ret = loadBitmap(key, config)
+    if (ret == null) {
+      val conf = Bitmap.Config.ARGB_8888
+      return Bitmap.createBitmap(1, 1, conf)
+    }
+    memoryCache!!.put(key, ret)
+    return ret
+  }
+
+  @JvmOverloads
+  operator fun get(key: String, config: Bitmap.Config = DEFAULT_CONFIG): Bitmap = get(Game.instance.resources.getIdentifier(key, "drawable", Game.instance.packageName), config)
+
+  @JvmOverloads
+  operator fun get(key: Int, width: Int, height: Int, config: Bitmap.Config = DEFAULT_CONFIG): Bitmap {
+    if (key == 0 || width == 0 || height == 0)
+      return Bitmap.createBitmap(1, 1, config)
+    val res = Game.instance.resources
+    return BitmapFactory.Options().run {
+      inJustDecodeBounds = true
+      BitmapFactory.decodeResource(res, key, this)
+      // Calculate inSampleSize
+      inSampleSize = calculateInSampleSize(this, width, height)
+      // Decode bitmap with inSampleSize set
+      inJustDecodeBounds = false
+      BitmapFactory.decodeResource(res, key, this)
+    }
+  }
+
+  private fun loadBitmap(key: Int, bitmapConfig: Bitmap.Config): Bitmap? {
+    if (key == 0) return null
+    val opts = BitmapFactory.Options()
+    opts.inPreferredConfig = bitmapConfig
+    return BitmapFactory.decodeResource(Game.instance.resources, key, opts)
+  }
+
+  fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+    // Raw height and width of image
+    val (height: Int, width: Int) = options.run { outHeight to outWidth }
+    var inSampleSize = 1
+    if (height > reqHeight || width > reqWidth) {
+      val halfHeight: Int = height / 2
+      val halfWidth: Int = width / 2
+      // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+      // height and width larger than the requested height and width.
+      while (((halfHeight / inSampleSize) >= reqHeight) && ((halfWidth / inSampleSize) >= reqWidth)) {
+        inSampleSize *= 2
       }
-      memoryCache!!.put(key, ret)
-      return ret
     }
+    return inSampleSize
+  }
 
-    @JvmOverloads
-    operator fun get(key: String, config: Bitmap.Config = DEFAULT_CONFIG): Bitmap = get(Game.instance.resources.getIdentifier(key, "drawable", Game.instance.packageName))
-
-    private fun loadBitmap(key: Int, bitmapConfig: Bitmap.Config): Bitmap? {
-      if (key == 0) return null
-      val opts = BitmapFactory.Options()
-      opts.inPreferredConfig = bitmapConfig
-      return BitmapFactory.decodeResource(Game.instance.resources, key, opts)
-    }
-
-    fun getSceneBitmap(bkg: Int, left: Int, right: Int): Bitmap? {
-      val bitmap = get(bkg)
-      val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
-      val canvas = Canvas(output)
-      val paint = Paint()
-      val rect = Rect(0, 0, bitmap.width, bitmap.height)
-      val rectF = RectF(rect)
-      paint.isAntiAlias = true
-      canvas.drawARGB(0, 0, 0, 0)
-      paint.color = COLOR_RED
-      val roundPx = PIXEL_ROUNDING.toFloat()
-      canvas.drawRoundRect(rectF, roundPx, roundPx, paint)
-      paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-      canvas.drawBitmap(bitmap, rect, rect, paint)
-      if (left > 0) {
-        canvas.drawBitmap(get(left), 0f, 0f, null)
-      }
-      if (right > 0) {
-        canvas.drawBitmap(get(right), 0f, 0f, null)
-        // canvas.drawBitmap(get(right), bitmap.getWidth()/2, 0, null);
-      }
-      return output
-    }
-
-    fun getDimensions(key: Int): BitmapFactory.Options {
-      val opt = BitmapFactory.Options()
-      opt.inPreferredConfig = Bitmap.Config.RGB_565
-      opt.inJustDecodeBounds = true
-      BitmapFactory.decodeResource(Game.instance.resources, key, opt)
-      return opt
-    }
-
+  fun getDimensions(key: Int): BitmapFactory.Options {
+    val opt = BitmapFactory.Options()
+    opt.inPreferredConfig = Bitmap.Config.RGB_565
+    opt.inJustDecodeBounds = true
+    BitmapFactory.decodeResource(Game.instance.resources, key, opt)
+    return opt
   }
 
 }
+

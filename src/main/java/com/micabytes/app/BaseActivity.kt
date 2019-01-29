@@ -57,7 +57,7 @@ abstract class BaseActivity : AppCompatActivity() {
         GameLog.d("signInSilently(): ${task.exception?.message}. Code: ${(task.exception as ApiException).statusCode}")
         GameLog.d("Silent signIn failed. Starting manual sign in!")
         onDisconnected()
-        startActivityForResult(mGoogleSignInClient?.signInIntent, RC_SIGN_IN)
+        signIn()
       }
     }
   }
@@ -77,6 +77,7 @@ abstract class BaseActivity : AppCompatActivity() {
     mGoogleSignInClient?.signOut()?.addOnCompleteListener(this) { task ->
       val successful = task.isSuccessful
       GameLog.d("signOut(): " + (if (successful) "success" else "failed"))
+      showMessage(getString(R.string.signed_out))
       onDisconnected()
     }
   }
@@ -107,8 +108,8 @@ abstract class BaseActivity : AppCompatActivity() {
 
   override fun onResume() {
     super.onResume()
-    if (!isSignedIn)
-      signInSilently()
+    //if (!isSignedIn)
+    //  signInSilently()
   }
 
   override fun startActivityForResult(intent: Intent?, requestCode: Int) {
