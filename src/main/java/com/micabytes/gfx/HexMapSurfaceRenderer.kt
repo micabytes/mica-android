@@ -12,7 +12,7 @@
  */
 package com.micabytes.gfx
 
-import android.content.Context
+import com.micabytes.Game
 import com.micabytes.map.HexMap
 
 /**
@@ -20,7 +20,7 @@ import com.micabytes.map.HexMap
  * (hexagonal) map to the screen. The game should subclass the renderer and
  * extend the drawing methods to add other game elements.
  */
-class HexMapSurfaceRenderer(con: Context) : SurfaceRenderer(con) {
+class HexMapSurfaceRenderer : SurfaceRenderer() {
   // The HexMap object
   private var gameSurfaceTileMap: HexMap? = null
 
@@ -39,15 +39,15 @@ class HexMapSurfaceRenderer(con: Context) : SurfaceRenderer(con) {
   }
 
   public override fun drawBase() {
-    gameSurfaceTileMap!!.drawBase(context, viewPort)
+    gameSurfaceTileMap!!.drawBase(Game.instance, viewPort)
   }
 
   override fun drawLayer() {
-    gameSurfaceTileMap!!.drawLayer(context, viewPort)
+    gameSurfaceTileMap!!.drawLayer(Game.instance, viewPort)
   }
 
   override fun drawFinal() {
-    gameSurfaceTileMap!!.drawFinal(context, viewPort)
+    gameSurfaceTileMap!!.drawFinal(Game.instance, viewPort)
   }
 
   override fun setMapPosition(x: Int, y: Int) {

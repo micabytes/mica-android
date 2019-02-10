@@ -40,15 +40,15 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
   var viewPosition: Point
     get() {
       val ret = Point()
-      if (renderer != null) renderer!!.getViewPosition(ret)
+      renderer?.getViewPosition(ret)
       return ret
     }
     set(p) {
-      if (renderer != null) renderer!!.setViewPosition(p.x, p.y)
+      renderer?.setViewPosition(p.x, p.y)
     }
 
   val zoom: Float
-    get() = renderer!!.zoom
+    get() = renderer?.zoom ?: 1.0F
 
   init {
     if (!isInEditMode) {
@@ -76,11 +76,11 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
   }
 
   override fun surfaceDestroyed(holder: SurfaceHolder) {
-    GameLog.d(TAG, "surfaceDestroy")
     touch.stop()
     if (renderer != null) renderer!!.stop()
     stop()
-    GameLog.d(TAG, "surfaceDestroyed")
+    listener = null
+    renderer = null
   }
 
   override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {

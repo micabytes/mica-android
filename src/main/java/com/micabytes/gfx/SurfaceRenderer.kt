@@ -20,74 +20,47 @@ import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
 
+const val MINIMUM_PIXELS_IN_VIEW = 50
+
 /**
  * SurfaceRenderer is the superclass of the renderer. The game should subclass the renderer and extend the drawing methods to add game drawing.
- *
- *
  * - BitmapSurfaceRenderer can be extended for apps that require background images
  * - TileMapSurfaceRenderer can be extended for apps that need to display TileMaps (not currently onTouchUp to date)
  * - HexMapSurfaceRenderer can be extended for apps that need to display HexMaps
  */
-abstract class SurfaceRenderer
-/**
- * Constructor for the surface renderer
- *
- * @param context We need to pass in the context, so that we have it when we create bitmaps for drawing operations later. Since the draw operations are
- * run in a thread, we can't pass the context through the thread (at least not easily)
- */
-protected constructor(// Context
-    protected val context: Context) {
+abstract class SurfaceRenderer {
   // The ViewPort
   protected val viewPort = ViewPort()
   // The Dimensions of the Game Area
-  /**
-   * Returns a Point representing the size of the scene. Don't modify the returned Point!
-   */
   val backgroundSize = Point()
-
+  // Zoom
   val zoom: Float
     get() = viewPort.zoom
 
-  /**
-   * Rendering thread started
-   */
+  // Rendering thread started
   abstract fun start()
 
-  /**
-   * Rendering thread stopped
-   */
+  // Rendering thread stopped
   abstract fun stop()
 
-  /**
-   * Rendering updates can be suspended
-   */
+  // Rendering updates can be suspended
   abstract fun suspend()
 
-  /**
-   * Rendering updates can be resumed
-   */
+  // Rendering updates can be resumed
   abstract fun resume()
 
-  /**
-   * Draw to the canvas
-   */
+  // Draw to the canvas
   fun draw(canvas: Canvas) {
     viewPort.draw(canvas)
   }
 
-  /**
-   * Draw the base (background) layer of the SurfaceView image
-   */
+  // Draw the base (background) layer of the SurfaceView image
   protected abstract fun drawBase()
 
-  /**
-   * Draw the game (dynamic) layer of the SurfaceView image
-   */
+  // Draw the game (dynamic) layer of the SurfaceView image
   protected abstract fun drawLayer()
 
-  /**
-   * Draw any final touches
-   */
+  // Draw any final touches
   protected abstract fun drawFinal()
 
   /**
@@ -136,13 +109,17 @@ protected constructor(// Context
    */
   inner class ViewPort {
     // The Bitmap of the current ViewPort
-    @get:Synchronized var bitmap: Bitmap? = null
+    @get:Synchronized
+    var bitmap: Bitmap? = null
     val bitmapLock = java.lang.Object()
     // TODO: Bitmap needs checking.
     // The rect defining where the viewport is within the scene
-    @get:Synchronized val window = Rect(0, 0, 0, 0)
+    @get:Synchronized
+    val window = Rect(0, 0, 0, 0)
     // The zoom factor of the viewport
-    @get:Synchronized @set:Synchronized var zoom = 1.0f
+    @get:Synchronized
+    @set:Synchronized
+    var zoom = 1.0f
 
     private val physicalWidth: Int
       get() = synchronized(bitmapLock) {
@@ -292,11 +269,6 @@ protected constructor(// Context
       }
     }
 
-  }
-
-  companion object {
-    // View Size Minimum
-    protected const val MINIMUM_PIXELS_IN_VIEW = 50
   }
 
 }

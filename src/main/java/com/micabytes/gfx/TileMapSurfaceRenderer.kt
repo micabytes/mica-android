@@ -12,8 +12,7 @@
  */
 package com.micabytes.gfx
 
-import android.content.Context
-
+import com.micabytes.Game
 import com.micabytes.map.TileMap
 
 /**
@@ -21,7 +20,7 @@ import com.micabytes.map.TileMap
  * screen. The game should subclass the renderer and extend the drawing methods to add other game
  * elements.
  */
-class TileMapSurfaceRenderer(con: Context) : SurfaceRenderer(con) {
+class TileMapSurfaceRenderer : SurfaceRenderer() {
   // The low resolution version of the background image
   private var gameSurfaceTileMap: TileMap? = null
 
@@ -34,15 +33,15 @@ class TileMapSurfaceRenderer(con: Context) : SurfaceRenderer(con) {
   }
 
   public override fun drawBase() {
-    gameSurfaceTileMap!!.drawBase(context, viewPort)
+    gameSurfaceTileMap!!.drawBase(Game.instance, viewPort)
   }
 
   override fun drawLayer() {
-    gameSurfaceTileMap!!.drawLayer(context, viewPort)
+    gameSurfaceTileMap!!.drawLayer(Game.instance, viewPort)
   }
 
   override fun drawFinal() {
-    gameSurfaceTileMap!!.drawFinal(context, viewPort)
+    gameSurfaceTileMap!!.drawFinal(Game.instance, viewPort)
   }
 
   override fun start() {

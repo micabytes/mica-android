@@ -61,14 +61,14 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
    */
   private val calculatedCacheWindowRect = Rect()
 
-  private constructor(con: Context) : super(con) {
+  private constructor() : super() {
     options.inPreferredConfig = DEFAULT_CONFIG
     sampleSize = DEFAULT_SAMPLE_SIZE
     memUsage = DEFAULT_MEM_USAGE
     lowResThreshold = DEFAULT_THRESHOLD
   }
 
-  protected constructor(con: Context, config: Bitmap.Config, sample: Int, memUse: Int, threshold: Float) : super(con) {
+  protected constructor(config: Bitmap.Config, sample: Int, memUse: Int, threshold: Float) : super() {
     options.inPreferredConfig = config
     sampleSize = sample
     memUsage = memUse

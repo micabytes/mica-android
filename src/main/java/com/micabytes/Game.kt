@@ -3,6 +3,7 @@ package com.micabytes
 import android.app.Activity
 import android.app.Application
 import com.micabytes.app.BaseActivityCallback
+//import com.squareup.leakcanary.LeakCanary
 
 /* The Game Application */
 class Game : Application() {
@@ -15,6 +16,14 @@ class Game : Application() {
 
   override fun onCreate() {
     super.onCreate()
+    /*
+    if (LeakCanary.isInAnalyzerProcess(this)) {
+      // This process is dedicated to LeakCanary for heap analysis.
+      // You should not init your app in this process.
+      return;
+    }
+    LeakCanary.install(this);
+    */
     registerActivityLifecycleCallbacks(mFTActivityLifecycleCallbacks)
   }
 

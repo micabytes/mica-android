@@ -36,7 +36,7 @@ public class FontBind {
 
     @BindingAdapter("pixId")
     public static void setImageViewResource(ImageView imageView, Integer bmpId) {
-        imageView.setImageBitmap(ImageHandler.getJ(bmpId));
+        if (bmpId != null) imageView.setImageBitmap(ImageHandler.getJ(bmpId));
     }
 
     @BindingAdapter("pixId")

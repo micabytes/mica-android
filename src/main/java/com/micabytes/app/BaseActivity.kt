@@ -42,7 +42,8 @@ abstract class BaseActivity : AppCompatActivity() {
       return null
     }
   private var mAchievementsClient: AchievementsClient? = null
-  private var mPlayersClient: PlayersClient? = null  //protected var googleApiClient: GoogleApiClient? = null
+  private var mPlayersClient: PlayersClient? = null
+  //protected var googleApiClient: GoogleApiClient? = null
 
   val isSignedIn: Boolean
     get() = GoogleSignIn.getLastSignedInAccount(this) != null
