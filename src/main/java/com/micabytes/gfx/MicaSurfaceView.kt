@@ -29,8 +29,8 @@ import java.util.concurrent.TimeUnit
  * events and a SurfaceRenderer to handle the drawing.
  */
 class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(context, attributes), SurfaceHolder.Callback, GestureDetector.OnGestureListener {
-  private var listener: SurfaceListener? = null
-  private var renderer: SurfaceRenderer? = null
+  var listener: SurfaceListener? = null
+  var renderer: SurfaceRenderer? = null
   private var touch: TouchHandler = TouchHandler(context)
   private var gesture: GestureDetector = GestureDetector(context, this)
   private var scaleGesture: ScaleGestureDetector = ScaleGestureDetector(context, ScaleListener())
@@ -57,14 +57,6 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
     }
   }
 
-  fun setListener(surfaceListener: SurfaceListener) {
-    listener = surfaceListener
-  }
-
-  fun setRenderer(r: SurfaceRenderer) {
-    renderer = r
-  }
-
   fun setZoom(z: Float, center: PointF) = renderer?.zoom(z, center)
 
   override fun surfaceCreated(holder: SurfaceHolder) {
@@ -88,7 +80,7 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
     val p = Point()
     renderer?.getViewPosition(p)
     setZoom(zoom, PointF(p.x.toFloat(), p.y.toFloat()))
-    renderer!!.setViewPosition(p.x, p.y)
+    renderer?.setViewPosition(p.x, p.y)
   }
 
   fun start() {
@@ -104,7 +96,7 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
       canvas = holder.lockCanvas()
       synchronized(holder) {
         if (canvas != null)
-          renderer!!.draw(canvas)
+          renderer?.draw(canvas)
       }
     } catch (e: Exception) {
       e.printStackTrace()
