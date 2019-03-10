@@ -65,7 +65,9 @@ object RandomHandler {
     return if (ret == 0 && fail >= nDice / 2) -1 else ret
   }
 
-  fun random(min: Int, max: Int): Int = min + RandomHandler.random((max-min) + 1)
+  fun random(min: Int, max: Int): Int {
+    return min + RandomHandler.random((max-min) + 1)
+  }
 
 }
 

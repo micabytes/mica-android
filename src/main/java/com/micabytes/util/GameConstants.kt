@@ -14,6 +14,7 @@ object GameConstants {
   @NonNls const val VARIANT = "variant"
   @NonNls const val DRAWABLE = "drawable"
   @NonNls const val SIZE = "size"
+  @NonNls const val TEXT = "text"
   @NonNls const val TYPE = "type"
   @NonNls const val REFERENCES = "references"
   @NonNls const val WIDTH = "width"

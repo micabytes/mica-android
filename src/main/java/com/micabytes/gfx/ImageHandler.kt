@@ -16,6 +16,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.util.LruCache
 import com.micabytes.Game
 
@@ -136,3 +137,7 @@ object ImageHandler {
 
 }
 
+fun Bitmap.flip(): Bitmap {
+  val matrix = Matrix().apply { postScale(-1f, 1f, width/2f, width/2f) }
+  return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+}
