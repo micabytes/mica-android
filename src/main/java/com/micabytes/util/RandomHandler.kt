@@ -12,7 +12,7 @@
  */
 package com.micabytes.util
 
-import java.util.Random
+import java.util.*
 import kotlin.math.floor
 
 /** RandomHandler

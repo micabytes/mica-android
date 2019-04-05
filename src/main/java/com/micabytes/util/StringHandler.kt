@@ -12,14 +12,11 @@
  */
 package com.micabytes.util
 
-import android.content.Context
-
 import com.micabytes.Game
 import com.micabytes.R
 import com.micabytes.math.Expression
-
 import org.jetbrains.annotations.NonNls
-
+import timber.log.Timber
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
@@ -74,7 +71,7 @@ fun String.mapVars(vars: Map<String, Any>): String {
     val start = ret.lastIndexOf(CBRACE_LEFT)
     val end = ret.indexOf(CBRACE_RIGHT, start)
     if (end < 0) {
-      GameLog.logException(RuntimeException("Mismatched curly braces in text: $this"))
+      Timber.e(RuntimeException("Mismatched curly braces in text: $this"))
       return ret
     }
     val s = ret.substring(start, end + 1)
@@ -112,7 +109,7 @@ private fun evaluateConditionalText(str: String, vars: Map<String, Any>): String
         v = 1
       }
     } catch (e: RuntimeException) {
-      GameLog.logException(e)
+      Timber.e(e)
       // TODO: Change?
     }
 
@@ -127,7 +124,7 @@ private fun evaluateConditionalText(str: String, vars: Map<String, Any>): String
   val text = str.substring(str.indexOf(COLON) + 1)
   val options = text.split("[|]".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
   if (options.size > 2)
-    GameLog.logException(RuntimeException("Too many options in a conditional text."))
+    Timber.e(RuntimeException("Too many options in a conditional text."))
   val ifText = options[0]
   val elseText = if (options.size == 1) "" else options[1]
   try {
@@ -136,10 +133,10 @@ private fun evaluateConditionalText(str: String, vars: Map<String, Any>): String
       return if ((obj as Number).toInt() > 0) ifText else elseText
     if (obj is Boolean)
       return if (obj) ifText else elseText
-    GameLog.logException(RuntimeException("Condition in conditional text did not resolve into a number or boolean."))
+    Timber.e(RuntimeException("Condition in conditional text did not resolve into a number or boolean."))
     return elseText
   } catch (e: RuntimeException) {
-    GameLog.logException(e)
+    Timber.e(e)
     return elseText
   }
 }
@@ -169,7 +166,7 @@ private fun evaluateTextVariable(s: String, vars: Map<String, Any>): String {
       return obj.toPlainString()
     return obj.toString()
   } catch (e: RuntimeException) {
-    GameLog.logException(e)
+    Timber.e(e)
     return "ERROR:" + s + BRACE_RIGHT
   }
 }
@@ -181,7 +178,7 @@ fun String.evaluate(): String {
     val start = ret.lastIndexOf(CBRACE_LEFT)
     val end = ret.indexOf(CBRACE_RIGHT, start)
     if (end < 0) {
-      GameLog.logException(RuntimeException("Mismatched curly braces in text: $this"))
+      Timber.e(RuntimeException("Mismatched curly braces in text: $this"))
       return ret
     }
     val s = ret.substring(start, end + 1)
@@ -208,7 +205,7 @@ private fun evaluateTextVariable(s: String): String {
       return obj.toPlainString()
     return obj.toString()
   } catch (e: RuntimeException) {
-    GameLog.logException(e)
+    Timber.e(e)
     return "ERROR:" + s + BRACE_RIGHT
   }
 }
@@ -249,7 +246,7 @@ private fun evaluateConditionalText(str: String): String {
         v = 1
       }
     } catch (e: RuntimeException) {
-      GameLog.logException(e)
+      Timber.e(e)
       // TODO: Change?
     }
 
@@ -264,7 +261,7 @@ private fun evaluateConditionalText(str: String): String {
   val text = str.substring(str.indexOf(COLON) + 1)
   val options = text.split("[|]".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
   if (options.size > 2)
-    GameLog.logException(RuntimeException("Too many options in a conditional text."))
+    Timber.e(RuntimeException("Too many options in a conditional text."))
   val ifText = options[0]
   val elseText = if (options.size == 1) "" else options[1]
   try {
@@ -273,10 +270,10 @@ private fun evaluateConditionalText(str: String): String {
       return if ((obj as Number).toInt() > 0) ifText else elseText
     if (obj is Boolean)
       return if (obj) ifText else elseText
-    GameLog.logException(RuntimeException("Condition in conditional text did not resolve into a number or boolean."))
+    Timber.e(RuntimeException("Condition in conditional text did not resolve into a number or boolean."))
     return elseText
   } catch (e: RuntimeException) {
-    GameLog.logException(e)
+    Timber.e(e)
     return elseText
   }
 
@@ -472,7 +469,7 @@ object StringHandler {
       return GameConstants.ERROR
     val tokens = DOT_SPLITTER.split(str, 2)
     if (tokens.size > 2) {
-      GameLog.e(TAG, "Failed to getStringValue variable value for object $str")
+      Timber.e(TAG, "Failed to getStringValue variable value for object $str")
       return GameConstants.ERROR
     }
     val obj = variables[tokens[0]] ?: return GameConstants.ERROR
@@ -536,18 +533,18 @@ object StringHandler {
         line = reader.readLine()
       }
     } catch (e: IOException) {
-      GameLog.logException(e)
+      Timber.e(e)
     } finally {
       try {
         reader?.close()
       } catch (e: IOException) {
-        GameLog.logException(e)
+        Timber.e(e)
       }
 
       try {
         `is`.close()
       } catch (e: IOException) {
-        GameLog.logException(e)
+        Timber.e(e)
       }
 
     }
@@ -577,7 +574,7 @@ object StringHandler {
         val val2 = tokens[1].trim { it <= ' ' }.toLowerCase(Locale.US)
         return if (getVariableValue(val1, variables) >= getVariableValue(val2, variables)) 1 else 0
       }
-      GameLog.e(TAG, "Could not parse statement fragment GEQ:$str")
+      Timber.e(TAG, "Could not parse statement fragment GEQ:$str")
       return 0
     }
     // >=
@@ -588,7 +585,7 @@ object StringHandler {
         val val2 = tokens[1].trim { it <= ' ' }.toLowerCase(Locale.US)
         return if (getVariableValue(val1, variables) <= getVariableValue(val2, variables)) 1 else 0
       }
-      GameLog.e(TAG, "Could not parse statement fragment LEQ:$str")
+      Timber.e(TAG, "Could not parse statement fragment LEQ:$str")
       return 0
     }
     // >
@@ -599,7 +596,7 @@ object StringHandler {
         val val2 = tokens[1].trim { it <= ' ' }.toLowerCase(Locale.US)
         return if (getVariableValue(val1, variables) > getVariableValue(val2, variables)) 1 else 0
       }
-      GameLog.e(TAG, "Could not parse statement fragment GT:$str")
+      Timber.e(TAG, "Could not parse statement fragment GT:$str")
       return 0
     }
     // <
@@ -610,7 +607,7 @@ object StringHandler {
         val val2 = tokens[1].trim { it <= ' ' }.toLowerCase(Locale.US)
         return if (getVariableValue(val1, variables) < getVariableValue(val2, variables)) 1 else 0
       }
-      GameLog.e(TAG, "Could not parse statement fragment LT:$str")
+      Timber.e(TAG, "Could not parse statement fragment LT:$str")
       return 0
     }
     // Set Last, as it will otherwise take precedence over all the others.
@@ -622,7 +619,7 @@ object StringHandler {
         val val2 = tokens[1].trim { it <= ' ' }.toLowerCase(Locale.US)
         return if (getVariableValue(val1, variables) == getVariableValue(val2, variables)) 1 else 0
       }
-      GameLog.e(TAG, "Could not parse statement fragment $str")
+      Timber.e(TAG, "Could not parse statement fragment $str")
       return 0
     }
     // Retrieve
@@ -640,7 +637,7 @@ object StringHandler {
 
     val tokens = DOT_SPLITTER.split(str, 2)
     if (tokens.size > 2) {
-      GameLog.e(TAG, "Failed to getVariableValue for object $str")
+      Timber.e(TAG, "Failed to getVariableValue for object $str")
       return 0
     }
     if (variables == null)

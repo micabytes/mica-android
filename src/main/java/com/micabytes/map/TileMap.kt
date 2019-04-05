@@ -17,10 +17,9 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Point
 import android.graphics.Rect
-
 import com.micabytes.gfx.SurfaceRenderer
 import com.micabytes.util.Array2D
-import com.micabytes.util.GameLog
+import timber.log.Timber
 
 /** TileMap superclass  */
 abstract class TileMap (protected val zones: Array2D<TileMapZone?>) {
@@ -50,7 +49,7 @@ abstract class TileMap (protected val zones: Array2D<TileMapZone?>) {
 
   open fun drawBase(context: Context, p: SurfaceRenderer.ViewPort) {
     if (p.bitmap == null) {
-      GameLog.e("TileMap", "Viewport bitmap is null in TileMap")
+      Timber.e("TileMap", "Viewport bitmap is null in TileMap")
       return
     }
     canvas.setBitmap(p.bitmap)

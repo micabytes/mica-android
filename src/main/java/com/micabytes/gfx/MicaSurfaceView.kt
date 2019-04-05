@@ -19,7 +19,7 @@ import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.*
 import android.widget.Scroller
-import com.micabytes.util.GameLog
+import timber.log.Timber
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -60,11 +60,11 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
   fun setZoom(z: Float, center: PointF) = renderer?.zoom(z, center)
 
   override fun surfaceCreated(holder: SurfaceHolder) {
-    GameLog.d(TAG, "surfaceCreate")
+    Timber.d(TAG, "surfaceCreate")
     if (renderer != null) renderer!!.start()
     touch.start()
     start()
-    GameLog.d(TAG, "surfaceCreated")
+    Timber.d(TAG, "surfaceCreated")
   }
 
   override fun surfaceDestroyed(holder: SurfaceHolder) {
@@ -344,7 +344,7 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
                 }
               }
             } catch (e: ArrayIndexOutOfBoundsException) {
-              GameLog.logException(e)
+              Timber.e(e)
               try {
 
                 Thread.sleep(500)

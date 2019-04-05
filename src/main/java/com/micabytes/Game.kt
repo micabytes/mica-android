@@ -3,6 +3,9 @@ package com.micabytes
 import android.app.Activity
 import android.app.Application
 import com.micabytes.app.BaseActivityCallback
+import com.micabytes.util.CrashReportingTree
+import timber.log.Timber
+
 //import com.squareup.leakcanary.LeakCanary
 
 /* The Game Application */
@@ -24,7 +27,12 @@ class Game : Application() {
     }
     LeakCanary.install(this);
     */
-    registerActivityLifecycleCallbacks(mFTActivityLifecycleCallbacks)
+    if (BuildConfig.DEBUG) {
+      Timber.plant(Timber.DebugTree())
+    } else {
+      Timber.plant(CrashReportingTree())
+    }
+    registerActivityLifecycleCallbacks (mFTActivityLifecycleCallbacks)
   }
 
   companion object {

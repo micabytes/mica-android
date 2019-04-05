@@ -12,13 +12,7 @@
  */
 package com.micabytes.gfx
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Point
-import android.graphics.PointF
-import android.graphics.Rect
-import android.graphics.RectF
+import android.graphics.*
 
 const val MINIMUM_PIXELS_IN_VIEW = 50
 

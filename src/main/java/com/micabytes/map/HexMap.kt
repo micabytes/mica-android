@@ -13,15 +13,10 @@
 package com.micabytes.map
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Point
-import android.graphics.Rect
-
+import android.graphics.*
 import com.micabytes.gfx.SurfaceRenderer
 import com.micabytes.util.Array2D
-import com.micabytes.util.GameLog
+import timber.log.Timber
 
 /**
  * HexMap superclass
@@ -69,7 +64,7 @@ abstract class HexMap protected constructor() {
 
   fun drawBase(con: Context, p: SurfaceRenderer.ViewPort) {
     if (p.bitmap == null) {
-      GameLog.e(TAG, "Viewport bitmap is null")
+      Timber.e(TAG, "Viewport bitmap is null")
       return
     }
     canvas.setBitmap(p.bitmap)

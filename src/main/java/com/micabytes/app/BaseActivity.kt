@@ -25,7 +25,7 @@ import com.google.android.gms.games.Games
 import com.google.android.gms.games.PlayersClient
 import com.google.android.gms.games.SnapshotsClient
 import com.micabytes.R
-import com.micabytes.util.GameLog
+import timber.log.Timber
 
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -49,14 +49,14 @@ abstract class BaseActivity : AppCompatActivity() {
     get() = GoogleSignIn.getLastSignedInAccount(this) != null
 
   private fun signInSilently() {
-    GameLog.d("signInSilently()")
+    Timber.d("signInSilently()")
     mGoogleSignInClient?.silentSignIn()?.addOnCompleteListener { task ->
       if (task.isSuccessful) {
-        GameLog.d("signInSilently(): success")
+        Timber.d("signInSilently(): success")
         onConnected(task.result!!)
       } else {
-        GameLog.d("signInSilently(): ${task.exception?.message}. Code: ${(task.exception as ApiException).statusCode}")
-        GameLog.d("Silent signIn failed. Starting manual sign in!")
+        Timber.d("signInSilently(): ${task.exception?.message}. Code: ${(task.exception as ApiException).statusCode}")
+        Timber.d("Silent signIn failed. Starting manual sign in!")
         onDisconnected()
         signIn()
       }
@@ -64,27 +64,27 @@ abstract class BaseActivity : AppCompatActivity() {
   }
 
   fun signIn() {
-    GameLog.d("signIn()")
+    Timber.d("signIn()")
     startActivityForResult(mGoogleSignInClient?.signInIntent, RC_SIGN_IN)
   }
 
   fun signOut() {
-    GameLog.d("signOut()")
+    Timber.d("signOut()")
     if (!isSignedIn) {
-      GameLog.w("signOut() called, but was not signed in!")
+      Timber.w("signOut() called, but was not signed in!")
       onDisconnected()
       return
     }
     mGoogleSignInClient?.signOut()?.addOnCompleteListener(this) { task ->
       val successful = task.isSuccessful
-      GameLog.d("signOut(): " + (if (successful) "success" else "failed"))
+      Timber.d("signOut(): " + (if (successful) "success" else "failed"))
       showMessage(getString(R.string.signed_out))
       onDisconnected()
     }
   }
 
   protected fun onConnected(googleSignInAccount: GoogleSignInAccount) {
-    GameLog.d("onConnected(): connected to Google APIs")
+    Timber.d("onConnected(): connected to Google APIs")
     Games.getGamesClient(this, googleSignInAccount).setViewForPopups(findViewById(android.R.id.content))
     //mSnapshotsClient = Games.getSnapshotsClient(this, googleSignInAccount)
     mAchievementsClient = Games.getAchievementsClient(this, googleSignInAccount)
@@ -101,7 +101,7 @@ abstract class BaseActivity : AppCompatActivity() {
   }
 
   protected fun onDisconnected() {
-    GameLog.d("onDisconnected()")
+    Timber.d("onDisconnected()")
     //mSnapshotsClient = null
     mAchievementsClient = null
     mPlayersClient = null

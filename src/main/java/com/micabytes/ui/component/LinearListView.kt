@@ -11,8 +11,7 @@ import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.ListView
 import androidx.databinding.BindingAdapter
-
-import java.util.ArrayList
+import java.util.*
 
 class LinearListView : LinearLayout {
   var adapter: Adapter? = null

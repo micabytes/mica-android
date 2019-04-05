@@ -12,9 +12,8 @@
  */
 package com.micabytes.gfx
 
-import android.content.Context
 import android.graphics.*
-import com.micabytes.util.GameLog
+import timber.log.Timber
 import java.io.FilterInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -110,16 +109,16 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
     // Grab the bounds of the background bitmap
     opt.inPreferredConfig = DEFAULT_CONFIG
     opt.inJustDecodeBounds = true
-    GameLog.d(TAG, "Decode inputStream for Background Bitmap")
+    Timber.d(TAG, "Decode inputStream for Background Bitmap")
     BitmapFactory.decodeStream(fixedInput, null, opt)
     fixedInput.reset()
     backgroundSize.set(opt.outWidth, opt.outHeight)
-    GameLog.d(TAG, "Background Image: w=" + opt.outWidth + " h=" + opt.outHeight)
+    Timber.d(TAG, "Background Image: w=" + opt.outWidth + " h=" + opt.outHeight)
     // Create the low resolution background
     opt.inJustDecodeBounds = false
     opt.inSampleSize = 1 shl sampleSize
     lowResBitmap = BitmapFactory.decodeStream(fixedInput, null, opt)
-    GameLog.d(TAG, "Low Res Image: w=" + lowResBitmap!!.width + " h=" + lowResBitmap!!.height)
+    Timber.d(TAG, "Low Res Image: w=" + lowResBitmap!!.width + " h=" + lowResBitmap!!.height)
     // Initialize cache
     if (cachedBitmap.state == CacheState.NOT_INITIALIZED) {
       synchronized(cachedBitmap) {
@@ -266,7 +265,7 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
       when (state) {
         BitmapSurfaceRenderer.CacheState.NOT_INITIALIZED -> {
           // Error
-          GameLog.e(TAG, "Attempting to update an uninitialized CacheBitmap")
+          Timber.e(TAG, "Attempting to update an uninitialized CacheBitmap")
           return
         }
         BitmapSurfaceRenderer.CacheState.IS_INITIALIZED -> {
@@ -420,15 +419,15 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
                     cache.bitmap = bitmap
                     cache.state = CacheState.READY
                   } else {
-                    GameLog.d(TAG, "Loading of background image cache aborted")
+                    Timber.d(TAG, "Loading of background image cache aborted")
                   }
                 }
               }
               // End Loading Timer
               val endTime = System.currentTimeMillis()
-              GameLog.i(TAG, "Loaded background image in " + (endTime - startTime) + " ms")
+              Timber.i(TAG, "Loaded background image in " + (endTime - startTime) + " ms")
             } catch (ignored: OutOfMemoryError) {
-              GameLog.d(TAG, "CacheThread out of memory")
+              Timber.d(TAG, "CacheThread out of memory")
               // Out of memory ERROR detected. Lower the memory allocation
               cacheBitmapOutOfMemoryError()
               synchronized(cache) {
@@ -524,7 +523,7 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
      */
     private fun cacheBitmapOutOfMemoryError() {
       if (memUsage > 0) memUsage -= 1
-      GameLog.e(TAG, "OutOfMemory caught; reducing cache size to $memUsage percent.")
+      Timber.e(TAG, "OutOfMemory caught; reducing cache size to $memUsage percent.")
     }
 
   }

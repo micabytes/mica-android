@@ -27,7 +27,8 @@ dependencies {
   api "androidx.appcompat:appcompat:$androidx_appcompat_version"
   api "de.hdodenhof:circleimageview:$circleimageview_version"
   api "com.github.douglasjunior:android-simple-tooltip:$tooltip_version"
-  // JSON Libraries - Remember to modify proguard-rules.pro also
+  api "com.jakewharton.timber:timber:$timber_version"
+  // JSON Libraries - Remember to modify proguard-rules.pro
   api "com.fasterxml.jackson.core:jackson-core:$jackson_version"
   api "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
   api "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
