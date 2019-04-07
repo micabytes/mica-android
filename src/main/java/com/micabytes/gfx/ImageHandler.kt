@@ -67,6 +67,12 @@ object ImageHandler {
     }
   }
 
+  fun getBitmap(id: String): Bitmap {
+    val context = Game.instance
+    val key = context.resources.getIdentifier(id, "Drawable", context.packageName)
+    return get(key)
+  }
+
   @JvmStatic
   fun getJ(key: Int) = get(key)
 

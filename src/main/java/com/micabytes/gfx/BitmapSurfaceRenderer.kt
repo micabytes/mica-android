@@ -226,12 +226,12 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
     }
 
     internal fun stop() {
-      cacheThread!!.setRunning(false)
-      cacheThread!!.interrupt()
+      cacheThread?.setRunning(false)
+      cacheThread?.interrupt()
       var retry = true
       while (retry) {
         try {
-          cacheThread!!.join()
+          cacheThread?.join()
           retry = false
         } catch (ignored: InterruptedException) {
           // Wait until thread is dead
@@ -425,7 +425,7 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
               }
               // End Loading Timer
               val endTime = System.currentTimeMillis()
-              Timber.i(TAG, "Loaded background image in " + (endTime - startTime) + " ms")
+              Timber.i("Loaded background image in ${(endTime - startTime)} ms")
             } catch (ignored: OutOfMemoryError) {
               Timber.d(TAG, "CacheThread out of memory")
               // Out of memory ERROR detected. Lower the memory allocation
