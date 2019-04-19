@@ -425,9 +425,9 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
               }
               // End Loading Timer
               val endTime = System.currentTimeMillis()
-              Timber.i("Loaded background image in ${(endTime - startTime)} ms")
+              Timber.d("Loaded background image in ${(endTime - startTime)} ms")
             } catch (ignored: OutOfMemoryError) {
-              Timber.d(TAG, "CacheThread out of memory")
+              Timber.w(TAG, "CacheThread out of memory")
               // Out of memory ERROR detected. Lower the memory allocation
               cacheBitmapOutOfMemoryError()
               synchronized(cache) {
