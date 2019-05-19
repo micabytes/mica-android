@@ -25,6 +25,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.games.GamesActivityResultCodes
 import com.micabytes.R
+import timber.log.Timber
 
 object GameUtils {
 
@@ -129,7 +130,7 @@ object GameUtils {
    */
   fun showActivityResultError(activity: androidx.appcompat.app.AppCompatActivity?, requestCode: Int, actResp: Int, errorDescription: Int) {
     if (activity == null) {
-      Log.e("BaseGameUtils", "*** No Activity. Can't show failure dialog!")
+      Timber.e("*** No Activity. Can't show failure dialog!")
       return
     }
     var errorDialog: Dialog?
@@ -149,8 +150,7 @@ object GameUtils {
             activity, requestCode, null)
         if (errorDialog == null) {
           // get fallback dialog
-          Log.e("BaseGamesUtils",
-              "No standard error dialog available. Making fallback dialog.")
+          Timber.e("No standard error dialog available. Making fallback dialog.")
           errorDialog = makeSimpleDialog(activity, activity.getString(errorDescription))
         }
       }

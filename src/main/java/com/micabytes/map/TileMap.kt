@@ -49,7 +49,7 @@ abstract class TileMap (protected val zones: Array2D<TileMapZone?>) {
 
   open fun drawBase(context: Context, p: SurfaceRenderer.ViewPort) {
     if (p.bitmap == null) {
-      Timber.e("TileMap", "Viewport bitmap is null in TileMap")
+      Timber.e("Viewport bitmap is null in TileMap")
       return
     }
     canvas.setBitmap(p.bitmap)
