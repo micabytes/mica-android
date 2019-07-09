@@ -36,8 +36,6 @@ object GameConstants {
   @NonNls const val ITEMS = "items"
   @NonNls const val USAGE = "usage"
   @NonNls const val EFFECTS = "effects"
-  @NonNls const val EFFECT_IDS = "effectIds"
-  @NonNls const val EFFECT_VALUES = "effectValues"
   @NonNls const val DECIMAL = "%d"
   @NonNls const val FILE = "file"
   @NonNls const val CONDITION = "condition"

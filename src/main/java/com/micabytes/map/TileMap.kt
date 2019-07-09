@@ -31,7 +31,7 @@ abstract class TileMap (protected val zones: Array2D<TileMapZone?>) {
   protected var windowTop: Int = 0
   protected var windowRight: Int = 0
   protected var windowBottom: Int = 0
-  var standardOrientation = true
+  val standardOrientation = true
   // Draw
   protected val canvas = Canvas()
 

@@ -2,11 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-  compileSdkVersion 28
-
+  compileSdkVersion versions.compileSdk
   defaultConfig {
-    minSdkVersion 14
-    targetSdkVersion 28
+    minSdkVersion versions.minSdk
+    targetSdkVersion versions.compileSdk
   }
   dataBinding {
     enabled = true
