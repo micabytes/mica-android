@@ -259,25 +259,25 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
     /**
      * Draw the CacheBitmap on the viewport
      */
-    internal fun draw(p: SurfaceRenderer.ViewPort) {
+    internal fun draw(p: ViewPort) {
       if (cacheThread == null) return
       var bmp: Bitmap? = null
       when (state) {
-        BitmapSurfaceRenderer.CacheState.NOT_INITIALIZED -> {
+        CacheState.NOT_INITIALIZED -> {
           // Error
           Timber.e(TAG, "Attempting to update an uninitialized CacheBitmap")
           return
         }
-        BitmapSurfaceRenderer.CacheState.IS_INITIALIZED -> {
+        CacheState.IS_INITIALIZED -> {
           // Start data caching
           state = CacheState.BEGIN_UPDATE
           cacheThread!!.interrupt()
         }
-        BitmapSurfaceRenderer.CacheState.BEGIN_UPDATE, BitmapSurfaceRenderer.CacheState.IS_UPDATING -> {
+        CacheState.BEGIN_UPDATE, CacheState.IS_UPDATING -> {
         }
-        BitmapSurfaceRenderer.CacheState.DISABLED -> {
+        CacheState.DISABLED -> {
         }
-        BitmapSurfaceRenderer.CacheState.READY -> if (bitmap == null || !cacheWindow.contains(p.window)) {
+        CacheState.READY -> if (bitmap == null || !cacheWindow.contains(p.window)) {
           // No data loaded OR No cached data available
           state = CacheState.BEGIN_UPDATE
           cacheThread!!.interrupt()
@@ -380,7 +380,7 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
         while (running && cache.state != CacheState.BEGIN_UPDATE) {
           try {
 
-            Thread.sleep(Integer.MAX_VALUE.toLong())
+            sleep(Integer.MAX_VALUE.toLong())
           } catch (ignored: InterruptedException) {
             // NOOP
           }

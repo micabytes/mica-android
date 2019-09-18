@@ -105,7 +105,7 @@ abstract class SurfaceRenderer {
     // The Bitmap of the current ViewPort
     @get:Synchronized
     var bitmap: Bitmap? = null
-    val bitmapLock = java.lang.Object()
+    val bitmapLock = Object()
     // TODO: Bitmap needs checking.
     // The rect defining where the viewport is within the scene
     @get:Synchronized
@@ -113,7 +113,7 @@ abstract class SurfaceRenderer {
     // The zoom factor of the viewport
     @get:Synchronized
     @set:Synchronized
-    var zoom = 1.0f
+    var zoom = 10.0f // 1.0f
 
     private val physicalWidth: Int
       get() = synchronized(bitmapLock) {
@@ -133,8 +133,8 @@ abstract class SurfaceRenderer {
     fun setOrigin(xp: Int, yp: Int) {
       var x = xp
       var y = yp
-      var w: Int = 0
-      var h: Int = 0
+      var w: Int
+      var h: Int
       synchronized(this) {
         w = window.width()
         h = window.height()
@@ -155,8 +155,8 @@ abstract class SurfaceRenderer {
     }
 
     fun setSize(w: Int, h: Int) {
-      var x: Int = 0
-      var y: Int = 0
+      var x: Int
+      var y: Int
       synchronized(bitmapLock) {
         if (bitmap != null) {
           bitmap!!.recycle()
@@ -194,7 +194,7 @@ abstract class SurfaceRenderer {
     }
 
     fun zoom(factor: Float, screenFocus: PointF) {
-      var screenSize: PointF = PointF(0F, 0F)
+      var screenSize: PointF
       synchronized(bitmapLock) {
         if (bitmap == null) return
         screenSize = PointF(bitmap!!.width.toFloat(), bitmap!!.height.toFloat())

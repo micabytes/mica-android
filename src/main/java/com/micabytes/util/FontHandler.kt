@@ -1,11 +1,8 @@
 package com.micabytes.util
 
-import android.content.Context
 import android.graphics.Typeface
 import com.micabytes.Game
 import java.util.*
-import android.graphics.drawable.Drawable
-import android.os.Build
 
 
 object FontHandler {

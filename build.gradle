@@ -30,7 +30,7 @@ dependencies {
   // JSON Libraries - Remember to modify proguard-rules.pro
   api "com.fasterxml.jackson.core:jackson-core:$jackson_version"
   api "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
-  api "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
+  api "com.fasterxml.jackson.core:jackson-databind:$jackson_databind_version"
   // Fabric
   api "com.google.firebase:firebase-core:$firebase_core_version"
   api "com.google.firebase:firebase-ads:$firebase_ads_version"

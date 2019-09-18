@@ -14,9 +14,11 @@ package com.micabytes.map
 
 import android.content.Context
 import android.graphics.*
+import com.google.android.gms.common.util.Hex
 import com.micabytes.gfx.SurfaceRenderer
 import com.micabytes.util.Array2D
 import timber.log.Timber
+import kotlin.math.max
 
 /**
  * HexMap superclass
@@ -24,20 +26,30 @@ import timber.log.Timber
  * This implementation works for pointy-side up HexMaps. Needs to be adjusted
  * if it is going to be used for flat-side up maps.
  */
-abstract class HexMap protected constructor() {
-  private lateinit var zones: Array2D<TileMapZone>
-  private var scaleFactor: Float = 0.toFloat()
-  private val viewPortOrigin = Point()
-  private val viewPortSize = Point()
-  private val destRect = Rect()
-  private var windowLeft: Int = 0
-  private var windowTop: Int = 0
-  private var windowRight: Int = 0
-  private var windowBottom: Int = 0
-  private val tilePaint = Paint()
-  protected val tileText = Paint()
-  // Draw
+abstract class HexMap protected constructor(protected val zones: Array2D<HexTile?>) {
+  var scaleFactor: Float = 0.toFloat()
+  val viewPortOrigin = Point()
+  val viewPortSize = Point()
+  val destRect = Rect()
+  var windowLeft: Int = 0
+  var windowTop: Int = 0
+  var windowRight: Int = 0
+  var windowBottom: Int = 0
+  val tilePaint = Paint()
   protected val canvas = Canvas()
+  var standardOrientation = true
+
+  val renderHeight: Int
+    get() = mapHeight * tileRect.height()
+
+  val renderWidth: Int
+    get() = mapWidth * tileRect.width()
+
+  val tileHeight: Int
+    get() = tileRect.height()
+
+  val tileWidth: Int
+    get() = tileRect.width()
 
   init {
     tilePaint.isAntiAlias = true
@@ -50,21 +62,9 @@ abstract class HexMap protected constructor() {
 
   }
 
-  fun setHexMap(map: Array<Array<TileMapZone>>) {
-    /*zones = Array(map.size) { arrayOfNulls(map[0].size) }
-    for (i in map.indices) {
-      System.arraycopy(map[i], 0, zones[i], 0, map[i].size)
-    }
-    mapHeight = map[0].size
-    mapWidth = map.size
-    tileRect = Rect(0, 0, map[0][0].width, map[0][0].height)
-    tileSlope = tileRect.height() / 4
-    */
-  }
-
-  fun drawBase(con: Context, p: SurfaceRenderer.ViewPort) {
+  open fun drawBase(con: Context, p: SurfaceRenderer.ViewPort) {
     if (p.bitmap == null) {
-      Timber.e(TAG, "Viewport bitmap is null")
+      Timber.e("Viewport bitmap is null in HexMap")
       return
     }
     canvas.setBitmap(p.bitmap)
@@ -77,7 +77,7 @@ abstract class HexMap protected constructor() {
     windowRight = viewPortOrigin.x + viewPortSize.x
     windowBottom = viewPortOrigin.y + viewPortSize.y
     var xOffset: Int
-    if (isStandardOrientation) {
+    if (standardOrientation) {
       // Clip tiles not in view
       var iMn = windowLeft / tileRect.width() - 1
       if (iMn < 0) iMn = 0
@@ -96,7 +96,7 @@ abstract class HexMap protected constructor() {
             destRect.top = ((j * (tileRect.height() - tileSlope) - windowTop - yOffset) / scaleFactor).toInt()
             destRect.right = ((i * tileRect.width() + tileRect.width() - windowLeft - xOffset) / scaleFactor).toInt()
             destRect.bottom = ((j * (tileRect.height() - tileSlope) + tileRect.height() - windowTop - yOffset) / scaleFactor).toInt()
-            zones[i, j].drawBase(canvas, tileRect, destRect, tilePaint)
+            zones[i, j]?.drawBase(canvas, tileRect, destRect, tilePaint)
           }
         }
       }
@@ -119,7 +119,7 @@ abstract class HexMap protected constructor() {
             destRect.top = (((mapHeight - j - 1) * (tileRect.height() - tileSlope) - windowTop - yOffset) / scaleFactor).toInt()
             destRect.right = (((mapWidth - i - 1) * tileRect.width() + tileRect.width() - windowLeft - xOffset) / scaleFactor).toInt()
             destRect.bottom = (((mapHeight - j - 1) * (tileRect.height() - tileSlope) + tileRect.height() - windowTop - yOffset) / scaleFactor).toInt()
-            zones[i, j].drawBase(canvas, tileRect, destRect, tilePaint)
+            zones[i, j]?.drawBase(canvas, tileRect, destRect, tilePaint)
           }
         }
       }
@@ -132,9 +132,48 @@ abstract class HexMap protected constructor() {
 
   abstract fun getViewPortOrigin(x: Int, y: Int, p: SurfaceRenderer.ViewPort): Point
 
+  internal fun distance(from: HexTile, to: HexTile): Int =
+    (Math.abs(from.cubeX - to.cubeX) + Math.abs(from.cubeY - to.cubeY) + Math.abs(from.cubeZ - to.cubeZ)) / 2
+
+  fun get(cube: Triple<Int, Int, Int>): HexTile? {
+    val pos = cubeToOddR(cube)
+    return zones[pos.first, pos.second]
+  }
+
+  fun hex_linedraw(a: HexTile, b: HexTile): List<HexTile> {
+    val N = distance(a, b)
+    val results = ArrayList<HexTile>()
+    val step: Double = 1.0 / max(N, 1);
+    for (i in 0..N) {
+      val cube = cube_round(
+        hex_lerp(
+          Triple(a.cubeX.toDouble(), a.cubeY.toDouble(), a.cubeZ.toDouble()),
+          Triple(b.cubeX.toDouble(), b.cubeY.toDouble(), b.cubeZ.toDouble()),
+          step * i
+        )
+      )
+      val tile = get(cube)
+      if (tile != null) results.add(tile)
+    }
+    return results;
+  }
+
+  fun isLineOfSight(a: HexTile, b: HexTile): Boolean {
+    val N = distance(a, b)
+    val step: Double = 1.0 / max(N, 1);
+    for (i in 1 until N) {
+      val cube1 = cube_round(hex_lerp(Triple(a.cubeX + 1e-6, a.cubeY + 1e-6, a.cubeZ - 2e-6), Triple(b.cubeX + 1e-6, b.cubeY + 1e-6, b.cubeZ - 2e-6), step * i))
+      val cube2 = cube_round(hex_lerp(Triple(a.cubeX - 1e-6, a.cubeY - 1e-6, a.cubeZ + 2e-6), Triple(b.cubeX - 1e-6, b.cubeY - 1e-6, b.cubeZ + 2e-6), step * i))
+      val tile1 = get(cube1)
+      val tile2 = get(cube2)
+      if ((tile1 != a && tile1 != b && tile1?.isOpaque() == true) &&
+        (tile2 != a && tile2 != b && tile2?.isOpaque() == true))
+        return false
+    }
+    return true
+  }
+
   companion object {
-    private val TAG = HexMap::class.java.name
-    var isStandardOrientation = true
     var mapWidth = 0
     var mapHeight = 0
     var tileSlope = 0

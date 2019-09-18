@@ -11,6 +11,7 @@ object GameConstants {
   @NonNls const val AVAILABILITY = "availability"
   @NonNls const val LEVEL = "level"
   @NonNls const val VALUE = "value"
+  @NonNls const val VALUES = "values"
   @NonNls const val VARIANT = "variant"
   @NonNls const val DRAWABLE = "drawable"
   @NonNls const val SIZE = "size"

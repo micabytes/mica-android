@@ -10,45 +10,56 @@ import com.micabytes.gfx.ImageHandler
 import com.micabytes.math.Triangular
 import timber.log.Timber
 import java.io.IOException
+import java.lang.Exception
+import java.lang.NumberFormatException
 import java.util.*
 
 class Trait {
   val id: String
   val name: String
+  var description: String
+  private val values: HashMap<String, Any> = HashMap()
+  /*
   var value: Int
   var isKnown: Boolean = false
-  var description: String
   val type: TraitType
   private val references: HashMap<String, String> = HashMap()
-  private val effects: HashMap<String, Int> = HashMap()
+  */
   private val pixId: Int
 
   @JsonCreator
   constructor(
-      @JsonProperty(GameConstants.ID) oid: String,
-      @JsonProperty(GameConstants.NAME) nam: String,
-      @JsonProperty(GameConstants.VALUE) vl: Int?,
-      @JsonProperty(GameConstants.DESCRIPTION) dsc: String?,
-      @JsonProperty(GameConstants.TYPE) typ: String?,
-      @JsonProperty(GameConstants.REFERENCES) rfs: List<String>?,
-      @JsonProperty(GameConstants.EFFECTS) efs: List<String>?
+    @JsonProperty(GameConstants.ID) oid: String,
+    @JsonProperty(GameConstants.NAME) nam: String,
+    @JsonProperty(GameConstants.DESCRIPTION) dsc: String?,
+    @JsonProperty(GameConstants.VALUES) vls: List<String>?
   ) {
     id = oid
     name = nam
-    value = vl ?: 0
     description = dsc ?: ""
-    type = if (typ != null) TraitType.valueOf(typ) else TraitType.NONE
-    rfs?.forEach {
-      val ref = it.split(":")
-      references[ref[0]] = ref[1]
-    }
-    efs?.forEach {
-      val eff = it.split(":")
-      if (eff.size > 1) effects[eff[0]] = eff[1].toInt()
-      else effects[it] = 1
+    vls?.forEach {
+      val vle = it.split(":")
+      if (vle.size > 1) {
+        val k = vle[0].trim()
+        val v = vle[1].trim()
+        if (v.equals("true", ignoreCase = true) || v.equals("false", ignoreCase = true)) {
+          values[k.toLowerCase(Locale.US)] = v.toBoolean()
+        }
+        else {
+          try {
+            values[k.toLowerCase(Locale.US)] = v.toInt()
+          } catch (e: NumberFormatException) {
+            values[k.toLowerCase(Locale.US)] = v
+          }
+        }
+      } else values[it.trim().toLowerCase(Locale.US)] = true
     }
     val con = Game.instance
-    val drawId = con.resources.getIdentifier("tr_" + id.toLowerCase(Locale.US), GameConstants.DRAWABLE, con.packageName)
+    val drawId = con.resources.getIdentifier(
+      "tr_" + id.toLowerCase(Locale.US),
+      GameConstants.DRAWABLE,
+      con.packageName
+    )
     pixId = if (drawId != 0) drawId else R.drawable.ic_blank
     //if (pixId == R.drawable.ic_blank) Timber.e("Trait", "Unable to identify bitmap for trait: " + id)
   }
@@ -56,56 +67,34 @@ class Trait {
   constructor(old: Trait) {
     id = old.id
     name = old.name
-    value = old.value
-    isKnown = old.isKnown
     description = old.description
-    type = old.type
-    references.putAll(old.references)
-    effects.putAll(old.effects)
-    pixId = old.pixId
-  }
-
-  constructor(old: Trait, v: Int) {
-    id = old.id
-    name = old.name
-    value = v
-    isKnown = old.isKnown
-    description = old.description
-    type = old.type
-    references.putAll(old.references)
-    effects.putAll(old.effects)
-    pixId = old.pixId
-  }
-
-  constructor(old: Trait, v: Int, k: Int, r: Map<String, String>) {
-    id = old.id
-    name = old.name
-    value = v
-    isKnown = (k > 0)
-    description = old.description
-    type = old.type
-    references.putAll(old.references)
-    references.putAll(r)
-    effects.putAll(old.effects)
+    values.putAll(old.values)
     pixId = old.pixId
   }
 
   @Throws(IOException::class)
-  fun saveStreamed(g: JsonGenerator) {
-    val known = if (isKnown) 1 else 0
-    var saveString = "$id|$value|$known"
-    for ((keyR, valueR) in references) saveString += "|$keyR:$valueR"
+  fun saveStream(g: JsonGenerator) {
+    var saveString = id
+    for ((keyR, valueR) in values) {
+      if (keyR.first().isLowerCase()) saveString += "|$keyR:$valueR"
+    }
     g.writeString(saveString)
   }
 
   @Throws(IOException::class)
-  fun saveFull(g: JsonGenerator) = g.writeString("$id|$name|$value|$description")
+  fun saveFull(g: JsonGenerator) {
+    g.writeString("$id|$name|$description|value:${getIntValue("VALUE")}")
+  }
 
   fun getRefName(): String {
-    if (references.isEmpty()) return name
+    if (values.isEmpty()) return name
     val world = Game.world
     return try {
-      val ref: Map<String, Any> = references.mapValues { world?.get(it.value)?.name ?: "" }
+      val ref: Map<String, Any> = values.mapValues {
+        if (it.value is String) {
+          world?.get(it.value.toString())?.name ?: ""
+        } else ""
+      }.filter { it.value.isNotEmpty() }
       name.mapVars(ref)
     } catch (e: GameObjectNotFoundException) {
       Timber.e(e)
@@ -113,15 +102,16 @@ class Trait {
     }
   }
 
-  val level: Int
-    get() = Triangular.reverse(value)
-
   val info: String
     get() {
-      if (references.isEmpty()) return description
+      if (values.isEmpty()) return description
       val world = Game.world
       return try {
-        val ref: Map<String, Any> = references.mapValues { world?.get(it.value)?.name ?: "" }
+        val ref: Map<String, Any> = values.mapValues {
+          if (it.value is String) {
+            world?.get(it.value.toString())?.name ?: ""
+          } else ""
+        }.filter { it.value.isNotEmpty() }
         description.mapVars(ref)
       } catch (e: GameObjectNotFoundException) {
         Timber.e(e)
@@ -129,35 +119,67 @@ class Trait {
       }
     }
 
-  fun setReference(key: String, value: String) {
-    references[key] = value
+  fun hasValue(s: String): Boolean = values.containsKey(s.toLowerCase(Locale.US))
+
+  fun getBooleanValue(s: String): Boolean {
+    if (values.containsKey(s)) {
+      val ret = values[s]
+      if (ret is Boolean)
+        return ret
+      else
+        return true
+    }
+    return false
   }
 
-  fun hasReference(key: String) = references.containsKey(key)
-
-  fun getReference(key: String): String = references[key]!!
-
-  fun getEffect(s: String): Int {
-    if (effects.containsKey(s))
-      return (effects[s])!!
+  fun getIntValue(s: String): Int {
+    val k = s.toLowerCase(Locale.US)
+    if (values.containsKey(k)) {
+      val ret = values[k]
+      if (ret is Int)
+        return ret
+      else
+        return 0
+    }
     return 0
   }
 
-  fun hasEffect(s: String): Boolean = effects.containsKey(s)
+  fun getStringValue(s: String): String {
+    val k = s.toLowerCase(Locale.US)
+    if (values.containsKey(k)) {
+      val ret = values[k]
+      if (ret is String)
+        return ret
+      else
+        return ret.toString()
+    }
+    return ""
+  }
 
-  fun getEffects(pattern: String): List<String> {
+  fun getValues(pattern: String): List<String> {
     val ret = ArrayList<String>()
-    for ((key, _) in effects) {
-      if (key.startsWith(pattern)) ret.add(key)
+    for ((key, _) in values) {
+      if (key.startsWith(pattern.toLowerCase(Locale.US))) ret.add(key)
     }
     return ret
+  }
+
+  fun setValue(key: String, value: Any) {
+    values[key.toLowerCase(Locale.US)] = value
+  }
+
+  fun hasValue(key: String, value: Any): Boolean {
+    val k = key.toLowerCase(Locale.US)
+    if (values.containsKey(k))
+      return values[k] == value
+    return false
   }
 
   val bitmap: Bitmap
     get() = ImageHandler[pixId]
 
   companion object {
-    val NONE = Trait("", "", 0, "", "NONE", null, null)
+    val NONE = Trait("", "", "", null)
   }
 
 }

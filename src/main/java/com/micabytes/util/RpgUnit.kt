@@ -7,11 +7,11 @@ interface RpgUnit {
   val typeId: String
   val value: Int
   val size: Int
-  //val groupSize: Int
   val capacity: Int
   val wealth: Int
   fun increaseWealth(n: Int)
   fun decreaseWealth(n: Int)
-  fun hasItem(it: String): Boolean
-  val factionId : String
+  fun hasItem(itm: String): Boolean
+  //val groupSize: Int
+  //val factionId : String
 }

@@ -139,9 +139,9 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
       }
       MotionEvent.ACTION_UP -> {
         listener!!.onTouchUp(x, y)
-        return touch.onTouchUp(event)
+        return touch.onTouchUp()
       }
-      MotionEvent.ACTION_CANCEL -> return touch.cancel(event)
+      MotionEvent.ACTION_CANCEL -> return touch.cancel()
       else -> {
       }
     }
@@ -149,7 +149,7 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
   }
 
   override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-    return touch.fling(e1, e2, velocityX, velocityY)
+    return touch.fling(velocityX, velocityY)
   }
 
   override fun onDown(e: MotionEvent): Boolean {
@@ -261,21 +261,21 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
       return false
     }
 
-    internal fun onTouchUp(event: MotionEvent): Boolean {
+    internal fun onTouchUp(): Boolean {
       if (state == TouchState.IN_TOUCH) {
         state = TouchState.NO_TOUCH
       }
       return true
     }
 
-    internal fun cancel(event: MotionEvent): Boolean {
+    internal fun cancel(): Boolean {
       if (state == TouchState.IN_TOUCH) {
         state = TouchState.NO_TOUCH
       }
       return true
     }
 
-    internal fun fling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+    internal fun fling(velocityX: Float, velocityY: Float): Boolean {
       renderer!!.getViewPosition(viewCenterAtFling)
       renderer!!.getViewSize(viewSizeAtFling)
       synchronized(this) {
@@ -312,7 +312,7 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
         while (running) {
           while (touchHandler.state != TouchState.ON_FLING && touchHandler.state != TouchState.IN_FLING) {
             try {
-              Thread.sleep(Integer.MAX_VALUE.toLong())
+              sleep(Integer.MAX_VALUE.toLong())
             } catch (ignored: InterruptedException) {
               // NOOP
             }
@@ -336,7 +336,7 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
 
                   try {
 
-                    Thread.sleep(5)
+                    sleep(5)
                   } catch (ignored: InterruptedException) {
                     // NOOP
                   }
@@ -347,7 +347,7 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
               Timber.e(e)
               try {
 
-                Thread.sleep(500)
+                sleep(500)
               } catch (ignored: InterruptedException) {
                 // NOOP
               }

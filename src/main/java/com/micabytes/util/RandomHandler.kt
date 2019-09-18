@@ -66,7 +66,7 @@ object RandomHandler {
   }
 
   fun random(min: Int, max: Int): Int {
-    return min + RandomHandler.random((max-min) + 1)
+    return min + random((max-min) + 1)
   }
 
 }
