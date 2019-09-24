@@ -1,5 +1,15 @@
 package com.micabytes.util
 
+enum class Group {
+  LEADER,
+  SECOND,
+  PATHFINDER,
+  MAINTAINER,
+  HEALER,
+  ATTENDANT,
+  MEMBER;
+}
+
 enum class TraitType {
   NONE,
   BELIEF,

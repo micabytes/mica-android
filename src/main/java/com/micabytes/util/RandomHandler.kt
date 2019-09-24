@@ -41,6 +41,8 @@ object RandomHandler {
     return ret
   }
 
+  fun roll(nDice: Int) = roll(nDice, 10, 7)
+
   /** Roll a number of "wild" dice of a given size, with a given toHit number.
    * Wild dice means that he maximum roll counts as a hit and is rerolled (and can generate further
    * hits).

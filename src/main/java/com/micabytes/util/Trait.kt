@@ -7,10 +7,8 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.micabytes.Game
 import com.micabytes.R
 import com.micabytes.gfx.ImageHandler
-import com.micabytes.math.Triangular
 import timber.log.Timber
 import java.io.IOException
-import java.lang.Exception
 import java.lang.NumberFormatException
 import java.util.*
 
