@@ -12,18 +12,12 @@ import java.io.IOException
 import java.lang.NumberFormatException
 import java.util.*
 
-class Trait {
+open class Trait {
   val id: String
   val name: String
   var description: String
-  private val values: HashMap<String, Any> = HashMap()
-  /*
-  var value: Int
-  var isKnown: Boolean = false
-  val type: TraitType
-  private val references: HashMap<String, String> = HashMap()
-  */
-  private val pixId: Int
+  protected val values: HashMap<String, Any> = HashMap()
+  protected var pixId: Int
 
   @JsonCreator
   constructor(
@@ -71,7 +65,7 @@ class Trait {
   }
 
   @Throws(IOException::class)
-  fun saveStream(g: JsonGenerator) {
+  open fun saveStream(g: JsonGenerator) {
     var saveString = id
     for ((keyR, valueR) in values) {
       if (keyR.first().isLowerCase()) saveString += "|$keyR:$valueR"
@@ -122,10 +116,10 @@ class Trait {
   fun getBooleanValue(s: String): Boolean {
     if (values.containsKey(s)) {
       val ret = values[s]
-      if (ret is Boolean)
-        return ret
+      return if (ret is Boolean)
+        ret
       else
-        return true
+        true
     }
     return false
   }
@@ -181,4 +175,3 @@ class Trait {
   }
 
 }
-

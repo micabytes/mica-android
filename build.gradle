@@ -1,5 +1,5 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
 
 android {
   compileSdkVersion versions.compileSdk
@@ -13,13 +13,13 @@ android {
   buildTypes {
     release {
       minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
     }
   }
 }
 
 dependencies {
-  implementation fileTree(include: ['*.jar'], dir: 'libs')
+  implementation fileTree(include: ["*.jar"], dir: "libs")
   // Kotlin
   api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   // Components
@@ -39,9 +39,9 @@ dependencies {
   api "com.google.android.gms:play-services-auth:$google_gms_version"
   // Glide
   //api "com.github.bumptech.glide:glide:4.8.0"
-  //debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
-  //releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+  //debugImplementation "com.squareup.leakcanary:leakcanary-android:1.6.3"
+  //releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:1.6.3"
   // Optional, if you use support library fragments:
-  //debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
+  //debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:1.6.3"
 
 }
