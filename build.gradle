@@ -1,44 +1,46 @@
-apply plugin: "com.android.library"
-apply plugin: "kotlin-android"
+plugins {
+  id "com.android.library"
+  id "kotlin-android"
+}
 
 android {
-  compileSdkVersion versions.compileSdk
+  compileSdkVersion = versions.compileSdk
   defaultConfig {
-    minSdkVersion versions.minSdk
-    targetSdkVersion versions.compileSdk
+    minSdkVersion(versions.minSdk)
+    targetSdkVersion(versions.compileSdk)
   }
   dataBinding {
     enabled = true
   }
   buildTypes {
     release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+      minifyEnabled = false
+      proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
     }
   }
 }
 
 dependencies {
-  implementation fileTree(include: ["*.jar"], dir: "libs")
+  implementation(fileTree(include: ["*.jar"], dir: "libs"))
   // Kotlin
-  api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  api("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
   // Components
-  api "androidx.appcompat:appcompat:$androidx_appcompat_version"
-  api "de.hdodenhof:circleimageview:$circleimageview_version"
-  api "com.github.douglasjunior:android-simple-tooltip:$tooltip_version"
-  api "com.jakewharton.timber:timber:$timber_version"
+  api("androidx.appcompat:appcompat:$androidx_appcompat_version")
+  api("de.hdodenhof:circleimageview:$circleimageview_version")
+  api("com.github.douglasjunior:android-simple-tooltip:$tooltip_version")
+  api("com.jakewharton.timber:timber:$timber_version")
   // JSON Libraries - Remember to modify proguard-rules.pro
-  api "com.fasterxml.jackson.core:jackson-core:$jackson_version"
-  api "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
-  api "com.fasterxml.jackson.core:jackson-databind:$jackson_databind_version"
+  api("com.fasterxml.jackson.core:jackson-core:$jackson_version")
+  api("com.fasterxml.jackson.core:jackson-annotations:$jackson_version")
+  api("com.fasterxml.jackson.core:jackson-databind:$jackson_databind_version")
   // Fabric
-  api "com.google.firebase:firebase-core:$firebase_core_version"
-  api "com.google.firebase:firebase-ads:$firebase_ads_version"
-  api "com.crashlytics.sdk.android:crashlytics:$crashlytics_version"
-  api "com.google.android.gms:play-services-games:$google_play_version"
-  api "com.google.android.gms:play-services-auth:$google_gms_version"
+  api("com.google.firebase:firebase-core:$firebase_core_version")
+  api("com.google.firebase:firebase-ads:$firebase_ads_version")
+  api("com.crashlytics.sdk.android:crashlytics:$crashlytics_version")
+  api("com.google.android.gms:play-services-games:$google_play_version")
+  api("com.google.android.gms:play-services-auth:$google_gms_version")
   // Glide
-  //api "com.github.bumptech.glide:glide:4.8.0"
+  //api("com.github.bumptech.glide:glide:4.8.0"
   //debugImplementation "com.squareup.leakcanary:leakcanary-android:1.6.3"
   //releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:1.6.3"
   // Optional, if you use support library fragments:

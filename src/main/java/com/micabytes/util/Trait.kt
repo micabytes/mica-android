@@ -30,21 +30,22 @@ open class Trait {
     name = nam
     description = dsc ?: ""
     vls?.forEach {
-      val vle = it.split(":")
-      if (vle.size > 1) {
-        val k = vle[0].trim()
-        val v = vle[1].trim()
-        if (v.equals("true", ignoreCase = true) || v.equals("false", ignoreCase = true)) {
-          values[k.toLowerCase(Locale.US)] = v.toBoolean()
-        }
-        else {
-          try {
-            values[k.toLowerCase(Locale.US)] = v.toInt()
-          } catch (e: NumberFormatException) {
-            values[k.toLowerCase(Locale.US)] = v
+      if (it.isNotEmpty()) {
+        val vle = it.split(":")
+        if (vle.size > 1) {
+          val k = vle[0].trim()
+          val v = vle[1].trim()
+          if (v.equals("true", ignoreCase = true) || v.equals("false", ignoreCase = true)) {
+            values[k.toLowerCase(Locale.US)] = v.toBoolean()
+          } else {
+            try {
+              values[k.toLowerCase(Locale.US)] = v.toInt()
+            } catch (e: NumberFormatException) {
+              values[k.toLowerCase(Locale.US)] = v
+            }
           }
-        }
-      } else values[it.trim().toLowerCase(Locale.US)] = true
+        } else values[it.trim().toLowerCase(Locale.US)] = true
+      }
     }
     val con = Game.instance
     val drawId = con.resources.getIdentifier(
