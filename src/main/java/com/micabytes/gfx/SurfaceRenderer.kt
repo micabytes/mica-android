@@ -106,7 +106,7 @@ abstract class SurfaceRenderer {
     @get:Synchronized
     var bitmap: Bitmap? = null
     val bitmapLock = Object()
-    // TODO: Bitmap needs checking.
+    // Bitmap needs checking.
     // The rect defining where the viewport is within the scene
     @get:Synchronized
     val window = Rect(0, 0, 0, 0)

@@ -116,7 +116,7 @@ open class Trait {
 
   fun getBooleanValue(s: String): Boolean {
     if (values.containsKey(s)) {
-      val ret = values[s]
+      val ret = values[s.toLowerCase(Locale.US)]
       return if (ret is Boolean)
         ret
       else

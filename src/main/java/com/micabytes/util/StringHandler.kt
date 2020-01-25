@@ -110,7 +110,6 @@ private fun evaluateConditionalText(str: String, vars: Map<String, Any>): String
       }
     } catch (e: RuntimeException) {
       Timber.e(e)
-      // TODO: Change?
     }
 
     if (v >= options.size)
@@ -143,7 +142,7 @@ private fun evaluateConditionalText(str: String, vars: Map<String, Any>): String
 
 fun evaluate(str: String, vars: Map<String, Any>): Any {
   if (str.isEmpty()) return BigDecimal.ONE
-  // TODO: Note that this means that spacing will mess up expressions; needs to be fixed
+  // Note that this means that spacing will mess up expressions; needs to be fixed
   var ev: String = ""
   try {
     ev = str
@@ -247,7 +246,6 @@ private fun evaluateConditionalText(str: String): String {
       }
     } catch (e: RuntimeException) {
       Timber.e(e)
-      // TODO: Change?
     }
 
     if (v >= options.size)
@@ -281,7 +279,7 @@ private fun evaluateConditionalText(str: String): String {
 
 fun evaluate(str: String): Any {
   if (str.isEmpty()) return BigDecimal.ONE
-  // TODO: Note that this means that spacing will mess up expressions; needs to be fixed
+  //  Note that this means that spacing will mess up expressions; needs to be fixed
   var ev: String = ""
   try {
     ev = str
@@ -299,7 +297,7 @@ fun evaluate(str: String): Any {
 
 
 
-/* TODO: Deprecate most of this functionality. */
+/* Deprecate most of this functionality. */
 /**
  * StringHandler is a wrapper around the standard Android getString functionality. It is primarily
  * used for formatting magic on strings using the GameObjectInterface.

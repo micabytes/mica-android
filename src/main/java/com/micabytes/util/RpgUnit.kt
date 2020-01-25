@@ -12,6 +12,4 @@ interface RpgUnit {
   fun increaseWealth(n: Int)
   fun decreaseWealth(n: Int)
   fun hasItem(itm: String): Boolean
-  //val groupSize: Int
-  //val factionId : String
 }

@@ -137,12 +137,4 @@ abstract class BaseActivity : AppCompatActivity() {
     bld.create().show()
   }
 
-  protected fun showProgressBar() {
-    //TODO("not implemented")
-  }
-
-  protected fun hideProgressBar() {
-    //TODO("not implemented")
-  }
-
 }
