@@ -22,7 +22,7 @@ import com.micabytes.util.Array2D
 import timber.log.Timber
 
 /** TileMap superclass  */
-abstract class TileMap (protected val zones: Array2D<TileMapZone?>) {
+abstract class TileMap(protected val zones: Array2D<TileMapZone?>) {
   protected var scaleFactor: Float = 0.toFloat()
   protected val viewPortOrigin = Point()
   protected val viewPortSize = Point()
@@ -32,6 +32,7 @@ abstract class TileMap (protected val zones: Array2D<TileMapZone?>) {
   protected var windowRight: Int = 0
   protected var windowBottom: Int = 0
   val standardOrientation = true
+
   // Draw
   protected val canvas = Canvas()
 
@@ -95,9 +96,14 @@ abstract class TileMap (protected val zones: Array2D<TileMapZone?>) {
   abstract fun getViewPortOrigin(x: Int, y: Int, p: SurfaceRenderer.ViewPort): Point
 
   companion object {
-    @JvmStatic var mapWidth: Int = 0
-    @JvmStatic var mapHeight: Int = 0
-    @JvmStatic var tileRect = Rect()
+    @JvmStatic
+    var mapWidth: Int = 0
+
+    @JvmStatic
+    var mapHeight: Int = 0
+
+    @JvmStatic
+    var tileRect = Rect()
   }
 
 }

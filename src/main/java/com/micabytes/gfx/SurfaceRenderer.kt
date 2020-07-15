@@ -25,8 +25,10 @@ const val MINIMUM_PIXELS_IN_VIEW = 50
 abstract class SurfaceRenderer {
   // The ViewPort
   protected val viewPort = ViewPort()
+
   // The Dimensions of the Game Area
   val backgroundSize = Point()
+
   // Zoom
   val zoom: Float
     get() = viewPort.zoom
@@ -106,10 +108,12 @@ abstract class SurfaceRenderer {
     @get:Synchronized
     var bitmap: Bitmap? = null
     val bitmapLock = Object()
+
     // Bitmap needs checking.
     // The rect defining where the viewport is within the scene
     @get:Synchronized
     val window = Rect(0, 0, 0, 0)
+
     // The zoom factor of the viewport
     @get:Synchronized
     @set:Synchronized
@@ -207,8 +211,8 @@ abstract class SurfaceRenderer {
         val w1 = RectF(window)
         val w2 = RectF()
         val sceneFocus = PointF(
-            w1.left + screenFocus.x / screenSize.x * w1.width(),
-            w1.top + screenFocus.y / screenSize.y * w1.height()
+          w1.left + screenFocus.x / screenSize.x * w1.width(),
+          w1.top + screenFocus.y / screenSize.y * w1.height()
         )
         var w2Width = physicalWidth * newZoom
         if (w2Width > sceneSize.x) {

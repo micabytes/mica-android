@@ -48,6 +48,7 @@ internal const val HASHMARK = '#'
 internal const val INCLUDE = "INCLUDE"
 internal const val GLUE = "<>"
 internal const val DIVERT = "->"
+
 //internal val DIVERT_END = "END"
 internal const val THIS = "this"
 internal const val FUNCTION = "function"
@@ -101,12 +102,12 @@ private fun evaluateConditionalText(str: String, vars: Map<String, Any>): String
     var v = 0
     try {
       val value = evaluate(condition, vars)
-      if (value is Boolean) {
-        v = if (value) 1 else 0
+      v = if (value is Boolean) {
+        if (value) 1 else 0
       } else if (value is BigDecimal) {
-        v = value.toInt()
+        value.toInt()
       } else {
-        v = 1
+        1
       }
     } catch (e: RuntimeException) {
       Timber.e(e)
@@ -146,10 +147,10 @@ fun evaluate(str: String, vars: Map<String, Any>): Any {
   var ev: String = ""
   try {
     ev = str
-        .replace(AND_WS.toRegex(), " && ")
-        .replace(OR_WS.toRegex(), " || ")
-        .replace(TRUE_LC.toRegex(), TRUE)
-        .replace(FALSE_LC.toRegex(), FALSE)
+      .replace(AND_WS.toRegex(), " && ")
+      .replace(OR_WS.toRegex(), " || ")
+      .replace(TRUE_LC.toRegex(), TRUE)
+      .replace(FALSE_LC.toRegex(), FALSE)
     val ex = Expression(ev)
     return ex.eval(vars)
   } catch (e: Expression.ExpressionException) {
@@ -237,12 +238,12 @@ private fun evaluateConditionalText(str: String): String {
     var v = 0
     try {
       val value = evaluate(condition)
-      if (value is Boolean) {
-        v = if (value) 1 else 0
+      v = if (value is Boolean) {
+        if (value) 1 else 0
       } else if (value is BigDecimal) {
-        v = value.toInt()
+        value.toInt()
       } else {
-        v = 1
+        1
       }
     } catch (e: RuntimeException) {
       Timber.e(e)
@@ -283,18 +284,16 @@ fun evaluate(str: String): Any {
   var ev: String = ""
   try {
     ev = str
-        .replace(AND_WS.toRegex(), " && ")
-        .replace(OR_WS.toRegex(), " || ")
-        .replace(TRUE_LC.toRegex(), TRUE)
-        .replace(FALSE_LC.toRegex(), FALSE)
+      .replace(AND_WS.toRegex(), " && ")
+      .replace(OR_WS.toRegex(), " || ")
+      .replace(TRUE_LC.toRegex(), TRUE)
+      .replace(FALSE_LC.toRegex(), FALSE)
     val ex = Expression(ev)
     return ex.eval(HashMap())
   } catch (e: Expression.ExpressionException) {
     throw RuntimeException("Error evaluating expression " + ev + ". " + e.message, e)
   }
 }
-
-
 
 
 /* Deprecate most of this functionality. */
@@ -305,6 +304,7 @@ fun evaluate(str: String): Any {
 object StringHandler {
   private val TAG = StringHandler::class.java.name
   private val NOT_FOUND = -1
+
   @NonNls
   val AT = '@'
   val HASH_MARK = '#'
@@ -312,27 +312,37 @@ object StringHandler {
   val NULL = "null"
   val PLUS = '+'
   val UNDERSCORE = '_'
+
   @NonNls
   val WHITESPACE = ' '
+
   @NonNls
   val SQUARE_BRACE_LEFT = '['
   val SQUARE_BRACE_RIGHT = ']'
   val BRACKET_LEFT = '('
   val BRACKET_RIGHT = ')'
+
   @NonNls
   val DOT = "."
+
   @NonNls
   val WAVY_BRACE_LEFT = "{"
+
   @NonNls
   val WAVY_BRACE_RIGHT = "}"
+
   @NonNls
   val LINE_SEPARATOR = "line.separator"
+
   @NonNls
-  val EOL = System.getProperty(LINE_SEPARATOR)
+  val EOL: String = System.getProperty(LINE_SEPARATOR)
+
   @NonNls
   val SLASH = "/"
+
   @NonNls
   val SLASH_N = "\\n"
+
   @NonNls
   val NUMBER_STRING = "%d"
   private val AND_SPLITTER = Pattern.compile("[&]")
@@ -342,7 +352,7 @@ object StringHandler {
   private val LT_SPLITTER = Pattern.compile("[<]+")
   private val EQ_SPLITTER = Pattern.compile("[=]+")
   private val DOT_SPLITTER = Pattern.compile("[.]")
-  val UNDERSCORE_SPLITTER = Pattern.compile("[_]")
+  val UNDERSCORE_SPLITTER: Pattern = Pattern.compile("[_]")
 
   operator fun get(id: Int): String {
     val c = Game.instance

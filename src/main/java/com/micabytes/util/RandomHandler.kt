@@ -46,7 +46,7 @@ object RandomHandler {
   /** Roll a number of "wild" dice of a given size, with a given toHit number.
    * Wild dice means that he maximum roll counts as a hit and is rerolled (and can generate further
    * hits).
-   * @return Number of dice that beat (or equalled) he Hit number
+   * @return Number of dice that beat (or equalled) the Hit number
    */
   fun wRoll(nDice: Int, dSize: Int, toHit: Int): Int {
     if (nDice == 0) return 0
@@ -64,11 +64,11 @@ object RandomHandler {
         ret++
       }
     }
-    return if (ret == 0 && fail >= nDice / 2) -1 else ret
+    return ret
   }
 
   fun random(min: Int, max: Int): Int {
-    return min + random((max-min) + 1)
+    return min + random((max - min) + 1)
   }
 
 }

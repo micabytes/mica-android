@@ -32,7 +32,7 @@ class Game : Application() {
     } else {
       Timber.plant(CrashReportingTree())
     }
-    registerActivityLifecycleCallbacks (mFTActivityLifecycleCallbacks)
+    registerActivityLifecycleCallbacks(mFTActivityLifecycleCallbacks)
   }
 
   companion object {

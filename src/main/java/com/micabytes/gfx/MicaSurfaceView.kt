@@ -184,8 +184,9 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
         scaleFactor = 1 / scaleFactor
         screenFocus.set(detector.focusX, detector.focusY)
         renderer!!.zoom(
-            scaleFactor,
-            screenFocus)
+          scaleFactor,
+          screenFocus
+        )
         invalidate()
       }
       lastScaleTime = System.currentTimeMillis()
@@ -283,14 +284,15 @@ class MicaSurfaceView(context: Context, attributes: AttributeSet) : SurfaceView(
         state = TouchState.ON_FLING
         renderer!!.suspend()
         scroller.fling(
-            viewCenterAtFling.x,
-            viewCenterAtFling.y,
-            (-velocityX).toInt(),
-            (-velocityY).toInt(),
-            0,
-            backgroundSizeAtFling.x - viewSizeAtFling.x,
-            0,
-            backgroundSizeAtFling.y - viewSizeAtFling.y)
+          viewCenterAtFling.x,
+          viewCenterAtFling.y,
+          (-velocityX).toInt(),
+          (-velocityY).toInt(),
+          0,
+          backgroundSizeAtFling.x - viewSizeAtFling.x,
+          0,
+          backgroundSizeAtFling.y - viewSizeAtFling.y
+        )
         if (touchThread != null)
           touchThread!!.interrupt()
       }

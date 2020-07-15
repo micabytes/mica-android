@@ -167,7 +167,8 @@ abstract class HexMap protected constructor(protected val zones: Array2D<HexTile
       val tile1 = get(cube1)
       val tile2 = get(cube2)
       if ((tile1 != a && tile1 != b && tile1?.isOpaque() == true) &&
-        (tile2 != a && tile2 != b && tile2?.isOpaque() == true))
+        (tile2 != a && tile2 != b && tile2?.isOpaque() == true)
+      )
         return false
     }
     return true

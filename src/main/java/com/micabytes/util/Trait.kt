@@ -129,10 +129,10 @@ open class Trait {
     val k = s.toLowerCase(Locale.US)
     if (values.containsKey(k)) {
       val ret = values[k]
-      if (ret is Int)
-        return ret
+      return if (ret is Int)
+        ret
       else
-        return 0
+        0
     }
     return 0
   }
@@ -141,10 +141,10 @@ open class Trait {
     val k = s.toLowerCase(Locale.US)
     if (values.containsKey(k)) {
       val ret = values[k]
-      if (ret is String)
-        return ret
+      return if (ret is String)
+        ret
       else
-        return ret.toString()
+        ret.toString()
     }
     return ""
   }

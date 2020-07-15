@@ -2,11 +2,12 @@ plugins {
   id("com.android.library")
   kotlin("android")
   kotlin("android.extensions")
+  kotlin("kapt")
 }
 
 android {
   compileSdkVersion(Versions.targetSdk)
-  dataBinding.isEnabled = true
+  buildFeatures.dataBinding = true
   defaultConfig {
     minSdkVersion(Versions.minSdk)
     targetSdkVersion(Versions.targetSdk)
@@ -25,9 +26,12 @@ dependencies {
   api(Depends.Kotlin.stdlib)
   // Components
   api(Depends.AndroidX.appcompat)
+  api(Depends.AndroidX.appcompat)
   api(Depends.AndroidLib.circleImageView)
   api(Depends.AndroidLib.simpleToolTip)
   api(Depends.AndroidLib.timber)
+  api(Depends.LifeCycle.extensions)
+  api(Depends.LifeCycle.viewmodel)
   // JSON Libraries - Remember to modify proguard-rules.pro
   api(Depends.Jackson.core)
   api(Depends.Jackson.annotations)

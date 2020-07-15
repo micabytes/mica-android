@@ -12,8 +12,10 @@ import java.util.*
  * @param originalExpression The expression. E.g. `"2.4*sin(3)/(2-4)"` or `"sin(y)>0 & max(z, 3)>3"`
  * @param defaultMathContext The [MathContext] to use by default
  */
-class Expression constructor(originalExpression: String,
-                             private val defaultMathContext: MathContext = MathContext.DECIMAL32) {
+class Expression constructor(
+  originalExpression: String,
+  private val defaultMathContext: MathContext = MathContext.DECIMAL32
+) {
   /**
    * Abstract definition of a supported operator. An operator is defined by its name (pattern), precedence and if it is
    * left- or right associative.
@@ -27,14 +29,19 @@ class Expression constructor(originalExpression: String,
 
   /// The [MathContext] to use for calculations.
   private var mc = defaultMathContext
+
   /// The cached RPN (Reverse Polish Notation) of the expression.
   private var rpn: List<String>? = null
+
   ///The characters (other than letters and digits) allowed as the first character in a variable.
   private val firstVarChars: String = "_"
+
   /// The characters (other than letters and digits) allowed as the second or subsequent characters in a variable.
   private val varChars: String = "_."
+
   /// All defined operators with name and implementation.
   private val operators = TreeMap<String, Operator>(String.CASE_INSENSITIVE_ORDER)
+
   /// The current infix expression, with optional variable substitutions.
   private var expression: String = originalExpression.trim { it <= ' ' }
 
@@ -53,10 +60,10 @@ class Expression constructor(originalExpression: String,
     }
 
     private fun peekNextChar(): Char {
-      if (pos < input.length - 1) {
-        return input[pos + 1]
+      return if (pos < input.length - 1) {
+        input[pos + 1]
       } else {
-        return 0.toChar()
+        0.toChar()
       }
     }
 
@@ -72,35 +79,37 @@ class Expression constructor(originalExpression: String,
       }
       if (Character.isDigit(ch)) {
         while ((Character.isDigit(ch) || ch == decimalSeparator
-            || ch == 'e' || ch == 'E'
-            || ch == minusSign && token.isNotEmpty()
-            && ('e' == token[token.length - 1] || 'E' == token[token.length - 1])
-            || ch == '+' && token.isNotEmpty()
-            && ('e' == token[token.length - 1] || 'E' == token[token.length - 1])) && pos < input.length) {
+              || ch == 'e' || ch == 'E'
+              || ch == minusSign && token.isNotEmpty()
+              && ('e' == token[token.length - 1] || 'E' == token[token.length - 1])
+              || ch == '+' && token.isNotEmpty()
+              && ('e' == token[token.length - 1] || 'E' == token[token.length - 1])) && pos < input.length
+        ) {
           token.append(input[pos++])
           ch = if (pos == input.length) '0' else input[pos]
         }
       } else if (ch == minusSign
-          && Character.isDigit(peekNextChar())
-          && ("(" == previousToken
-          || "," == previousToken
-          || previousToken == null
-          || operators.containsKey(previousToken!!))) {
+        && Character.isDigit(peekNextChar())
+        && ("(" == previousToken
+            || "," == previousToken
+            || previousToken == null
+            || operators.containsKey(previousToken!!))
+      ) {
         token.append(minusSign)
         pos++
         token.append(next())
-      } else if (Character.isLetter(ch) || firstVarChars.indexOf(ch) >= 0 || ch == '_' ) { // || ch == '\"'
+      } else if (Character.isLetter(ch) || firstVarChars.indexOf(ch) >= 0 || ch == '_') { // || ch == '\"'
         while ((Character.isLetter(ch)
-            || Character.isDigit(ch)
-            || varChars.indexOf(ch) >= 0
-            || ch == '_' || ch == '.' || ch == '\"'
-            //|| token.isEmpty() && firstVarChars.indexOf(ch) >= 0
-            ) && pos < input.length) {
+              || Character.isDigit(ch)
+              || varChars.indexOf(ch) >= 0
+              || ch == '_' || ch == '.' || ch == '\"'
+              //|| token.isEmpty() && firstVarChars.indexOf(ch) >= 0
+              ) && pos < input.length
+        ) {
           token.append(input[pos++])
           ch = if (pos == input.length) '0' else input[pos]
         }
-      }
-      else if (ch == '\"') {
+      } else if (ch == '\"') {
         token.append(input[pos++])
         ch = if (pos == input.length) '0' else input[pos]
         while (ch != '\"' && pos < input.length) {
@@ -112,15 +121,15 @@ class Expression constructor(originalExpression: String,
           token.append(ch)
           pos++
         }
-      }
-      else if (ch == '(' || ch == ')' || ch == ',') {
+      } else if (ch == '(' || ch == ')' || ch == ',') {
         token.append(ch)
         pos++
       } else {
         while (!Character.isLetter(ch) && !Character.isDigit(ch)
-            && firstVarChars.indexOf(ch) < 0 && !Character.isWhitespace(ch)
-            && ch != '(' && ch != ')' && ch != ','
-            && pos < input.length) {
+          && firstVarChars.indexOf(ch) < 0 && !Character.isWhitespace(ch)
+          && ch != '(' && ch != ')' && ch != ','
+          && pos < input.length
+        ) {
           token.append(input[pos])
           pos++
           ch = if (pos == input.length) '0' else input[pos]
@@ -192,12 +201,18 @@ class Expression constructor(originalExpression: String,
         val remainderOf2 = v2m.remainder(BigDecimal.ONE)
         val n2IntPart = v2m.subtract(remainderOf2)
         val intPow = v1.pow(n2IntPart.intValueExact(), mc)
-        val doublePow = BigDecimal(Math.pow(dn1,
-            remainderOf2.toDouble()))
+        val doublePow = BigDecimal(
+          Math.pow(
+            dn1,
+            remainderOf2.toDouble()
+          )
+        )
         var result = intPow.multiply(doublePow, mc)
         if (signOf2 == -1) {
-          result = BigDecimal.ONE.divide(result, mc.precision,
-              RoundingMode.HALF_UP)
+          result = BigDecimal.ONE.divide(
+            result, mc.precision,
+            RoundingMode.HALF_UP
+          )
         }
         return result
       }
@@ -379,7 +394,7 @@ class Expression constructor(originalExpression: String,
     val outputQueue = ArrayList<String>()
     val stack = Stack<String>()
     val tokenizer = Tokenizer(expression)
-    var lastFunction: String? = null
+    val lastFunction: String? = null
     var previousToken: String? = null
     while (tokenizer.hasNext()) {
       val token = tokenizer.next()
@@ -408,8 +423,9 @@ class Expression constructor(originalExpression: String,
         val o1: Operator = operators[token]!!
         var token2: String? = if (stack.isEmpty()) null else stack.peek()
         while (token2 != null
-            && operators.containsKey(token2)
-            && (o1.isLeftAssoc && o1.precedence <= operators[token2]!!.precedence || o1.precedence < operators[token2]!!.precedence)) {
+          && operators.containsKey(token2)
+          && (o1.isLeftAssoc && o1.precedence <= operators[token2]!!.precedence || o1.precedence < operators[token2]!!.precedence)
+        ) {
           outputQueue.add(stack.pop())
           token2 = if (stack.isEmpty()) null else stack.peek()
         }
@@ -556,12 +572,16 @@ class Expression constructor(originalExpression: String,
   companion object {
     /// Definition of PI as a constant, can be used in expressions as variable.
     val PI = BigDecimal("3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679")
+
     /// Definition of e: "Euler's number" as a constant, can be used in expressions as variable.
     val e = BigDecimal("2.71828182845904523536028747135266249775724709369995957496696762772407663")
+
     /// What character to use for decimal separators.
     private const val decimalSeparator = '.'
+
     /// What character to use for minus sign (negative values).
     private const val minusSign = '-'
+
     /// The BigDecimal representation of the left parenthesis, used for parsing varying numbers of function parameters.
     private val PARAMS_START = object : LazyNumber {
       override fun eval(): BigDecimal {

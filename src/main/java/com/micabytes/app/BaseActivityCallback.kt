@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 
-class BaseActivityCallback: Application.ActivityLifecycleCallbacks {
+class BaseActivityCallback : Application.ActivityLifecycleCallbacks {
 
   var currentActivity: Activity? = null
 

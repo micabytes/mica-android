@@ -8,7 +8,7 @@ class Array2D<T>(val xSize: Int, val ySize: Int, val array: Array<Array<T>>) {
     inline operator fun <reified T> invoke() = Array2D(0, 0, Array(0) { emptyArray<T>() })
 
     inline operator fun <reified T> invoke(xWidth: Int, yWidth: Int) =
-        Array2D(xWidth, yWidth, Array(xWidth) { arrayOfNulls<T>(yWidth) })
+      Array2D(xWidth, yWidth, Array(xWidth) { arrayOfNulls<T>(yWidth) })
 
     inline operator fun <reified T> invoke(xWidth: Int, yWidth: Int, operator: (Int, Int) -> (T)): Array2D<T> {
       val array = Array(xWidth) {

@@ -31,30 +31,40 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
   private val DEFAULT_SAMPLE_SIZE = 2
   private val DEFAULT_MEM_USAGE = 20
   private val DEFAULT_THRESHOLD = 0.75f
+
   // BitmapRegionDecoder - this is the class that does the magic
   private var decoder: BitmapRegionDecoder? = null
+
   // The cached portion of the background image
   private val cachedBitmap = CacheBitmap()
+
   // The low resolution version of the background image
   private var lowResBitmap: Bitmap? = null
+
   /**
    * Options for loading the bitmaps
    */
   private val options = BitmapFactory.Options()
+
   /**
    * What is the down sample size for the sample image? 1=1/2, 2=1/4 3=1/8, etc
    */
   private val sampleSize: Int
+
   /**
    * What percent of total memory should we use for the cache? The bigger the cache, the longer it
    * takes to read -- 1.2 secs for 25%, 600ms for 10%, 500ms for 5%. User experience seems to be
    * best for smaller values.
    */
-  @get:Synchronized @set:Synchronized private var memUsage: Int = 0
+  @get:Synchronized
+  @set:Synchronized
+  private var memUsage: Int = 0
+
   /**
    * Threshold for using low resolution image
    */
   private val lowResThreshold: Float
+
   /**
    * Calculated rect
    */
@@ -191,14 +201,19 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
      * The current position and dimensions of the cache within the background image
      */
     internal val cacheWindow = Rect(0, 0, 0, 0)
+
     /**
      * The current state of the cache
      */
-    @get:Synchronized @set:Synchronized internal var state = CacheState.NOT_INITIALIZED
+    @get:Synchronized
+    @set:Synchronized
+    internal var state = CacheState.NOT_INITIALIZED
+
     /**
      * The currently cached bitmap
      */
     internal var bitmap: Bitmap? = null
+
     /**
      * The cache bitmap loading thread
      */
@@ -208,6 +223,7 @@ open class BitmapSurfaceRenderer : SurfaceRenderer {
      * Used to hold the source Rect for bitmap drawing
      */
     private val srcRect = Rect(0, 0, 0, 0)
+
     /**
      * Used to hold the dest Rect for bitmap drawing
      */
